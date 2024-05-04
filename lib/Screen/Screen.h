@@ -14,7 +14,7 @@ public:
     Screen(String name, const char * path)
         : name(name), path(path), isActive(false) {};
 
-    void addButtons(const std::vector<Box>& boxesToAdd);
+    void addButtons(const std::vector<Button>& boxesToAdd);
     
     String handleTouch(int touchX, int touchY);
     void releaseButton();
@@ -32,7 +32,7 @@ private:
     const char * path;
     bool isActive;
     #define MAX_IMAGE_WIDTH 320
-    std::vector<Box> buttons;
+    std::vector<Button> buttons;
 };
 
 #endif

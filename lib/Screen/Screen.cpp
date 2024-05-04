@@ -1,6 +1,6 @@
 #include <Screen.h>
 
-void Screen::addButtons(const std::vector<Box>& boxesToAdd) {
+void Screen::addButtons(const std::vector<Button>& boxesToAdd) {
     buttons.insert(buttons.end(), boxesToAdd.begin(), boxesToAdd.end());
 
 
@@ -10,7 +10,7 @@ void Screen::addButtons(const std::vector<Box>& boxesToAdd) {
 
 String Screen::handleTouch(int touchX, int touchY) {
     String result = "";
-    for (Box& box : buttons) {
+    for (Button& box : buttons) {
         result = box.checkTouch(touchX, touchY);
         if(result != ""){
             return result;
@@ -20,7 +20,7 @@ String Screen::handleTouch(int touchX, int touchY) {
     };
 
 void Screen::releaseButton() {
-    for (Box& box : buttons) {
+    for (Button& box : buttons) {
         box.releaseButton();
         }
     };

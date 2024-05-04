@@ -44,7 +44,7 @@ void getPressure();
 void sendSettings();
 
 // Define the box coordinates
-std::vector<Box> mainScreenButtons = {
+std::vector<Button> mainScreenButtons = {
   {0, 0, 70, 120, "Front Up", true, false},
   {0, 120, 70, 120, "Front Down", true, false},
   {263, 0, 70, 120, "Back Up", true, false},
@@ -54,7 +54,7 @@ std::vector<Box> mainScreenButtons = {
   {186, 174, 48, 42, "Park", false, false}
 };
 
-std::vector<Box> settings1Buttons = {
+std::vector<Button> settings1Buttons = {
   {20,20, 50,50, "mainScreen", false, true },
   {245, 20, 50,50, "save", false, true},
   {120, 80, 30, 30, "RideFD", false, true},
@@ -68,7 +68,7 @@ std::vector<Box> settings1Buttons = {
   {260,190,30,30, "Settings2", false, true}
 };
 
-std::vector<Box> settings2Buttons = {
+std::vector<Button> settings2Buttons = {
   {20,20, 50,50, "mainScreen", false, true },
   {245, 20, 50,50, "save", false, true},
   {120, 80, 30, 30, "MaxFD", false, true},
