@@ -1,7 +1,7 @@
 #include "Button.h"
 
-Button::Button(int x, int y, int width, int height, const char *name)
-    : x(x), y(y), width(width), height(height), name(name){}
+Button::Button(int x, int y, int width, int height, const char *name, bool test1, bool test2)
+    : x(x), y(y), width(width), height(height), name(name), test1(test1), test2(test2) {}
 
 bool Button::CheckTouch(int touchX, int touchY)
 {
@@ -15,7 +15,4 @@ bool Button::CheckTouch(int touchX, int touchY)
     isPressed = false;
     return false;
   }
- 
 }
-
-
