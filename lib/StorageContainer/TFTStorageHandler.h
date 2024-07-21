@@ -1,5 +1,6 @@
 #ifndef TFTSTORAGEHANDLER_H
 #define TFTSTORAGEHANDLER_H
+#pragma once
 
 #include <Arduino.h>
 #include "FS.h"
@@ -16,15 +17,27 @@ public:
         return instance;
     }
 
-    void printScreen(const char *);
-    void writeSettings();
-    void readFile(const char *);
-    void readAirSuspensionData();
+    void PrintScreen(const char *);
+    void WriteSettings();
+    void ReadFile(const char *);
+    void ReadAirSuspensionData();
+    void sendSettings();
+    void PrintSettings(bool settingIndicator);
+    void PrintPressure(double front, double back);
     void TpngDraw(PNGDRAW *);
     int32_t TpngSeek(PNGFILE *, int32_t);
     int32_t TpngRead(PNGFILE *, uint8_t *, int32_t);
     void TpngClose(void *);
     void *TpngOpen(const char *, int32_t *);
+
+    double frontMin = 0;
+    double frontMax = 0;
+    double backMin = 0;
+    double backMax = 0;
+    double rideFront = 0;
+    double rideBack = 0;
+    double parkFront = 0;
+    double parkBack = 0;
 
 private:
     TFT_eSPI tft;
@@ -33,21 +46,7 @@ private:
 
     SPIClass spiSD = SPIClass(VSPI);
 
-    TFTStorageHandler()
-    {
-        if (!SD.begin(SS, spiSD, 80000000))
-        {
-            return;
-        }
-
-        tft = TFT_eSPI(); // Invoke custom library
-
-        // Initialise the TFT
-        tft.init();
-        tft.setRotation(1);
-
-        tft.fillScreen(TFT_BLACK);
-    };
+    TFTStorageHandler();
 };
 
 #endif

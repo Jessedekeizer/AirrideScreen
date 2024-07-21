@@ -1,24 +1,30 @@
 #ifndef SCREENMANAGER_H
 #define SCREENMANAGER_H
+#pragma once
 
 #include <vector>
-#include "Screen.h"
+#include "IScreen.h"
 
-class ScreenManager {
+
+class ScreenManager
+{
 public:
-    ScreenManager(Screen* screen ): activeScreen(screen){}
-    bool getChange() {return change;};
-    void Change(bool c) {change = c;}; 
+    static ScreenManager &getInstance()
+    {
+        static ScreenManager instance;
+        return instance;
+    }
 
-    void addScreen(Screen* screen);
-    void changeActiveScreen(String screenName);
-    Screen*& getActiveScreen() {return activeScreen;};
-
+    ~ScreenManager(){};
+    void Change();
+    void RequestScreen(String);
+    IScreen *&GetActiveScreen() { return activeScreen; };
 
 private:
-
-    std::vector<Screen*> screens;
-    Screen* activeScreen;
+    ScreenManager();
+    std::vector<IScreen *> screens;
+    IScreen *activeScreen;
+    IScreen *newActiveScreen;
     bool change;
 };
 

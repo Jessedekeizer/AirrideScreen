@@ -1,24 +1,27 @@
 #ifndef BUTTON_H
 #define BUTTON_H
+#pragma once
 
 #include <Arduino.h>
+#include "ButtonState.h"
 
 class Button
 {
 public:
-  Button(int x, int y, int width, int height, const char *name, bool test1, bool test2);
-  bool CheckTouch(int touchX, int touchY);
+  Button(int x, int y, int width, int height, String name, bool toggle = false)
+      : x(x), y(y), width(width), height(height), name(name), toggle(toggle){};
+  ButtonState CheckTouch(int touchX, int touchY);
   String GetName() { return name; };
+  bool GetToggleState() { return toggleOn; };
 
 private:
   int x;
   int y;
   int width;
   int height;
-  bool test1;
-  bool test2;
-  const char *name;
-  bool isPressed;
+  bool toggle;
+  bool toggleOn;
+  String name;
 };
 
 #endif

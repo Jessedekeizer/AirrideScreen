@@ -25,7 +25,28 @@ int32_t pngSeek(PNGFILE *page, int32_t position)
 {
     return TFTStorageHandler::getInstance().TpngSeek(page, position);
 }
-/* void TFTStorageHandler::printPressure()
+
+TFTStorageHandler::TFTStorageHandler()
+{
+    if (!SD.begin(SS, spiSD, 80000000))
+    {
+        return;
+    }
+
+    tft = TFT_eSPI(); // Invoke custom library
+
+    // Initialise the TFT
+    tft.init();
+    tft.setRotation(1);
+
+    tft.fillScreen(TFT_BLACK);
+
+    ReadAirSuspensionData();
+
+    sendSettings();
+};
+
+void TFTStorageHandler::PrintPressure(double front, double back)
 {
 
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -40,7 +61,7 @@ int32_t pngSeek(PNGFILE *page, int32_t position)
     tft.drawString(String(back, 1), x, y, fontNum);
 }
 
-void TFTStorageHandler::printSettings(bool settingIndicator)
+void TFTStorageHandler::PrintSettings(bool settingIndicator)
 {
 
     String Box1 = "";
@@ -53,21 +74,6 @@ void TFTStorageHandler::printSettings(bool settingIndicator)
         Box2 = String(rideBack, 1);
         Box3 = String(parkFront, 1);
         Box4 = String(parkBack, 1);
-        tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
-        int x = 180;
-        int y = 82;
-        int fontNum = 2;
-        tft.drawString(Box1, x, y, fontNum);
-        y = 122;
-
-        tft.drawString(Box2, x, y, fontNum);
-        y = 167;
-
-        tft.drawString(Box3, x, y, fontNum);
-        y = 207;
-
-        tft.drawString(Box4, x, y, fontNum);
     }
     else
     {
@@ -75,33 +81,28 @@ void TFTStorageHandler::printSettings(bool settingIndicator)
         Box2 = String(backMax, 1);
         Box3 = String(frontMin, 1);
         Box4 = String(backMin, 1);
-        tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
-        int x = 180;
-        int y = 82;
-        int fontNum = 2;
-        tft.drawString(Box1, x, y, fontNum);
-        y = 122;
-
-        tft.drawString(Box2, x, y, fontNum);
-        y = 167;
-
-        tft.drawString(Box3, x, y, fontNum);
-        y = 207;
-
-        tft.drawString(Box4, x, y, fontNum);
     }
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+
+    int x = 180;
+    int y = 82;
+    int fontNum = 2;
+    tft.drawString(Box1, x, y, fontNum);
+    y = 122;
+
+    tft.drawString(Box2, x, y, fontNum);
+    y = 167;
+
+    tft.drawString(Box3, x, y, fontNum);
+    y = 207;
+
+    tft.drawString(Box4, x, y, fontNum);
 }
 
-void TFTStorageHandler::writeSettings()
+void TFTStorageHandler::WriteSettings()
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.txt", FILE_WRITE);
-    if (!file)
-    {
-
-        return;
-    }
     if (file)
     {
         // Write the first row - Min and Max Pressure
@@ -126,26 +127,20 @@ void TFTStorageHandler::writeSettings()
         // Close the file
         file.close();
     }
-    else
-    {
-    }
-} */
+}
 
-void TFTStorageHandler::readFile(const char *path)
+void TFTStorageHandler::ReadFile(const char *path)
 {
     fs::FS &fs = SD;
     File file = fs.open(path);
-    if (!file)
+    if (file)
     {
-
-        return;
+        while (file.available())
+        {
+            Serial.write(file.read());
+        }
+        file.close();
     }
-
-    while (file.available())
-    {
-        Serial.write(file.read());
-    }
-    file.close();
 }
 
 //====================================================================================
@@ -157,7 +152,7 @@ void TFTStorageHandler::readFile(const char *path)
 // Front / Back  \n
 // Third row is about the park pressure
 // Front / Back   \n
-/* void TFTStorageHandler::readAirSuspensionData()
+void TFTStorageHandler::ReadAirSuspensionData()
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.txt");
@@ -180,11 +175,20 @@ void TFTStorageHandler::readFile(const char *path)
         // Close the file
         file.close();
     }
-    else
-    {
-    }
 }
- */
+
+void TFTStorageHandler::sendSettings()
+{
+    Serial2.print("settings/" + String(frontMin) +
+                  "/" + frontMax +
+                  "/" + backMin +
+                  "/" + backMax +
+                  "/" + rideFront +
+                  "/" + rideBack +
+                  "/" + parkFront +
+                  "/" + parkBack + "/");
+}
+
 //=========================================v==========================================
 //                                      pngDraw
 //====================================================================================
@@ -193,7 +197,7 @@ void TFTStorageHandler::readFile(const char *path)
 // you will need to adapt this function to suit.
 // Callback function to draw pixels to the display
 
-void TFTStorageHandler::printScreen(const char *path)
+void TFTStorageHandler::PrintScreen(const char *path)
 {
     fs::FS &fs = SD;
     File file = fs.open(path);
@@ -222,17 +226,8 @@ void TFTStorageHandler::printScreen(const char *path)
                 tft.endWrite();
             }
         }
-        else
-        {
-
-            return;
-        }
     }
-    else
-    {
-
-        return;
-    }
+    return;
 }
 
 void TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
@@ -271,4 +266,3 @@ int32_t TFTStorageHandler::TpngSeek(PNGFILE *page, int32_t position)
     page = page; // Avoid warning
     return pngfile.seek(position);
 }
-

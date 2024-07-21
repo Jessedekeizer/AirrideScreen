@@ -1,18 +1,30 @@
 #include "Button.h"
 
-Button::Button(int x, int y, int width, int height, const char *name, bool test1, bool test2)
-    : x(x), y(y), width(width), height(height), name(name), test1(test1), test2(test2) {}
-
-bool Button::CheckTouch(int touchX, int touchY)
+ButtonState Button::CheckTouch(int touchX, int touchY)
 {
   if (touchX >= x && touchX <= x + width && touchY >= y && touchY <= y + height)
   {
-    isPressed = true;
-    return true;
+    if (toggle)
+    {
+      if (toggleOn)
+      {
+        return ButtonState::Idle;
+      }
+      else
+      {
+        toggleOn = true;
+        return ButtonState::ToggleOn;
+      }
+    }
+    return ButtonState::Push;
   }
   else
   {
-    isPressed = false;
-    return false;
+    if (toggle && toggleOn)
+    {
+      toggleOn = false;
+      return ButtonState::ToggleOff;
+    }
+    return ButtonState::Idle;
   }
 }
