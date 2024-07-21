@@ -26,8 +26,8 @@ void MainScreen::HandleTouch(int touchX, int touchY)
             }
             if (buttonName == "Settings1")
             {
-                ScreenManager &screenManager = ScreenManager::getInstance();
-                screenManager.RequestScreen(buttonName);
+                std::shared_ptr<ScreenManager> screenManager = ScreenManager::instance();
+                screenManager->RequestScreen(buttonName);
             }
             break;
         case ButtonState::ToggleOff:
@@ -57,7 +57,7 @@ void MainScreen::OnLoop()
 {
     getPressure();
     Serial.println(front + back);
-    storageHandler.PrintPressure(front, back);
+    storageHandler->PrintPressure(front, back);
 }
 
 void MainScreen::getPressure()

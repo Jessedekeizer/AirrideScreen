@@ -20,10 +20,7 @@ XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
 
-
-
-
-
+std::shared_ptr<ScreenManager> screenManager = ScreenManager::instance();
 
 //====================================================================================
 //                                    Setup
@@ -34,11 +31,10 @@ void setup()
   delay(10000);
   Serial.println("hello world");
   Serial2.begin(9600, SERIAL_8N1, 27, 22);
-  //Serial.setTimeout(20);
+  // Serial.setTimeout(20);
 
   ts.begin();
-  ScreenManager &manager  = ScreenManager::getInstance();
-  TFTStorageHandler &storageHandler = TFTStorageHandler::getInstance();
+  std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
   delay(1000);
 }
 
@@ -47,19 +43,18 @@ void setup()
 //====================================================================================
 void loop()
 {
-  ScreenManager &manager  = ScreenManager::getInstance();
   TouchPoint touch = ts.getTouch();
   if (touch.zRaw != 0)
   {
-    manager.GetActiveScreen()->HandleTouch(touch.x, touch.y);
-    }
+    screenManager->GetActiveScreen()->HandleTouch(touch.x, touch.y);
+  }
   else
   {
-    manager.GetActiveScreen()->ReleaseButtons();
+    screenManager->GetActiveScreen()->ReleaseButtons();
   }
 
-  manager.GetActiveScreen()->OnLoop();
-  //manager.Change();
+  screenManager->GetActiveScreen()->OnLoop();
+  // manager.Change();
 
   delay(100);
 }

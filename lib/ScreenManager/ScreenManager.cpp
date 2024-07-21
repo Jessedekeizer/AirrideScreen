@@ -13,8 +13,9 @@ ScreenManager::ScreenManager()
     screens.push_back(settings1Screen);
     screens.push_back(settings2Screen);
     activeScreen = screens.at(0);
-    TFTStorageHandler &storageHandler = TFTStorageHandler::getInstance();
-    storageHandler.PrintScreen(activeScreen->GetPath());
+
+    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
+    storageHandler->PrintScreen(activeScreen->GetPath());
 }
 
 void ScreenManager::Change()
@@ -25,8 +26,8 @@ void ScreenManager::Change()
     }
     activeScreen->ReleaseButtons();
     activeScreen = newActiveScreen;
-    TFTStorageHandler &storageHandler = TFTStorageHandler::getInstance();
-    storageHandler.PrintScreen(activeScreen->GetPath());
+    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
+    storageHandler->PrintScreen(activeScreen->GetPath());
     newActiveScreen = nullptr;
     change = false;
 }

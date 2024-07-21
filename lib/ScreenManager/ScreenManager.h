@@ -4,15 +4,18 @@
 
 #include <vector>
 #include "IScreen.h"
-
+#include <memory>
 
 class ScreenManager
 {
 public:
-    static ScreenManager &getInstance()
+    ScreenManager(ScreenManager const &) = delete;
+    ScreenManager &operator=(ScreenManager const &) = delete;
+
+    static std::shared_ptr<ScreenManager> instance()
     {
-        static ScreenManager instance;
-        return instance;
+        static std::shared_ptr<ScreenManager> s{new ScreenManager};
+        return s;
     }
 
     ~ScreenManager(){};

@@ -7,14 +7,18 @@
 #include "SD.h"
 #include <TFT_eSPI.h> // Hardware-specific library
 #include <PNGdec.h>
+#include <memory>
 
 class TFTStorageHandler
 {
 public:
-    static TFTStorageHandler &getInstance()
+    TFTStorageHandler(TFTStorageHandler const&) = delete;
+    TFTStorageHandler& operator=(TFTStorageHandler const&) = delete;
+
+    static std::shared_ptr<TFTStorageHandler> instance()
     {
-        static TFTStorageHandler instance;
-        return instance;
+        static std::shared_ptr<TFTStorageHandler> s{new TFTStorageHandler};
+        return s;
     }
 
     void PrintScreen(const char *);

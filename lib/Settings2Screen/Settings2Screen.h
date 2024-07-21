@@ -16,8 +16,8 @@ public:
     void OnSetup() override;
 
 private:
-    TFTStorageHandler &storageHandler = TFTStorageHandler::getInstance();
-    ScreenManager &screenManager = ScreenManager::getInstance();
+    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
+    std::shared_ptr<ScreenManager> screenManager = ScreenManager::instance();
 };
 
 #endif
