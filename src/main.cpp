@@ -151,7 +151,7 @@ void setup()
   //
 
   readAirSuspensionData(SD);
-  delay(2000);
+  delay(500);
   sendSettings();
   printPressure();
 }
