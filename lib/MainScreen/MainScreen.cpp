@@ -69,7 +69,7 @@ void MainScreen::getPressure()
     }
     if (incomingMessage != "")
     {
-        Serial.println(incomingMessage);
+        // Serial.println(incomingMessage);
         try
         {
             front = getValue(incomingMessage, '/', 0).toDouble();
