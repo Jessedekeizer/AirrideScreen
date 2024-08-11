@@ -1,5 +1,3 @@
-#ifndef TFTSTORAGEHANDLER_H
-#define TFTSTORAGEHANDLER_H
 #pragma once
 
 #include <Arduino.h>
@@ -12,14 +10,13 @@
 class TFTStorageHandler
 {
 public:
-    TFTStorageHandler(TFTStorageHandler const&) = delete;
-    TFTStorageHandler& operator=(TFTStorageHandler const&) = delete;
-
-    static std::shared_ptr<TFTStorageHandler> instance()
+    static TFTStorageHandler &GetInstance()
     {
-        static std::shared_ptr<TFTStorageHandler> s{new TFTStorageHandler};
-        return s;
+        static TFTStorageHandler instance;
+        return instance;
     }
+    TFTStorageHandler(const TFTStorageHandler &) = delete;
+    TFTStorageHandler &operator=(const TFTStorageHandler &) = delete;
 
     void PrintScreen(const char *);
     void WriteSettings();
@@ -53,4 +50,4 @@ private:
     TFTStorageHandler();
 };
 
-#endif
+extern TFTStorageHandler &storageHandler;

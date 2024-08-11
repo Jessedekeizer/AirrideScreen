@@ -13,6 +13,7 @@ public:
   ButtonState CheckTouch(int touchX, int touchY);
   String GetName() { return name; };
   bool GetToggleState() { return toggleOn; };
+  void SetToggleState(bool set) { toggleOn = set; };
 
 private:
   int x;
@@ -20,7 +21,7 @@ private:
   int width;
   int height;
   bool toggle;
-  bool toggleOn;
+  bool toggleOn = false;
   String name;
 };
 

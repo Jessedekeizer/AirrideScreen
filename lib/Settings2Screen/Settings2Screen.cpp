@@ -20,12 +20,12 @@ Settings2Screen::Settings2Screen()
 
 void Settings2Screen::OnSetup()
 {
-    storageHandler->ReadAirSuspensionData();
+    storageHandler.ReadAirSuspensionData();
 }
 
 void Settings2Screen::OnLoop()
 {
-    storageHandler->PrintSettings(true);
+    storageHandler.PrintSettings(false);
 }
 
 void Settings2Screen::HandleTouch(int touchX, int touchY)
@@ -38,18 +38,18 @@ void Settings2Screen::HandleTouch(int touchX, int touchY)
 
             if (buttonName == "save")
             {
-                storageHandler->WriteSettings();
-                screenManager->RequestScreen("MainScreen");
+                storageHandler.WriteSettings();
+                screenManager.RequestScreen("MainScreen");
                 return;
             }
             if (buttonName == "MainScreen")
             {
-                screenManager->RequestScreen("MainScreen");
+                screenManager.RequestScreen("MainScreen");
                 return;
             }
             if (buttonName == "Settings1")
             {
-                screenManager->RequestScreen("Settings1");
+                screenManager.RequestScreen("Settings1");
                 return;
             }
 
@@ -57,38 +57,38 @@ void Settings2Screen::HandleTouch(int touchX, int touchY)
             {
                 if (buttonName.endsWith("FU"))
                 {
-                    storageHandler->frontMax += 0.1;
+                    storageHandler.frontMax += 0.1;
                 }
                 else if (buttonName.endsWith("FD"))
                 {
-                    storageHandler->frontMax -= 0.1;
+                    storageHandler.frontMax -= 0.1;
                 }
                 else if (buttonName.endsWith("BU"))
                 {
-                    storageHandler->backMax += 0.1;
+                    storageHandler.backMax += 0.1;
                 }
                 else if (buttonName.endsWith("BD"))
                 {
-                    storageHandler->backMax -= 0.1;
+                    storageHandler.backMax -= 0.1;
                 }
             }
             else if (buttonName.startsWith("Min"))
             {
                 if (buttonName.endsWith("FU"))
                 {
-                    storageHandler->frontMin += 0.1;
+                    storageHandler.frontMin += 0.1;
                 }
                 else if (buttonName.endsWith("FD"))
                 {
-                    storageHandler->frontMin -= 0.1;
+                    storageHandler.frontMin -= 0.1;
                 }
                 else if (buttonName.endsWith("BU"))
                 {
-                    storageHandler->backMin += 0.1;
+                    storageHandler.backMin += 0.1;
                 }
                 else if (buttonName.endsWith("BD"))
                 {
-                    storageHandler->backMin -= 0.1;
+                    storageHandler.backMin -= 0.1;
                 }
             }
         }

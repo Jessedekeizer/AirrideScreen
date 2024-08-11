@@ -1,5 +1,3 @@
-#ifndef SCREENMANAGER_H
-#define SCREENMANAGER_H
 #pragma once
 
 #include <vector>
@@ -9,16 +7,16 @@
 class ScreenManager
 {
 public:
-    ScreenManager(ScreenManager const &) = delete;
-    ScreenManager &operator=(ScreenManager const &) = delete;
+    ScreenManager(const ScreenManager &) = delete;
+    ScreenManager &operator=(const ScreenManager &) = delete;
 
-    static std::shared_ptr<ScreenManager> instance()
+    static ScreenManager &GetInstance()
     {
-        static std::shared_ptr<ScreenManager> s{new ScreenManager};
-        return s;
+        static ScreenManager instance;
+        return instance;
     }
 
-    ~ScreenManager(){};
+    
     void Change();
     void RequestScreen(String);
     IScreen *&GetActiveScreen() { return activeScreen; };
@@ -31,4 +29,4 @@ private:
     bool change;
 };
 
-#endif // SCREENMANAGER_H
+extern ScreenManager &screenManager;

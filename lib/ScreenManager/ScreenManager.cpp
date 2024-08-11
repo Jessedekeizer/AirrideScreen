@@ -4,6 +4,8 @@
 #include "Settings2Screen.h"
 #include "TFTStorageHandler.h"
 
+ScreenManager &screenManager = screenManager.GetInstance();
+
 ScreenManager::ScreenManager()
 {
     IScreen *mainScreen = new MainScreen();
@@ -12,10 +14,9 @@ ScreenManager::ScreenManager()
     screens.push_back(mainScreen);
     screens.push_back(settings1Screen);
     screens.push_back(settings2Screen);
-    activeScreen = screens.at(0);
+    activeScreen = mainScreen;
 
-    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
-    storageHandler->PrintScreen(activeScreen->GetPath());
+    RequestScreen(activeScreen->GetName());
 }
 
 void ScreenManager::Change()
@@ -26,8 +27,8 @@ void ScreenManager::Change()
     }
     activeScreen->ReleaseButtons();
     activeScreen = newActiveScreen;
-    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
-    storageHandler->PrintScreen(activeScreen->GetPath());
+    storageHandler.PrintScreen(activeScreen->GetPath());
+    activeScreen->OnSetup();
     newActiveScreen = nullptr;
     change = false;
 }

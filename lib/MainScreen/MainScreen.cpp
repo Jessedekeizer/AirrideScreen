@@ -22,19 +22,18 @@ void MainScreen::HandleTouch(int touchX, int touchY)
         case ButtonState::Push:
             if (buttonName == "Ride" || buttonName == "Park")
             {
-                Serial2.println(buttonName);
+                Serial2.print(buttonName);
             }
             if (buttonName == "Settings1")
             {
-                std::shared_ptr<ScreenManager> screenManager = ScreenManager::instance();
-                screenManager->RequestScreen(buttonName);
+                screenManager.RequestScreen(buttonName);
             }
             break;
         case ButtonState::ToggleOff:
-            Serial2.println(buttonName + " Off");
+            Serial2.print(buttonName + " Off");
             break;
         case ButtonState::ToggleOn:
-            Serial2.println(buttonName + " On");
+            Serial2.print(buttonName + " On");
             break;
         case ButtonState::Idle:
             break;
@@ -48,7 +47,8 @@ void MainScreen::ReleaseButtons()
     {
         if (button.GetToggleState())
         {
-            Serial2.println(button.GetName() + " Off");
+            Serial2.print(button.GetName() + " Off");
+            button.SetToggleState(false);
         }
     }
 }
@@ -56,8 +56,7 @@ void MainScreen::ReleaseButtons()
 void MainScreen::OnLoop()
 {
     getPressure();
-    Serial.println(front + back);
-    storageHandler->PrintPressure(front, back);
+    storageHandler.PrintPressure(front, back);
 }
 
 void MainScreen::getPressure()
@@ -75,8 +74,6 @@ void MainScreen::getPressure()
         {
             front = getValue(incomingMessage, '/', 0).toDouble();
             back = getValue(incomingMessage, '/', 1).toDouble();
-            Serial.print(front);
-            Serial.println(back);
         }
         catch (const std::exception &e)
         {

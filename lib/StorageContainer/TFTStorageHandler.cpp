@@ -1,29 +1,31 @@
 #include "TFTStorageHandler.h"
 #define MAX_IMAGE_WIDTH 320
 
+TFTStorageHandler &storageHandler = storageHandler.GetInstance();
+
 void pngDraw(PNGDRAW *pDraw)
 {
-    return TFTStorageHandler::instance()->TpngDraw(pDraw);
+    storageHandler.TpngDraw(pDraw);
 }
 
 void *pngOpen(const char *filename, int32_t *size)
 {
-    return TFTStorageHandler::instance()->TpngOpen(filename, size);
+    return storageHandler.TpngOpen(filename, size);
 }
 
 void pngClose(void *handle)
 {
-    return TFTStorageHandler::instance()->TpngClose(handle);
+    storageHandler.TpngClose(handle);
 }
 
 int32_t pngRead(PNGFILE *page, uint8_t *buffer, int32_t length)
 {
-    return TFTStorageHandler::instance()->TpngRead(page, buffer, length);
+    return storageHandler.TpngRead(page, buffer, length);
 }
 
 int32_t pngSeek(PNGFILE *page, int32_t position)
 {
-    return TFTStorageHandler::instance()->TpngSeek(page, position);
+    return storageHandler.TpngSeek(page, position);
 }
 
 TFTStorageHandler::TFTStorageHandler()

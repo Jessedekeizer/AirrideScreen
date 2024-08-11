@@ -15,9 +15,6 @@ public:
     void ReleaseButtons() override {};
     void OnSetup() override;
 
-private:
-    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
-    std::shared_ptr<ScreenManager> screenManager = ScreenManager::instance();
 };
 
 #endif

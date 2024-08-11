@@ -15,7 +15,6 @@ public:
     void OnSetup() override {};
 
 private:
-    std::shared_ptr<TFTStorageHandler> storageHandler = TFTStorageHandler::instance();
     void getPressure();
     String getValue(String data, char separator, int index);
     String incomingMessage;
