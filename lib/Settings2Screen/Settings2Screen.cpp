@@ -7,14 +7,14 @@ Settings2Screen::Settings2Screen()
     buttons = std::vector<Button>{
         {20, 20, 50, 50, "mainScreen"},
         {245, 20, 50, 50, "save"},
-        {120, 80, 30, 30, "MaxFD"},
-        {205, 80, 30, 30, "MaxFU"},
-        {120, 113, 30, 30, "MaxBD"},
-        {205, 113, 30, 30, "MaxBU"},
-        {120, 158, 30, 30, "MinFD"},
-        {205, 158, 30, 30, "MinFU"},
-        {120, 190, 30, 30, "MinBD"},
-        {205, 190, 30, 30, "MinBU"},
+        {120, 80, 30, 30, "FrontUD"},
+        {205, 80, 30, 30, "FrontUU"},
+        {120, 113, 30, 30, "FrontDD"},
+        {205, 113, 30, 30, "FrontDU"},
+        {120, 158, 30, 30, "BackUD"},
+        {205, 158, 30, 30, "BackUU"},
+        {120, 190, 30, 30, "BackDD"},
+        {205, 190, 30, 30, "BackDU"},
         {20, 190, 30, 30, "Settings1"}};
 }
 
@@ -39,6 +39,7 @@ void Settings2Screen::HandleTouch(int touchX, int touchY)
             if (buttonName == "save")
             {
                 storageHandler.WriteSettings();
+                storageHandler.sendSettings();
                 screenManager.RequestScreen("MainScreen");
                 return;
             }
@@ -53,42 +54,42 @@ void Settings2Screen::HandleTouch(int touchX, int touchY)
                 return;
             }
 
-            if (buttonName.startsWith("Max"))
+            if (buttonName.startsWith("Front"))
             {
-                if (buttonName.endsWith("FU"))
+                if (buttonName.endsWith("UU"))
                 {
-                    storageHandler.frontMax += 0.1;
+                    storageHandler.frontUpX += 0.1;
                 }
-                else if (buttonName.endsWith("FD"))
+                else if (buttonName.endsWith("UD"))
                 {
-                    storageHandler.frontMax -= 0.1;
+                    storageHandler.frontUpX -= 0.1;
                 }
-                else if (buttonName.endsWith("BU"))
+                else if (buttonName.endsWith("DU"))
                 {
-                    storageHandler.backMax += 0.1;
+                    storageHandler.frontDownX += 0.1;
                 }
-                else if (buttonName.endsWith("BD"))
+                else if (buttonName.endsWith("DD"))
                 {
-                    storageHandler.backMax -= 0.1;
+                    storageHandler.frontDownX -= 0.1;
                 }
             }
-            else if (buttonName.startsWith("Min"))
+            else if (buttonName.startsWith("Back"))
             {
-                if (buttonName.endsWith("FU"))
+                if (buttonName.endsWith("UU"))
                 {
-                    storageHandler.frontMin += 0.1;
+                    storageHandler.backUpX += 0.1;
                 }
-                else if (buttonName.endsWith("FD"))
+                else if (buttonName.endsWith("UD"))
                 {
-                    storageHandler.frontMin -= 0.1;
+                    storageHandler.backUpX -= 0.1;
                 }
-                else if (buttonName.endsWith("BU"))
+                else if (buttonName.endsWith("DU"))
                 {
-                    storageHandler.backMin += 0.1;
+                    storageHandler.backDownX += 0.1;
                 }
-                else if (buttonName.endsWith("BD"))
+                else if (buttonName.endsWith("DD"))
                 {
-                    storageHandler.backMin -= 0.1;
+                    storageHandler.backDownX -= 0.1;
                 }
             }
         }

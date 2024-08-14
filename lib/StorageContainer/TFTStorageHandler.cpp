@@ -74,15 +74,15 @@ void TFTStorageHandler::PrintSettings(bool settingIndicator)
     {
         Box1 = String(rideFront, 1);
         Box2 = String(rideBack, 1);
-        Box3 = String(parkFront, 1);
-        Box4 = String(parkBack, 1);
+        Box3 = String(frontMax, 1);
+        Box4 = String(backMax, 1);
     }
     else
     {
-        Box1 = String(frontMax, 1);
-        Box2 = String(backMax, 1);
-        Box3 = String(frontMin, 1);
-        Box4 = String(backMin, 1);
+        Box1 = String(frontUpX, 1);
+        Box2 = String(frontDownX, 1);
+        Box3 = String(backUpX, 1);
+        Box4 = String(backDownX, 1);
     }
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
@@ -107,24 +107,22 @@ void TFTStorageHandler::WriteSettings()
     File file = fs.open("/settings.txt", FILE_WRITE);
     if (file)
     {
-        // Write the first row - Min and Max Pressure
-        file.print(frontMin);
-        file.print('/');
+        // Write the first row - Max Pressure
         file.print(frontMax);
         file.print('/');
-        file.print(backMin);
-        file.print('/');
         file.println(backMax);
-
         // Write the second row - Ride Pressure
         file.print(rideFront);
         file.print('/');
         file.println(rideBack);
-
-        // Write the third row - Park Pressure
-        file.print(parkFront);
+        // Write the third row - front modifier
+        file.print(frontUpX);
         file.print('/');
-        file.println(parkBack);
+        file.println(frontDownX);
+        // Write the fourth row - Back modifier
+        file.print(backUpX);
+        file.print('/');
+        file.println(backDownX);
 
         // Close the file
         file.close();
@@ -149,11 +147,13 @@ void TFTStorageHandler::ReadFile(const char *path)
 //                                    FileFormat
 //====================================================================================
 // First row min and max pressure of the airsuspension
-// Front_min / Front_max / Back_min / Back_max  \n
+// Front_max / Back_max  \n
 // second row is about the ride pressure
 // Front / Back  \n
-// Third row is about the park pressure
-// Front / Back   \n
+// Third row is about the front modifier
+// Up / Down   \n
+// Fourth row is about the back modifier
+// Up / Down   \n
 void TFTStorageHandler::ReadAirSuspensionData()
 {
     fs::FS &fs = SD;
@@ -161,18 +161,20 @@ void TFTStorageHandler::ReadAirSuspensionData()
     if (file)
     {
         // Read the first row - Min and Max Pressure
-        frontMin = file.readStringUntil('/').toDouble();
         frontMax = file.readStringUntil('/').toDouble();
-        backMin = file.readStringUntil('/').toDouble();
         backMax = file.readStringUntil('\n').toDouble();
 
         // Read the second row - Ride Pressure
         rideFront = file.readStringUntil('/').toDouble();
         rideBack = file.readStringUntil('\n').toDouble();
 
-        // Read the third row - Park Pressure
-        parkFront = file.readStringUntil('/').toDouble();
-        parkBack = file.readStringUntil('\n').toDouble();
+        // Read the third row - Front modifier
+        frontUpX = file.readStringUntil('/').toDouble();
+        frontDownX = file.readStringUntil('\n').toDouble();
+
+        // Read the fourth row - Back modifier
+        backUpX = file.readStringUntil('/').toDouble();
+        backDownX = file.readStringUntil('\n').toDouble();
 
         // Close the file
         file.close();
@@ -181,14 +183,14 @@ void TFTStorageHandler::ReadAirSuspensionData()
 
 void TFTStorageHandler::sendSettings()
 {
-    Serial2.print("settings/" + String(frontMin) +
-                  "/" + frontMax +
-                  "/" + backMin +
+    Serial2.print("settings/" + String(frontMax) +
                   "/" + backMax +
                   "/" + rideFront +
                   "/" + rideBack +
-                  "/" + parkFront +
-                  "/" + parkBack + "/");
+                  "/" + frontUpX +
+                  "/" + frontDownX +
+                  "/" + backUpX +
+                  "/" + backDownX + "/");
 }
 
 //=========================================v==========================================

@@ -11,10 +11,10 @@ Settings1Screen::Settings1Screen()
         {205, 80, 30, 30, "RideFU"},
         {120, 113, 30, 30, "RideBD"},
         {205, 113, 30, 30, "RideBU"},
-        {120, 158, 30, 30, "ParkFD"},
-        {205, 158, 30, 30, "ParkFU"},
-        {120, 190, 30, 30, "ParkBD"},
-        {205, 190, 30, 30, "ParkBU"},
+        {120, 158, 30, 30, "MaxFD"},
+        {205, 158, 30, 30, "MaxFU"},
+        {120, 190, 30, 30, "MaxBD"},
+        {205, 190, 30, 30, "MaxBU"},
         {260, 190, 30, 30, "Settings2"}};
 }
 
@@ -39,6 +39,7 @@ void Settings1Screen::HandleTouch(int touchX, int touchY)
             if (buttonName == "save")
             {
                 storageHandler.WriteSettings();
+                storageHandler.sendSettings();
                 screenManager.RequestScreen("MainScreen");
                 return;
             }
@@ -72,23 +73,23 @@ void Settings1Screen::HandleTouch(int touchX, int touchY)
                     storageHandler.rideBack -= 0.1;
                 }
             }
-            else if (buttonName.startsWith("Park"))
+            else if (buttonName.startsWith("Max"))
             {
                 if (buttonName.endsWith("FU"))
                 {
-                    storageHandler.parkFront += 0.1;
+                    storageHandler.frontMax += 0.1;
                 }
                 else if (buttonName.endsWith("FD"))
                 {
-                    storageHandler.parkFront -= 0.1;
+                    storageHandler.frontMax -= 0.1;
                 }
                 else if (buttonName.endsWith("BU"))
                 {
-                    storageHandler.parkBack += 0.1;
+                    storageHandler.backMax += 0.1;
                 }
                 else if (buttonName.endsWith("BD"))
                 {
-                    storageHandler.parkBack -= 0.1;
+                    storageHandler.backMax -= 0.1;
                 }
             }
         }

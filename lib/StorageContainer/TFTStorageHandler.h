@@ -31,14 +31,14 @@ public:
     void TpngClose(void *);
     void *TpngOpen(const char *, int32_t *);
 
-    double frontMin = 0;
     double frontMax = 0;
-    double backMin = 0;
     double backMax = 0;
     double rideFront = 0;
     double rideBack = 0;
-    double parkFront = 0;
-    double parkBack = 0;
+    double frontUpX = 0;
+    double frontDownX = 0;
+    double backUpX = 0;
+    double backDownX = 0;
 
 private:
     TFT_eSPI tft;
