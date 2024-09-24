@@ -25,6 +25,7 @@ void ScreenManager::Change()
     {
         return;
     }
+
     activeScreen->ReleaseButtons();
     activeScreen = newActiveScreen;
     storageHandler.PrintScreen(activeScreen->GetPath());
@@ -35,16 +36,18 @@ void ScreenManager::Change()
 
 void ScreenManager::RequestScreen(String requestedScreen)
 {
-    if (requestedScreen != "")
+    if (requestedScreen == "")
     {
-        for (IScreen *screen : screens)
+        return;
+    }
+
+    for (IScreen *screen : screens)
+    {
+        if (screen->GetName() == requestedScreen)
         {
-            if (screen->GetName() == requestedScreen)
-            {
-                newActiveScreen = screen;
-                change = true;
-                return;
-            }
+            newActiveScreen = screen;
+            change = true;
+            return;
         }
     }
 }

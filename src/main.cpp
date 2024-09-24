@@ -20,7 +20,6 @@ XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
 
-//std::shared_ptr<ScreenManager> screenManager = ScreenManager::instance();
 
 //====================================================================================
 //                                    Setup
