@@ -3,25 +3,26 @@
 #pragma once
 
 #include <Arduino.h>
-#include "ButtonState.h"
+#include "ButtonType.h"
 
 class Button
 {
 public:
-  Button(int x, int y, int width, int height, String name, bool toggle = false)
-      : x(x), y(y), width(width), height(height), name(name), toggle(toggle){};
-  ButtonState CheckTouch(int touchX, int touchY);
+  Button(int x, int y, int width, int height, String name, ButtonType type, std::function<void(Button &)> callback = nullptr)
+      : x(x), y(y), width(width), height(height), name(name), type(type), callback(callback) {};
+  bool CheckTouch(int touchX, int touchY);
   String GetName() { return name; };
-  bool GetToggleState() { return toggleOn; };
-  void SetToggleState(bool set) { toggleOn = set; };
+  void OnPress(bool);
+  bool GetToggle() { return toggle; };
 
 private:
   int x;
   int y;
   int width;
   int height;
-  bool toggle;
-  bool toggleOn = false;
+  bool toggle = false;
+  ButtonType type;
+  std::function<void(Button &)> callback;
   String name;
 };
 

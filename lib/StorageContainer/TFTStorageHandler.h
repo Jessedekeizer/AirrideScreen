@@ -20,6 +20,7 @@ public:
 
     void PrintScreen(const char *);
     void WriteSettings();
+    void WriteLog(String message);
     void ReadFile(const char *);
     void ReadAirSuspensionData();
     void sendSettings();

@@ -16,6 +16,17 @@ public:
     void OnSetup() override;
 
 private:
+    void HandleMainScreen();
+    void HandleSave();
+    void HandleSettings1();
+    void HandleFrontUpAdd();
+    void HandleFrontUpSub();
+    void HandleFrontDownAdd();
+    void HandleFrontDownSub();
+    void HandleBackUpAdd();
+    void HandleBackUpSub();
+    void HandleBackDownAdd();
+    void HandleBackDownSub();
 };
 
 #endif

@@ -1,30 +1,29 @@
 #include "Button.h"
 
-ButtonState Button::CheckTouch(int touchX, int touchY)
+bool Button::CheckTouch(int touchX, int touchY)
 {
   if (touchX >= x && touchX <= x + width && touchY >= y && touchY <= y + height)
   {
-    if (toggle)
-    {
-      if (toggleOn)
-      {
-        return ButtonState::Idle;
-      }
-      else
-      {
-        toggleOn = true;
-        return ButtonState::ToggleOn;
-      }
-    }
-    return ButtonState::Push;
+    return true;
   }
-  else
+  return false;
+}
+
+void Button::OnPress(bool press)
+{
+  if (callback)
   {
-    if (toggle && toggleOn)
+    if (type == ButtonType::push && press)
     {
-      toggleOn = false;
-      return ButtonState::ToggleOff;
+      callback(*this);
     }
-    return ButtonState::Idle;
+    else if (type == ButtonType::Toggle)
+    {
+      if (press != toggle)
+      {
+        toggle = press;
+        callback(*this);
+      }
+    }
   }
 }

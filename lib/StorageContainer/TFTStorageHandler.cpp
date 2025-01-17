@@ -128,6 +128,18 @@ void TFTStorageHandler::WriteSettings()
         file.close();
     }
 }
+void TFTStorageHandler::WriteLog(String message)
+{
+    fs::FS &fs = SD;
+    File file = fs.open("/LOG.txt", FILE_APPEND);
+    if (file)
+    {
+        file.println(message);
+
+        // Close the file
+        file.close();
+    }
+}
 
 void TFTStorageHandler::ReadFile(const char *path)
 {
