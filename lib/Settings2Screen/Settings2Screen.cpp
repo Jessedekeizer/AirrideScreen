@@ -29,11 +29,6 @@ Settings2Screen::Settings2Screen()
          { HandleSettings1(); }}};
 }
 
-void Settings2Screen::OnSetup()
-{
-    // storageHandler.ReadAirSuspensionData();
-}
-
 void Settings2Screen::OnLoop()
 {
     storageHandler.PrintSettings(false);
@@ -56,7 +51,7 @@ void Settings2Screen::HandleTouch(int touchX, int touchY)
 
 void Settings2Screen::HandleMainScreen()
 {
-    screenManager.RequestScreen("MainScreen");
+    screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings2Screen::HandleSave()
@@ -64,7 +59,7 @@ void Settings2Screen::HandleSave()
     storageHandler.WriteSettings();
     storageHandler.sendSettings();
     storageHandler.ReadAirSuspensionData();
-    screenManager.RequestScreen("MainScreen");
+    screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings2Screen::HandleFrontUpAdd()
@@ -109,5 +104,5 @@ void Settings2Screen::HandleBackDownSub()
 
 void Settings2Screen::HandleSettings1()
 {
-    screenManager.RequestScreen("Settings1");
+    screenManager.ChangeScreen("Settings1");
 }

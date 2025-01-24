@@ -14,6 +14,7 @@ public:
   String GetName() { return name; };
   void OnPress(bool);
   bool GetToggle() { return toggle; };
+  void move(int x, int y);
 
 private:
   int x;

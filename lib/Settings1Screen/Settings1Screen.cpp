@@ -51,7 +51,7 @@ void Settings1Screen::HandleTouch(int touchX, int touchY)
 
 void Settings1Screen::HandleMainScreen()
 {
-    screenManager.RequestScreen("MainScreen");
+    screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings1Screen::HandleSave()
@@ -59,7 +59,7 @@ void Settings1Screen::HandleSave()
     storageHandler.WriteSettings();
     storageHandler.sendSettings();
     storageHandler.ReadAirSuspensionData();
-    screenManager.RequestScreen("MainScreen");
+    screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings1Screen::HandleRideFU()
@@ -104,5 +104,5 @@ void Settings1Screen::HandleMaxBD()
 
 void Settings1Screen::HandleSettings2()
 {
-    screenManager.RequestScreen("Settings2");
+    screenManager.ChangeScreen("Settings2");
 }

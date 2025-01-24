@@ -1,53 +1,50 @@
-#include <ScreenManager.h>
+#include "ScreenManager.h"
 #include "MainScreen.h"
 #include "Settings1Screen.h"
 #include "Settings2Screen.h"
 #include "TFTStorageHandler.h"
+#include "SerialManager.h"
 
-ScreenManager &screenManager = screenManager.GetInstance();
+ScreenManager &screenManager = ScreenManager::GetInstance();
 
 ScreenManager::ScreenManager()
 {
-    IScreen *mainScreen = new MainScreen();
-    IScreen *settings1Screen = new Settings1Screen();
-    IScreen *settings2Screen = new Settings2Screen();
-    screens.push_back(mainScreen);
-    screens.push_back(settings1Screen);
-    screens.push_back(settings2Screen);
-    activeScreen = mainScreen;
-
-    RequestScreen(activeScreen->GetName());
+    screens = {
+        new MainScreen(),
+        new Settings1Screen(),
+        new Settings2Screen()};
+    activeScreen = screens[0];
 }
 
-void ScreenManager::Change()
+bool ScreenManager::ChangeScreen(const String &screenName)
 {
-    if (!change)
-    {
-        return;
-    }
+    if (screenName.isEmpty())
+        return false;
 
-    activeScreen->ReleaseButtons();
-    activeScreen = newActiveScreen;
-    storageHandler.PrintScreen(activeScreen->GetPath());
-    activeScreen->OnSetup();
-    newActiveScreen = nullptr;
-    change = false;
+    IScreen *newScreen = FindScreen(screenName);
+    if (!newScreen || newScreen == activeScreen)
+        return false;
+
+    TransitionToScreen(newScreen);
+    return true;
 }
 
-void ScreenManager::RequestScreen(String requestedScreen)
+IScreen *ScreenManager::FindScreen(const String &screenName)
 {
-    if (requestedScreen == "")
-    {
-        return;
-    }
-
     for (IScreen *screen : screens)
     {
-        if (screen->GetName() == requestedScreen)
+        if (screen->GetName() == screenName)
         {
-            newActiveScreen = screen;
-            change = true;
-            return;
+            return screen;
         }
     }
+    return nullptr;
+}
+
+void ScreenManager::TransitionToScreen(IScreen *newScreen)
+{
+    activeScreen->ReleaseButtons();
+    activeScreen = newScreen;
+    storageHandler.PrintScreen(activeScreen->GetPath());
+    activeScreen->OnSetup();
 }

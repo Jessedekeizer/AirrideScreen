@@ -6,6 +6,7 @@
 #include <TFT_eSPI.h> // Hardware-specific library
 #include <PNGdec.h>
 #include <memory>
+#include "SerialManager.h"
 
 class TFTStorageHandler
 {

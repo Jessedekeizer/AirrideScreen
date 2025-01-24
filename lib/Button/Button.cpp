@@ -27,3 +27,9 @@ void Button::OnPress(bool press)
     }
   }
 }
+
+void Button::move(int x, int y)
+{
+  this->x = x;
+  this->y = y;
+}

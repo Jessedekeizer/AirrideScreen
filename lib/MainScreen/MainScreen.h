@@ -4,18 +4,19 @@
 
 #include "IScreen.h"
 #include "TFTStorageHandler.h"
+#include "SerialManager.h"
 
 class MainScreen : public IScreen
 {
 public:
     MainScreen();
     void HandleTouch(int touchX, int touchY) override;
-    void OnLoop() override;
+    void OnLoop() override {};
     void ReleaseButtons() override;
-    void OnSetup() override {};
+    void OnSetup() override;
 
 private:
-    void getPressure();
+    void ReadSerial();
     void GoToSettings1();
     void SendRideCommand();
     void SendParkCommand();

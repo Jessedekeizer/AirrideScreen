@@ -42,10 +42,6 @@ TFTStorageHandler::TFTStorageHandler()
     tft.setRotation(1);
 
     tft.fillScreen(TFT_BLACK);
-
-    ReadAirSuspensionData();
-
-    sendSettings();
 };
 
 void TFTStorageHandler::PrintPressure(double front, double back)
@@ -195,14 +191,14 @@ void TFTStorageHandler::ReadAirSuspensionData()
 
 void TFTStorageHandler::sendSettings()
 {
-    Serial2.print("settings/" + String(frontMax) +
-                  "/" + backMax +
-                  "/" + rideFront +
-                  "/" + rideBack +
-                  "/" + frontUpX +
-                  "/" + frontDownX +
-                  "/" + backUpX +
-                  "/" + backDownX + "/");
+    serialManager.sendMessage("settings/" + String(frontMax) +
+                              "/" + backMax +
+                              "/" + rideFront +
+                              "/" + rideBack +
+                              "/" + frontUpX +
+                              "/" + frontDownX +
+                              "/" + backUpX +
+                              "/" + backDownX + "/");
 }
 
 //=========================================v==========================================

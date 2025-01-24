@@ -2,6 +2,7 @@
 #include "SPI.h"
 #include "Button.h"
 #include "IScreen.h"
+#include "SerialManager.h"
 #include "vector"
 #include <ScreenManager.h>
 #include "TFTStorageHandler.h"
@@ -25,14 +26,20 @@ void printTouchToSerial(TouchPoint);
 //====================================================================================
 void setup()
 {
-  Serial.begin(9600, SERIAL_8N1);
+  serialManager.GetInstance();
   delay(1000);
-  Serial2.begin(9600, SERIAL_8N1, 27, 22);
+
+  // serialManager.begin(9600);
+  serialManager.setDebugMode(true);
   // Serial.setTimeout(20);
 
   ts.begin();
   storageHandler.GetInstance();
   screenManager.GetInstance();
+  storageHandler.PrintScreen(screenManager.GetActiveScreen()->GetPath());
+  storageHandler.ReadAirSuspensionData();
+
+  storageHandler.sendSettings();
 }
 
 //====================================================================================
@@ -51,7 +58,7 @@ void loop()
   }
 
   screenManager.GetActiveScreen()->OnLoop();
-  screenManager.Change();
+  serialManager.handleIncoming();
 
   delay(100);
 }

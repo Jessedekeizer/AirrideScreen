@@ -45,46 +45,21 @@ void MainScreen::ReleaseButtons()
     }
 }
 
-void MainScreen::OnLoop()
+void MainScreen::OnSetup()
 {
-    getPressure();
-}
-
-void MainScreen::getPressure()
-{
-    while (Serial2.available())
-    {
-        delay(2);
-        char c = Serial2.read();
-        incomingMessage += c;
-
-        if (c == '\n' || c == '\r')
-        {
-            if (incomingMessage.length() > 0)
-            {
-                // Serial.println(incomingMessage);
-                if (incomingMessage.startsWith("BAR"))
-                {
-                    try
-                    {
-                        front = getValue(incomingMessage, '/', 1).toDouble();
-                        back = getValue(incomingMessage, '/', 2).toDouble();
-                    }
-                    catch (const std::exception &e)
-                    {
-                    }
-                    storageHandler.PrintPressure(front, back);
-                }
-                if (incomingMessage.startsWith("LOG"))
-                {
-                    int semiColonIndex = incomingMessage.indexOf(";");
-
-                    storageHandler.WriteLog(incomingMessage.substring(0, semiColonIndex + 1));
-                }
-                incomingMessage = "";
-            }
+    serialManager.setMessageCallback([this](String message)
+                                     {
+        if (message.startsWith("BAR")) {
+            try {
+                front = getValue(message, '/', 1).toDouble();
+                back = getValue(message, '/', 2).toDouble();
+            } catch (const std::exception &e) {}
+            storageHandler.PrintPressure(front, back);
         }
-    }
+        if (message.startsWith("LOG")) {
+            int semiColonIndex = message.indexOf(";");
+            storageHandler.WriteLog(message.substring(0, semiColonIndex + 1));
+        } });
 }
 
 String MainScreen::getValue(String data, char separator, int index)
@@ -107,28 +82,29 @@ String MainScreen::getValue(String data, char separator, int index)
 
 void MainScreen::GoToSettings1()
 {
-    screenManager.RequestScreen("Settings1");
+    serialManager.clearMessageCallback();
+    screenManager.ChangeScreen("Settings1");
 }
 
 void MainScreen::SendRideCommand()
 {
-    Serial2.print("Ride");
+    serialManager.sendMessage("Ride");
 }
 
 void MainScreen::SendParkCommand()
 {
-    Serial2.print("Park");
+    serialManager.sendMessage("Park");
 }
 
 void MainScreen::HandleFrontUp(Button &sender)
 {
     if (sender.GetToggle())
     {
-        Serial2.print("Front Up On");
+        serialManager.sendMessage("Front Up On");
     }
     else
     {
-        Serial2.print("Front Up Off");
+        serialManager.sendMessage("Front Up Off");
     }
 }
 
@@ -136,11 +112,11 @@ void MainScreen::HandleFrontDown(Button &sender)
 {
     if (sender.GetToggle())
     {
-        Serial2.print("Front Down On");
+        serialManager.sendMessage("Front Down On");
     }
     else
     {
-        Serial2.print("Front Down Off");
+        serialManager.sendMessage("Front Down Off");
     }
 }
 
@@ -148,11 +124,11 @@ void MainScreen::HandleBackUp(Button &sender)
 {
     if (sender.GetToggle())
     {
-        Serial2.print("Back Up On");
+        serialManager.sendMessage("Back Up On");
     }
     else
     {
-        Serial2.print("Back Up Off");
+        serialManager.sendMessage("Back Up Off");
     }
 }
 
@@ -160,10 +136,10 @@ void MainScreen::HandleBackDown(Button &sender)
 {
     if (sender.GetToggle())
     {
-        Serial2.print("Back Down On");
+        serialManager.sendMessage("Back Down On");
     }
     else
     {
-        Serial2.print("Back Down Off");
+        serialManager.sendMessage("Back Down Off");
     }
 }
