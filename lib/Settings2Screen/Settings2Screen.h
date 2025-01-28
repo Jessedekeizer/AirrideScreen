@@ -10,9 +10,7 @@ class Settings2Screen : public IScreen
 {
 public:
     Settings2Screen();
-    void HandleTouch(int touchX, int touchY) override;
     void OnLoop() override;
-    void ReleaseButtons() override {};
     void OnSetup() override {};
 
 private:

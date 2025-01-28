@@ -3,65 +3,60 @@
 
 MainScreen::MainScreen()
 {
-    name = "MainScreen",
-    path = "/MainScreen.png",
-    buttons = std::vector<Button>{
-        {0, 0, 70, 120, "Front Up", ButtonType::Toggle, [this](Button &button)
-         { HandleFrontUp(button); }},
-        {0, 120, 70, 120, "Front Down", ButtonType::Toggle, [this](Button &button)
-         { HandleFrontDown(button); }},
-        {263, 0, 70, 120, "Back Up", ButtonType::Toggle, [this](Button &button)
-         { HandleBackUp(button); }},
-        {263, 120, 70, 120, "Back Down", ButtonType::Toggle, [this](Button &button)
-         { HandleBackDown(button); }},
-        {132, 174, 48, 42, "Settings1", ButtonType::push, [this](Button &button)
-         { GoToSettings1(); }},
-        {84, 174, 48, 42, "Ride", ButtonType::push, [this](Button &button)
-         { SendRideCommand(); }},
-        {186, 174, 48, 42, "Park", ButtonType::push, [this](Button &button)
-         { SendParkCommand(); }}};
+    name = "MainScreen";
+    path = "/MainScreen.png";
+
+    buttons = std::vector<Button *>();
+
+    // Front buttons
+    buttons.push_back(new ToggleButton(0, 0, 70, 120, "Front Up",
+                                       [this](Button &button)
+                                       { HandleFrontUp(button); }));
+    buttons.push_back(new ToggleButton(0, 120, 70, 120, "Front Down",
+                                       [this](Button &button)
+                                       { HandleFrontDown(button); }));
+
+    // Back buttons
+    buttons.push_back(new ToggleButton(263, 0, 70, 120, "Back Up",
+                                       [this](Button &button)
+                                       { HandleBackUp(button); }));
+    buttons.push_back(new ToggleButton(263, 120, 70, 120, "Back Down",
+                                       [this](Button &button)
+                                       { HandleBackDown(button); }));
+
+    // Control buttons
+    buttons.push_back(new PushButton(132, 174, 48, 42, "Settings1",
+                                     [this](Button &button)
+                                     { GoToSettings1(); }));
+    buttons.push_back(new PushButton(84, 174, 48, 42, "Ride",
+                                     [this](Button &button)
+                                     { SendRideCommand(); }));
+    buttons.push_back(new PushButton(186, 174, 48, 42, "Park",
+                                     [this](Button &button)
+                                     { SendParkCommand(); }));
 };
-
-void MainScreen::HandleTouch(int touchX, int touchY)
-{
-    for (Button &button : buttons)
-    {
-        if (button.CheckTouch(touchX, touchY))
-        {
-            button.OnPress(true);
-        }
-        else
-        {
-            button.OnPress(false);
-        }
-    }
-}
-
-void MainScreen::ReleaseButtons()
-{
-    for (Button &button : buttons)
-    {
-        button.OnPress(false);
-    }
-}
 
 void MainScreen::OnSetup()
 {
     serialManager.Debug("MainScreen::OnSetup - Setting callback");
     serialManager.setMessageCallback([this](String message)
                                      {
-        serialManager.Debug("Processing message: " + message);
-        if (message.startsWith("BAR")) {
-            try {
-                front = getValue(message, '/', 1).toDouble();
-                back = getValue(message, '/', 2).toDouble();
-                storageHandler.PrintPressure(front, back);
-            } catch (const std::exception& e) {
-                serialManager.Debug("Error parsing BAR message");
-            }
-        }
-        // ...existing code...
-    });
+                                         serialManager.Debug("Processing message: " + message);
+                                         if (message.startsWith("BAR"))
+                                         {
+                                             try
+                                             {
+                                                 front = getValue(message, '/', 1).toDouble();
+                                                 back = getValue(message, '/', 2).toDouble();
+                                                 storageHandler.PrintPressure(front, back);
+                                             }
+                                             catch (const std::exception &e)
+                                             {
+                                                 serialManager.Debug("Error parsing BAR message");
+                                             }
+                                         }
+                                         // ...existing code...
+                                     });
     serialManager.Debug("MainScreen::OnSetup - Callback set complete");
 }
 
@@ -101,7 +96,8 @@ void MainScreen::SendParkCommand()
 
 void MainScreen::HandleFrontUp(Button &sender)
 {
-    if (sender.GetToggle())
+    auto &toggle = static_cast<ToggleButton &>(sender);
+    if (toggle.GetState())
     {
         serialManager.sendMessage("Front Up On");
     }
@@ -113,7 +109,8 @@ void MainScreen::HandleFrontUp(Button &sender)
 
 void MainScreen::HandleFrontDown(Button &sender)
 {
-    if (sender.GetToggle())
+    auto &toggle = static_cast<ToggleButton &>(sender);
+    if (toggle.GetState())
     {
         serialManager.sendMessage("Front Down On");
     }
@@ -125,7 +122,8 @@ void MainScreen::HandleFrontDown(Button &sender)
 
 void MainScreen::HandleBackUp(Button &sender)
 {
-    if (sender.GetToggle())
+    auto &toggle = static_cast<ToggleButton &>(sender);
+    if (toggle.GetState())
     {
         serialManager.sendMessage("Back Up On");
     }
@@ -137,7 +135,8 @@ void MainScreen::HandleBackUp(Button &sender)
 
 void MainScreen::HandleBackDown(Button &sender)
 {
-    if (sender.GetToggle())
+    auto &toggle = static_cast<ToggleButton &>(sender);
+    if (toggle.GetState())
     {
         serialManager.sendMessage("Back Down On");
     }

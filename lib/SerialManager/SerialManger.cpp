@@ -41,7 +41,7 @@ void SerialManager::handleIncoming() {
 
 void SerialManager::sendMessage(const String& message) {
     if (debugMode) {
-        Serial.println("Debug: " + message);
+        Serial.println("Serial2 send: " + message);
     }
     Serial2.print(message);
 }

@@ -1,35 +1,16 @@
 #include "Button.h"
 
-bool Button::CheckTouch(int touchX, int touchY)
+void Button::CheckTouch(int touchX, int touchY)
 {
   if (touchX >= x && touchX <= x + width && touchY >= y && touchY <= y + height)
   {
-    return true;
+    OnPress(true);
+    return;
   }
-  return false;
+  OnPress(false);
 }
 
-void Button::OnPress(bool press)
+void Button::ReleaseButton()
 {
-  if (callback)
-  {
-    if (type == ButtonType::push && press)
-    {
-      callback(*this);
-    }
-    else if (type == ButtonType::Toggle)
-    {
-      if (press != toggle)
-      {
-        toggle = press;
-        callback(*this);
-      }
-    }
-  }
-}
-
-void Button::move(int x, int y)
-{
-  this->x = x;
-  this->y = y;
+  OnPress(false);
 }

@@ -9,11 +9,23 @@
 class IScreen
 {
 public:
-    virtual void HandleTouch(int touchX, int touchY) = 0;
+    void HandleTouch(int touchX, int touchY)
+    {
+        for (Button *&button : buttons)
+        {
+            button->CheckTouch(touchX, touchY);
+        };
+    }
 
     virtual void OnLoop() = 0;
 
-    virtual void ReleaseButtons() = 0;
+    void ReleaseButtons()
+    {
+        for (Button *&button : buttons)
+        {
+            button->ReleaseButton();
+        }
+    };
 
     virtual void OnSetup() = 0;
 
@@ -25,7 +37,7 @@ protected:
     String name;
     const char *path;
     bool isActive;
-    std::vector<Button> buttons;
+    std::vector<Button *> buttons;
 };
 
 #endif

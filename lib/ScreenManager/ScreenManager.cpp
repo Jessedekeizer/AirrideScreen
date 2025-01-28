@@ -13,7 +13,6 @@ ScreenManager::ScreenManager()
         new MainScreen(),
         new Settings1Screen(),
         new Settings2Screen()};
-    //activeScreen = screens[1];
 }
 
 bool ScreenManager::ChangeScreen(const String &screenName)
@@ -23,7 +22,6 @@ bool ScreenManager::ChangeScreen(const String &screenName)
         return false;
 
     IScreen *newScreen = FindScreen(screenName);
-    serialManager.Debug("ScreenManager::ChangeScreen - Found screen: " + newScreen->GetName());
     if (!newScreen || newScreen == activeScreen)
         return false;
     serialManager.Debug("ScreenManager::ChangeScreen - Transitioning to screen: " + newScreen->GetName());
