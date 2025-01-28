@@ -13,18 +13,20 @@ ScreenManager::ScreenManager()
         new MainScreen(),
         new Settings1Screen(),
         new Settings2Screen()};
-    activeScreen = screens[0];
+    //activeScreen = screens[1];
 }
 
 bool ScreenManager::ChangeScreen(const String &screenName)
 {
+    serialManager.Debug("ScreenManager::ChangeScreen - Changing to: " + screenName);
     if (screenName.isEmpty())
         return false;
 
     IScreen *newScreen = FindScreen(screenName);
+    serialManager.Debug("ScreenManager::ChangeScreen - Found screen: " + newScreen->GetName());
     if (!newScreen || newScreen == activeScreen)
         return false;
-
+    serialManager.Debug("ScreenManager::ChangeScreen - Transitioning to screen: " + newScreen->GetName());
     TransitionToScreen(newScreen);
     return true;
 }
@@ -43,7 +45,10 @@ IScreen *ScreenManager::FindScreen(const String &screenName)
 
 void ScreenManager::TransitionToScreen(IScreen *newScreen)
 {
-    activeScreen->ReleaseButtons();
+    if (activeScreen)
+    {
+        activeScreen->ReleaseButtons();
+    }
     activeScreen = newScreen;
     storageHandler.PrintScreen(activeScreen->GetPath());
     activeScreen->OnSetup();

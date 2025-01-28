@@ -36,7 +36,7 @@ void setup()
   ts.begin();
   storageHandler.GetInstance();
   screenManager.GetInstance();
-  storageHandler.PrintScreen(screenManager.GetActiveScreen()->GetPath());
+  screenManager.ChangeScreen("MainScreen");
   storageHandler.ReadAirSuspensionData();
 
   storageHandler.sendSettings();

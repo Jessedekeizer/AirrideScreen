@@ -47,19 +47,22 @@ void MainScreen::ReleaseButtons()
 
 void MainScreen::OnSetup()
 {
+    serialManager.Debug("MainScreen::OnSetup - Setting callback");
     serialManager.setMessageCallback([this](String message)
                                      {
+        serialManager.Debug("Processing message: " + message);
         if (message.startsWith("BAR")) {
             try {
                 front = getValue(message, '/', 1).toDouble();
                 back = getValue(message, '/', 2).toDouble();
-            } catch (const std::exception &e) {}
-            storageHandler.PrintPressure(front, back);
+                storageHandler.PrintPressure(front, back);
+            } catch (const std::exception& e) {
+                serialManager.Debug("Error parsing BAR message");
+            }
         }
-        if (message.startsWith("LOG")) {
-            int semiColonIndex = message.indexOf(";");
-            storageHandler.WriteLog(message.substring(0, semiColonIndex + 1));
-        } });
+        // ...existing code...
+    });
+    serialManager.Debug("MainScreen::OnSetup - Callback set complete");
 }
 
 String MainScreen::getValue(String data, char separator, int index)
