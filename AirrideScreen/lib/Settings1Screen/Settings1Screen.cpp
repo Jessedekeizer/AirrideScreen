@@ -1,0 +1,114 @@
+#include "Settings1Screen.h"
+
+Settings1Screen::Settings1Screen()
+{
+    name = "Settings1";
+    path = "/Settings1.png";
+    buttons = std::vector<Button *>();
+
+    buttons.push_back(new PushButton(20, 20, 50, 50, "MainScreen",
+                                     [this](Button &button)
+                                     { HandleMainScreen(); }));
+
+    buttons.push_back(new PushButton(245, 20, 50, 50, "save",
+                                     [this](Button &button)
+                                     { HandleSave(); }));
+
+    buttons.push_back(new PushButton(120, 80, 30, 30, "RideFD",
+                                     [this](Button &button)
+                                     { HandleRideFD(); }));
+
+    buttons.push_back(new PushButton(205, 80, 30, 30, "RideFU",
+                                     [this](Button &button)
+                                     { HandleRideFU(); }));
+
+    buttons.push_back(new PushButton(120, 113, 30, 30, "RideBD",
+                                     [this](Button &button)
+                                     { HandleRideBD(); }));
+
+    buttons.push_back(new PushButton(205, 113, 30, 30, "RideBU",
+                                     [this](Button &button)
+                                     { HandleRideBU(); }));
+    buttons.push_back(new PushButton(120, 158, 30, 30, "MaxFD",
+                                     [this](Button &button)
+                                     { HandleMaxFD(); }));
+
+    buttons.push_back(new PushButton(205, 158, 30, 30, "MaxFU",
+                                     [this](Button &button)
+                                     { HandleMaxFU(); }));
+
+    buttons.push_back(new PushButton(120, 190, 30, 30, "MaxBD",
+                                     [this](Button &button)
+                                     { HandleMaxBD(); }));
+
+    buttons.push_back(new PushButton(205, 190, 30, 30, "MaxBU",
+                                     [this](Button &button)
+                                     { HandleMaxBU(); }));
+
+    buttons.push_back(new PushButton(260, 190, 30, 30, "Settings2",
+                                     [this](Button &button)
+                                     { HandleSettings2(); }));
+}
+
+void Settings1Screen::OnLoop()
+{
+    storageHandler.PrintSettings(true);
+}
+
+void Settings1Screen::HandleMainScreen()
+{
+    screenManager.ChangeScreen("MainScreen");
+}
+
+void Settings1Screen::HandleSave()
+{
+    storageHandler.WriteSettings();
+    storageHandler.sendSettings();
+    storageHandler.ReadAirSuspensionData();
+    screenManager.ChangeScreen("MainScreen");
+}
+
+void Settings1Screen::HandleRideFU()
+{
+    storageHandler.rideFront += 0.1;
+}
+
+void Settings1Screen::HandleRideFD()
+{
+    storageHandler.rideFront -= 0.1;
+}
+
+void Settings1Screen::HandleRideBU()
+{
+    storageHandler.rideBack += 0.1;
+}
+
+void Settings1Screen::HandleRideBD()
+{
+    storageHandler.rideBack -= 0.1;
+}
+
+void Settings1Screen::HandleMaxFU()
+{
+    storageHandler.frontMax += 0.1;
+}
+
+void Settings1Screen::HandleMaxFD()
+{
+    storageHandler.frontMax -= 0.1;
+}
+
+void Settings1Screen::HandleMaxBU()
+{
+    storageHandler.backMax += 0.1;
+}
+
+void Settings1Screen::HandleMaxBD()
+{
+    storageHandler.backMax -= 0.1;
+}
+
+void Settings1Screen::HandleSettings2()
+{
+    screenManager.ChangeScreen("Settings2");
+}
