@@ -10,6 +10,10 @@
 #define CLK_PIN 25
 #define CS_PIN 33
 
+long tinv = 100;
+long tprev = 0;
+long tnow = 0;
+
 XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
@@ -35,6 +39,13 @@ void setup()
 //====================================================================================
 void loop()
 {
+  tnow = millis();
+  if (tnow - tprev < tinv)
+  {
+    serialManager.handleIncoming();
+    return;
+  }
+  tprev = tnow;
   TouchPoint touch = ts.getTouch();
   if (touch.zRaw != 0)
   {
@@ -47,8 +58,6 @@ void loop()
 
   screenManager.GetActiveScreen()->OnLoop();
   serialManager.handleIncoming();
-
-  delay(100);
 }
 
 void printTouchToSerial(TouchPoint p)

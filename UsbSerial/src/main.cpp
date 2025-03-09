@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <arduino.h>
 #include "LogHandler.h"
 
 String incoming = "";
@@ -141,9 +141,9 @@ void loop()
   {
     smoothAnalogRead();
     Serial1.println(readPressure());
-    //Serial.println(fmap(analogRead(tankSensor), AnalogMin, AnalogMax, 0, BarTankMax));
     // Serial.println(fmap(analogRead(tankSensor), AnalogMin, AnalogMax, 0, BarTankMax));
-    //  Serial.println(fmap(analogRead(backSensor), AnalogMin, AnalogMax, 0, BarMax));
+    //  Serial.println(fmap(analogRead(tankSensor), AnalogMin, AnalogMax, 0, BarTankMax));
+    //   Serial.println(fmap(analogRead(backSensor), AnalogMin, AnalogMax, 0, BarMax));
     tprev = millis();
   }
   stop();
