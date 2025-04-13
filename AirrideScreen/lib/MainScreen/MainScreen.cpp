@@ -38,6 +38,7 @@ MainScreen::MainScreen()
 
 void MainScreen::OnSetup()
 {
+    startRidePrevious = millis();
     serialManager.Debug("MainScreen::OnSetup - Setting callback");
     serialManager.setMessageCallback(
         [this](String message)
@@ -76,6 +77,23 @@ String MainScreen::getValue(String data, char separator, int index)
         }
     }
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+
+void MainScreen::OnLoop()
+{
+    if (!rideStarted && (millis() - startRidePrevious > startRideDuration))
+    {
+        if (front < 1.5 && back < 1.5)
+        {
+            serialManager.Debug("MainScreen::OnLoop - Sending ride command");
+            serialManager.sendMessage("Ride");
+        }
+        else
+        {
+            serialManager.Debug("MainScreen::OnLoop - Not sending ride command, pressure too high");
+        }
+        rideStarted = true;
+    }
 }
 
 void MainScreen::GoToSettings1()

@@ -10,7 +10,7 @@ class MainScreen : public IScreen
 {
 public:
     MainScreen();
-    void OnLoop() override {};
+    void OnLoop() override;
     void OnSetup() override;
 
 private:
@@ -26,6 +26,9 @@ private:
     String incomingMessage;
     double front = 0;
     double back = 0;
+    long startRideDuration = 5000;
+    long startRidePrevious = 0;
+    bool rideStarted = false;
 };
 
 #endif
