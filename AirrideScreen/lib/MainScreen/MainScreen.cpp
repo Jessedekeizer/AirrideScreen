@@ -39,24 +39,24 @@ MainScreen::MainScreen()
 void MainScreen::OnSetup()
 {
     serialManager.Debug("MainScreen::OnSetup - Setting callback");
-    serialManager.setMessageCallback([this](String message)
-                                     {
-                                         serialManager.Debug("Processing message: " + message);
-                                         if (message.startsWith("BAR"))
-                                         {
-                                             try
-                                             {
-                                                 front = getValue(message, '/', 1).toDouble();
-                                                 back = getValue(message, '/', 2).toDouble();
-                                                 storageHandler.PrintPressure(front, back);
-                                             }
-                                             catch (const std::exception &e)
-                                             {
-                                                 serialManager.Debug("Error parsing BAR message");
-                                             }
-                                         }
-                                         // ...existing code...
-                                     });
+    serialManager.setMessageCallback(
+        [this](String message)
+        {
+            serialManager.Debug("Processing message: " + message);
+            if (message.startsWith("BAR"))
+            {
+                try
+                {
+                    front = getValue(message, '/', 1).toDouble();
+                    back = getValue(message, '/', 2).toDouble();
+                    storageHandler.PrintPressure(front, back);
+                }
+                catch (const std::exception &e)
+                {
+                    serialManager.Debug("Error parsing BAR message");
+                }
+            }
+        });
     serialManager.Debug("MainScreen::OnSetup - Callback set complete");
 }
 

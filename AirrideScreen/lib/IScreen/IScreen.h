@@ -11,7 +11,7 @@ class IScreen
 public:
     void HandleTouch(int touchX, int touchY)
     {
-        for (Button *&button : buttons)
+        for (Button *button : buttons)
         {
             button->CheckTouch(touchX, touchY);
         };
@@ -21,7 +21,7 @@ public:
 
     void ReleaseButtons()
     {
-        for (Button *&button : buttons)
+        for (Button *button : buttons)
         {
             button->ReleaseButton();
         }
