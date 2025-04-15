@@ -13,6 +13,7 @@
 XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
+XPT2046_Bitbang *getTouchScreen();
 
 //====================================================================================
 //                                    Setup
@@ -60,4 +61,9 @@ void printTouchToSerial(TouchPoint p)
   Serial.print(", y = ");
   Serial.print(p.y);
   Serial.println();
+}
+
+XPT2046_Bitbang *getTouchScreen()
+{
+  return &ts;
 }
