@@ -23,6 +23,7 @@ private:
     int xmax = 0;
     int ymin = 0;
     int ymax = 0;
+    bool TopLeftCalibrationDone = false;
 
     long TopLeftInterval = 0;
     long BottomRightInterval = 0;
