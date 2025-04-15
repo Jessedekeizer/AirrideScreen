@@ -59,42 +59,10 @@ void TFTStorageHandler::PrintPressure(double front, double back)
     tft.drawString(String(back, 1), x, y, fontNum);
 }
 
-void TFTStorageHandler::PrintSettings(bool settingIndicator)
+void TFTStorageHandler::DrawString(String str, int x, int y)
 {
-
-    String Box1 = "";
-    String Box2 = "";
-    String Box3 = "";
-    String Box4 = "";
-    if (settingIndicator)
-    {
-        Box1 = String(rideFront, 1);
-        Box2 = String(rideBack, 1);
-        Box3 = String(frontMax, 1);
-        Box4 = String(backMax, 1);
-    }
-    else
-    {
-        Box1 = String(frontUpX, 1);
-        Box2 = String(frontDownX, 1);
-        Box3 = String(backUpX, 1);
-        Box4 = String(backDownX, 1);
-    }
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
-    int x = 180;
-    int y = 82;
-    int fontNum = 2;
-    tft.drawString(Box1, x, y, fontNum);
-    y = 122;
-
-    tft.drawString(Box2, x, y, fontNum);
-    y = 167;
-
-    tft.drawString(Box3, x, y, fontNum);
-    y = 207;
-
-    tft.drawString(Box4, x, y, fontNum);
+    tft.drawString(str, x, y, 2);
 }
 
 void TFTStorageHandler::WriteSettings()
@@ -209,7 +177,7 @@ void TFTStorageHandler::sendSettings()
 // you will need to adapt this function to suit.
 // Callback function to draw pixels to the display
 
-void TFTStorageHandler::PrintScreen(const char *path)
+void TFTStorageHandler::PrintImage(const char *path, int x, int y)
 {
     fs::FS &fs = SD;
     File file = fs.open(path);
@@ -225,6 +193,9 @@ void TFTStorageHandler::PrintScreen(const char *path)
             if (rc == PNG_SUCCESS)
             {
                 tft.startWrite();
+
+                imageX = x;
+                imageY = y;
 
                 uint32_t dt = millis();
                 if (png.getWidth() > MAX_IMAGE_WIDTH)
@@ -246,7 +217,7 @@ void TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
 {
     uint16_t lineBuffer[MAX_IMAGE_WIDTH];
     png.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
-    tft.pushImage(0, 0 + pDraw->y, pDraw->iWidth, 1, lineBuffer);
+    tft.pushImage(imageX, imageY + pDraw->y, pDraw->iWidth, 1, lineBuffer);
 }
 
 void *TFTStorageHandler::TpngOpen(const char *filename, int32_t *size)

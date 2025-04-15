@@ -48,6 +48,6 @@ void ScreenManager::TransitionToScreen(IScreen *newScreen)
         activeScreen->ReleaseButtons();
     }
     activeScreen = newScreen;
-    storageHandler.PrintScreen(activeScreen->GetPath());
+    storageHandler.PrintImage(activeScreen->GetPath());
     activeScreen->OnSetup();
 }

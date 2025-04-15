@@ -52,7 +52,10 @@ Settings1Screen::Settings1Screen()
 
 void Settings1Screen::OnLoop()
 {
-    storageHandler.PrintSettings(true);
+    storageHandler.DrawString(String(storageHandler.rideFront, 1), 180, 82);
+    storageHandler.DrawString(String(storageHandler.rideBack, 1), 180, 122);
+    storageHandler.DrawString(String(storageHandler.frontMax, 1), 180, 167);
+    storageHandler.DrawString(String(storageHandler.backMax, 1), 180, 207);
 }
 
 void Settings1Screen::HandleMainScreen()

@@ -48,7 +48,10 @@ Settings2Screen::Settings2Screen()
 
 void Settings2Screen::OnLoop()
 {
-    storageHandler.PrintSettings(false);
+    storageHandler.DrawString(String(storageHandler.frontUpX, 1), 180, 82);
+    storageHandler.DrawString(String(storageHandler.frontDownX, 1), 180, 122);
+    storageHandler.DrawString(String(storageHandler.backUpX, 1), 180, 167);
+    storageHandler.DrawString(String(storageHandler.backDownX, 1), 180, 207);
 }
 
 void Settings2Screen::HandleMainScreen()
