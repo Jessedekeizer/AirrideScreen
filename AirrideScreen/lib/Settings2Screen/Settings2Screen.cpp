@@ -48,10 +48,11 @@ Settings2Screen::Settings2Screen()
 
 void Settings2Screen::OnLoop()
 {
-    storageHandler.DrawString(String(storageHandler.frontUpX, 1), 180, 82);
-    storageHandler.DrawString(String(storageHandler.frontDownX, 1), 180, 122);
-    storageHandler.DrawString(String(storageHandler.backUpX, 1), 180, 167);
-    storageHandler.DrawString(String(storageHandler.backDownX, 1), 180, 207);
+    auto &settings = storageHandler.getSettings();
+    storageHandler.DrawString(String(settings.frontUpX, 1), 180, 82);
+    storageHandler.DrawString(String(settings.frontDownX, 1), 180, 122);
+    storageHandler.DrawString(String(settings.backUpX, 1), 180, 167);
+    storageHandler.DrawString(String(settings.backDownX, 1), 180, 207);
 }
 
 void Settings2Screen::HandleMainScreen()
@@ -69,42 +70,50 @@ void Settings2Screen::HandleSave()
 
 void Settings2Screen::HandleFrontUpAdd()
 {
-    storageHandler.frontUpX += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.frontUpX, 0.1);
 }
 
 void Settings2Screen::HandleFrontUpSub()
 {
-    storageHandler.frontUpX -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.frontUpX, -0.1);
 }
 
 void Settings2Screen::HandleFrontDownAdd()
 {
-    storageHandler.frontDownX += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.frontDownX, 0.1);
 }
 
 void Settings2Screen::HandleFrontDownSub()
 {
-    storageHandler.frontDownX -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.frontDownX, -0.1);
 }
 
 void Settings2Screen::HandleBackUpAdd()
 {
-    storageHandler.backUpX += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.backUpX, 0.1);
 }
 
 void Settings2Screen::HandleBackUpSub()
 {
-    storageHandler.backUpX -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.backUpX, -0.1);
 }
 
 void Settings2Screen::HandleBackDownAdd()
 {
-    storageHandler.backDownX += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.backDownX, 0.1);
 }
 
 void Settings2Screen::HandleBackDownSub()
 {
-    storageHandler.backDownX -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.backDownX, -0.1);
 }
 
 void Settings2Screen::HandleSettings1()

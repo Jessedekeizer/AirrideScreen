@@ -52,10 +52,11 @@ Settings1Screen::Settings1Screen()
 
 void Settings1Screen::OnLoop()
 {
-    storageHandler.DrawString(String(storageHandler.rideFront, 1), 180, 82);
-    storageHandler.DrawString(String(storageHandler.rideBack, 1), 180, 122);
-    storageHandler.DrawString(String(storageHandler.frontMax, 1), 180, 167);
-    storageHandler.DrawString(String(storageHandler.backMax, 1), 180, 207);
+    auto &settings = storageHandler.getSettings();
+    storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
+    storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
+    storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
+    storageHandler.DrawString(String(settings.backMax, 1), 180, 207);
 }
 
 void Settings1Screen::HandleMainScreen()
@@ -73,42 +74,50 @@ void Settings1Screen::HandleSave()
 
 void Settings1Screen::HandleRideFU()
 {
-    storageHandler.rideFront += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.rideFront, 0.1);
 }
 
 void Settings1Screen::HandleRideFD()
 {
-    storageHandler.rideFront -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.rideFront, -0.1);
 }
 
 void Settings1Screen::HandleRideBU()
 {
-    storageHandler.rideBack += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.rideBack, 0.1);
 }
 
 void Settings1Screen::HandleRideBD()
 {
-    storageHandler.rideBack -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.rideBack, -0.1);
 }
 
 void Settings1Screen::HandleMaxFU()
 {
-    storageHandler.frontMax += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.frontMax, 0.1);
 }
 
 void Settings1Screen::HandleMaxFD()
 {
-    storageHandler.frontMax -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.frontMax, -0.1);
 }
 
 void Settings1Screen::HandleMaxBU()
 {
-    storageHandler.backMax += 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.backMax, 0.1);
 }
 
 void Settings1Screen::HandleMaxBD()
 {
-    storageHandler.backMax -= 0.1;
+    auto &settings = storageHandler.getSettings();
+    settings.adjustValue(settings.backMax, -0.1);
 }
 
 void Settings1Screen::HandleSettings2()

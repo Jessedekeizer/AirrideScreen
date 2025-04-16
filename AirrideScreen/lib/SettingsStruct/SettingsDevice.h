@@ -1,8 +1,8 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef SETTINGSDEVICE_H
+#define SETTINGSDEVICE_H
 #pragma once
 
-struct Settings
+struct SettingsDevice
 {
     double frontMax = 0.0;
     double backMax = 0.0;
