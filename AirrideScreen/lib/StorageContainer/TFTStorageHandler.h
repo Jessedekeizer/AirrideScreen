@@ -31,7 +31,8 @@ public:
     int32_t TpngRead(PNGFILE *, uint8_t *, int32_t);
     void TpngClose(void *);
     void *TpngOpen(const char *, int32_t *);
-    void DrawString(String str, int = 0, int = 0);
+    void DrawString(String str, int x = 0, int y = 0);
+    void DrawRect(int x, int y, int width, int height, uint32_t color = TFT_BLACK);
 
     double frontMax = 0;
     double backMax = 0;

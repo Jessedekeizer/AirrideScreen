@@ -6,6 +6,7 @@
 #include "TFTStorageHandler.h"
 #include "SerialManager.h"
 #include "XPT2046_Bitbang.h"
+#include "ScreenManager.h"
 #define CALIBRATION_TIME 3000
 XPT2046_Bitbang *getTouchScreen();
 
@@ -24,9 +25,17 @@ private:
     int ymin = 0;
     int ymax = 0;
     bool TopLeftCalibrationDone = false;
+    bool startInterval = false;
 
-    long TopLeftInterval = 0;
-    long BottomRightInterval = 0;
+    int seconds = 3;
+
+    long TopLeftStartTime = 0;
+    long BottomRightStartTime = 0;
+
+    long preAndPostCalibrationTime = 0;
+    long secondsTime = 0;
+    bool preAndPostCalibrationDone = false;
+
     XPT2046_Bitbang *touchScreen;
 };
 

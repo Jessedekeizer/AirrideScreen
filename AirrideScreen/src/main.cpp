@@ -26,7 +26,7 @@ void setup()
   ts.begin();
   storageHandler.GetInstance();
   screenManager.GetInstance();
-  screenManager.ChangeScreen("MainScreen");
+  screenManager.ChangeScreen("CalibrationScreen");
   storageHandler.ReadAirSuspensionData();
   storageHandler.sendSettings();
 }
