@@ -24,8 +24,8 @@ public:
     void WriteSettings();
     void WriteLog(String message);
     void ReadFile(const char *);
-    void ReadAirSuspensionData();
-    void sendSettings();
+    void ReadSettings();
+    void SendSettings();
     void PrintPressure(double front, double back);
     void TpngDraw(PNGDRAW *);
     int32_t TpngSeek(PNGFILE *, int32_t);

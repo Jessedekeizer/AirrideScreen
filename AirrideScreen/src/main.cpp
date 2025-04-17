@@ -26,8 +26,8 @@ void setup()
   storageHandler.GetInstance();
   screenManager.GetInstance();
   screenManager.ChangeScreen("MainScreen");
-  storageHandler.ReadAirSuspensionData();
-  storageHandler.sendSettings();
+  storageHandler.ReadSettings();
+  storageHandler.SendSettings();
 }
 
 //====================================================================================

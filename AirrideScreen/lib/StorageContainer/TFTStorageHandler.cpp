@@ -76,8 +76,8 @@ void TFTStorageHandler::WriteSettings()
     }
 
     // Write the entire struct in one go
-    size_t bytesWritten = file.write((const uint8_t*)&settings, sizeof(settings));
-    
+    size_t bytesWritten = file.write((const uint8_t *)&settings, sizeof(settings));
+
     if (bytesWritten != sizeof(settings))
     {
         serialManager.Debug("Failed to write settings");
@@ -86,7 +86,7 @@ void TFTStorageHandler::WriteSettings()
     {
         serialManager.Debug("Settings saved successfully");
     }
-    
+
     file.close();
 }
 
@@ -117,18 +117,7 @@ void TFTStorageHandler::ReadFile(const char *path)
     }
 }
 
-//====================================================================================
-//                                    FileFormat
-//====================================================================================
-// First row min and max pressure of the airsuspension
-// Front_max / Back_max  \n
-// second row is about the ride pressure
-// Front / Back  \n
-// Third row is about the front modifier
-// Up / Down   \n
-// Fourth row is about the back modifier
-// Up / Down   \n
-void TFTStorageHandler::ReadAirSuspensionData()
+void TFTStorageHandler::ReadSettings()
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.bin", FILE_READ);
@@ -139,8 +128,8 @@ void TFTStorageHandler::ReadAirSuspensionData()
     }
 
     // Read the entire struct in one go
-    size_t bytesRead = file.read((uint8_t*)&settings, sizeof(settings));
-    
+    size_t bytesRead = file.read((uint8_t *)&settings, sizeof(settings));
+
     if (bytesRead != sizeof(settings))
     {
         serialManager.Debug("Failed to read settings");
@@ -149,11 +138,11 @@ void TFTStorageHandler::ReadAirSuspensionData()
     {
         serialManager.Debug("Settings loaded successfully");
     }
-    
+
     file.close();
 }
 
-void TFTStorageHandler::sendSettings()
+void TFTStorageHandler::SendSettings()
 {
     serialManager.sendMessage("settings/" + String(settings.frontMax) +
                               "/" + settings.backMax +

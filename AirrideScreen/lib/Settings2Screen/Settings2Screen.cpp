@@ -63,8 +63,8 @@ void Settings2Screen::HandleMainScreen()
 void Settings2Screen::HandleSave()
 {
     storageHandler.WriteSettings();
-    storageHandler.sendSettings();
-    storageHandler.ReadAirSuspensionData();
+    storageHandler.SendSettings();
+    storageHandler.ReadSettings();
     screenManager.ChangeScreen("MainScreen");
 }
 

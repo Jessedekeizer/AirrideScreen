@@ -12,6 +12,11 @@ struct SettingsDevice
     double frontDownX = 0.0;
     double backUpX = 0.0;
     double backDownX = 0.0;
+    int xmin = 0;
+    int xmax = 320;
+    int ymin = 0;
+    int ymax = 240;
+    bool calibrationSet = false;
 
     // Helper method to ensure values don't go below 0
     void adjustValue(double &value, double delta)
