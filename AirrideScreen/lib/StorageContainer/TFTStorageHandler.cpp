@@ -68,30 +68,28 @@ void TFTStorageHandler::DrawString(String str, int x, int y)
 void TFTStorageHandler::WriteSettings()
 {
     fs::FS &fs = SD;
-    File file = fs.open("/settings.txt", FILE_WRITE);
-    if (file)
+    File file = fs.open("/settings.bin", FILE_WRITE);
+    if (!file)
     {
-        // Write the first row - Max Pressure
-        file.print(frontMax);
-        file.print('/');
-        file.println(backMax);
-        // Write the second row - Ride Pressure
-        file.print(rideFront);
-        file.print('/');
-        file.println(rideBack);
-        // Write the third row - front modifier
-        file.print(frontUpX);
-        file.print('/');
-        file.println(frontDownX);
-        // Write the fourth row - Back modifier
-        file.print(backUpX);
-        file.print('/');
-        file.println(backDownX);
-
-        // Close the file
-        file.close();
+        serialManager.Debug("Cannot open file to write");
+        return;
     }
+
+    // Write the entire struct in one go
+    size_t bytesWritten = file.write((const uint8_t *)&settings, sizeof(settings));
+
+    if (bytesWritten != sizeof(settings))
+    {
+        serialManager.Debug("Failed to write settings");
+    }
+    else
+    {
+        serialManager.Debug("Settings saved successfully");
+    }
+
+    file.close();
 }
+
 void TFTStorageHandler::WriteLog(String message)
 {
     fs::FS &fs = SD;
@@ -119,54 +117,41 @@ void TFTStorageHandler::ReadFile(const char *path)
     }
 }
 
-//====================================================================================
-//                                    FileFormat
-//====================================================================================
-// First row min and max pressure of the airsuspension
-// Front_max / Back_max  \n
-// second row is about the ride pressure
-// Front / Back  \n
-// Third row is about the front modifier
-// Up / Down   \n
-// Fourth row is about the back modifier
-// Up / Down   \n
-void TFTStorageHandler::ReadAirSuspensionData()
+void TFTStorageHandler::ReadSettings()
 {
     fs::FS &fs = SD;
-    File file = fs.open("/settings.txt");
-    if (file)
+    File file = fs.open("/settings.bin", FILE_READ);
+    if (!file)
     {
-        // Read the first row - Min and Max Pressure
-        frontMax = file.readStringUntil('/').toDouble();
-        backMax = file.readStringUntil('\n').toDouble();
-
-        // Read the second row - Ride Pressure
-        rideFront = file.readStringUntil('/').toDouble();
-        rideBack = file.readStringUntil('\n').toDouble();
-
-        // Read the third row - Front modifier
-        frontUpX = file.readStringUntil('/').toDouble();
-        frontDownX = file.readStringUntil('\n').toDouble();
-
-        // Read the fourth row - Back modifier
-        backUpX = file.readStringUntil('/').toDouble();
-        backDownX = file.readStringUntil('\n').toDouble();
-
-        // Close the file
-        file.close();
+        serialManager.Debug("Cannot open file to read");
+        return;
     }
+
+    // Read the entire struct in one go
+    size_t bytesRead = file.read((uint8_t *)&settings, sizeof(settings));
+
+    if (bytesRead != sizeof(settings))
+    {
+        serialManager.Debug("Failed to read settings");
+    }
+    else
+    {
+        serialManager.Debug("Settings loaded successfully");
+    }
+
+    file.close();
 }
 
-void TFTStorageHandler::sendSettings()
+void TFTStorageHandler::SendSettings()
 {
-    serialManager.sendMessage("settings/" + String(frontMax) +
-                              "/" + backMax +
-                              "/" + rideFront +
-                              "/" + rideBack +
-                              "/" + frontUpX +
-                              "/" + frontDownX +
-                              "/" + backUpX +
-                              "/" + backDownX + "/");
+    serialManager.sendMessage("settings/" + String(settings.frontMax) +
+                              "/" + settings.backMax +
+                              "/" + settings.rideFront +
+                              "/" + settings.rideBack +
+                              "/" + settings.frontUpX +
+                              "/" + settings.frontDownX +
+                              "/" + settings.backUpX +
+                              "/" + settings.backDownX + "/");
 }
 
 //=========================================v==========================================
