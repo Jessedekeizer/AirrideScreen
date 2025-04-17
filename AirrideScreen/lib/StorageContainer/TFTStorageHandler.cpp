@@ -92,6 +92,8 @@ void TFTStorageHandler::WriteSettings()
         serialManager.Debug("Settings saved successfully");
     }
 
+    
+
     file.close();
 }
 

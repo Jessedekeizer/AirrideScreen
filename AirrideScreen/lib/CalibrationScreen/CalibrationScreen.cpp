@@ -4,9 +4,7 @@ CalibrationScreen::CalibrationScreen()
 {
     name = "CalibrationScreen";
     path = "/CalibrationScreen.png";
-
     buttons = std::vector<Button *>();
-
     buttons.push_back(new PushButton(0, 0, 50, 50, "TopLeft",
                                      [this](Button &button)
                                      { TopLeftCalibration(); }));
@@ -37,8 +35,8 @@ void CalibrationScreen::OnLoop()
             preAndPostCalibrationDone = false;
             storageHandler.DrawRect(0, 0, 320, 240);
             seconds = 3;
-            storageHandler.DrawString("Ending in:", 120, 90);
-            storageHandler.DrawString(String(seconds), 150, 110);
+            storageHandler.DrawString("Ending calibration in:", 100, 90);
+            storageHandler.DrawString(String(seconds), 160, 110);
         }
         return;
     }
@@ -49,7 +47,7 @@ void CalibrationScreen::OnLoop()
         {
             secondsTime = millis();
             storageHandler.DrawRect(150, 110, 10, 10);
-            storageHandler.DrawString(String(--seconds), 150, 110);
+            storageHandler.DrawString(String(--seconds), 160, 110);
         }
     }
     else
@@ -57,6 +55,12 @@ void CalibrationScreen::OnLoop()
         preAndPostCalibrationDone = true;
         if (TopLeftCalibrationDone)
         {
+            SettingsDevice &settings = storageHandler.getSettings();
+            settings.xmin = xmin;
+            settings.xmax = xmax;
+            settings.ymin = ymin;
+            settings.ymax = ymax;
+            settings.calibrationSet = true;
             screenManager.ChangeScreen("MainScreen");
             return;
         }
@@ -72,7 +76,7 @@ void CalibrationScreen::OnLoop()
 
 void CalibrationScreen::OnSetup()
 {
-    touchScreen = getTouchScreen();
+    touchScreen = GetTouchScreen();
     secondsTime = millis();
     seconds = 3;
     preAndPostCalibrationDone = false;
@@ -81,11 +85,8 @@ void CalibrationScreen::OnSetup()
     ymin = 0;
     xmax = 320;
     ymax = 240;
-    storageHandler.DrawString("Starting in:", 120, 90);
-    storageHandler.DrawString(String(seconds), 150, 110);
-
-    // todo create struct for calibration data
-    // todo check on startup for calibration data
+    storageHandler.DrawString("Starting calibration in:", 100, 90);
+    storageHandler.DrawString(String(seconds), 160, 110);
 }
 
 void CalibrationScreen::TopLeftCalibration()

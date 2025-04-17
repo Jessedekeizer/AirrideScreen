@@ -8,7 +8,7 @@
 #include "XPT2046_Bitbang.h"
 #include "ScreenManager.h"
 #define CALIBRATION_TIME 3000
-XPT2046_Bitbang *getTouchScreen();
+XPT2046_Bitbang *GetTouchScreen();
 
 class CalibrationScreen : public IScreen
 {
