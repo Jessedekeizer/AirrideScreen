@@ -13,7 +13,6 @@
 XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
-XPT2046_Bitbang *getTouchScreen();
 
 //====================================================================================
 //                                    Setup
@@ -26,9 +25,9 @@ void setup()
   ts.begin();
   storageHandler.GetInstance();
   screenManager.GetInstance();
-  screenManager.ChangeScreen("CalibrationScreen");
-  storageHandler.ReadAirSuspensionData();
-  storageHandler.sendSettings();
+  screenManager.ChangeScreen("MainScreen");
+  storageHandler.ReadSettings();
+  storageHandler.SendSettings();
 }
 
 //====================================================================================
@@ -61,9 +60,4 @@ void printTouchToSerial(TouchPoint p)
   Serial.print(", y = ");
   Serial.print(p.y);
   Serial.println();
-}
-
-XPT2046_Bitbang *getTouchScreen()
-{
-  return &ts;
 }
