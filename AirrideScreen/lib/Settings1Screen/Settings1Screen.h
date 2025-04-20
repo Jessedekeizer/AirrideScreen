@@ -10,8 +10,8 @@ class Settings1Screen : public IScreen
 {
 public:
     Settings1Screen();
-    void OnLoop() override;
-    void OnSetup() override {};
+    void OnLoop() override {};
+    void OnSetup() override;
 
 private:
     void HandleMainScreen();

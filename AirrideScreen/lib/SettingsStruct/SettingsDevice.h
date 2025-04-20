@@ -12,6 +12,14 @@ struct SettingsDevice
     double frontDownX = 0.0;
     double backUpX = 0.0;
     double backDownX = 0.0;
+    bool autoRide = false;
+    double autoRideSec = 0.0;
+    bool autoPark = false;
+    double autoParkSec = 0.0;
+    bool logging = false;
+    bool machineLearning = false;
+    bool bluetooth = false;
+    double parkDuration = 0.0;
     int xmin = 0;
     int xmax = 320;
     int ymin = 0;
