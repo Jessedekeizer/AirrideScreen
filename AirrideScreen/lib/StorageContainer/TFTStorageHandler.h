@@ -27,6 +27,7 @@ public:
     void ReadSettings();
     void SendSettings();
     void PrintPressure(double front, double back);
+    void PrintSettingBool(bool value, int x, int y);
     void TpngDraw(PNGDRAW *);
     int32_t TpngSeek(PNGFILE *, int32_t);
     int32_t TpngRead(PNGFILE *, uint8_t *, int32_t);

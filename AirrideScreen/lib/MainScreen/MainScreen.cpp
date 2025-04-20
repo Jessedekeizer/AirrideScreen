@@ -81,6 +81,7 @@ String MainScreen::getValue(String data, char separator, int index)
 void MainScreen::GoToSettings1()
 {
     serialManager.clearMessageCallback();
+    storageHandler.ReadSettings();
     screenManager.ChangeScreen("Settings1");
 }
 

@@ -124,6 +124,22 @@ void TFTStorageHandler::ReadFile(const char *path)
     }
 }
 
+void TFTStorageHandler::PrintSettingBool(bool value, int x, int y)
+{
+    //square offset from 35x35
+    tft.fillRect(x + 1, y + 1, 33, 33, TFT_BLACK);
+    if (value)
+    {
+        // Check mark offset from 35x35
+        PrintImage("/Check.png", x + 4, y + 7);
+    }
+    else
+    {
+        // Cross mark offset from 35x35
+        PrintImage("/Cross.png", x + 8, y + 8);
+    }
+}
+
 void TFTStorageHandler::ReadSettings()
 {
     fs::FS &fs = SD;
