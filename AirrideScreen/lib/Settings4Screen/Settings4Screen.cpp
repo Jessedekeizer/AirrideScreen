@@ -45,6 +45,10 @@ Settings4Screen::Settings4Screen()
                                      [this](Button &button)
                                      { HandleBluetoothOff(); }));
 
+                                     buttons.push_back(new PushButton(269, 112, 35, 35, "Calibration",
+                                     [this](Button &button)
+                                     { HandleCalibration(); }));
+
     buttons.push_back(new PushButton(10, 198, 30, 30, "Settings3",
                                      [this](Button &button)
                                      { HandleSettings3(); }));
@@ -131,4 +135,9 @@ void Settings4Screen::HandleBluetoothOff()
 void Settings4Screen::HandleSettings3()
 {
     screenManager.ChangeScreen("Settings3");
+}
+
+void Settings4Screen::HandleCalibration()
+{
+    screenManager.ChangeScreen("CalibrationScreen");
 }

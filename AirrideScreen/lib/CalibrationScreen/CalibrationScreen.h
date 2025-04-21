@@ -20,21 +20,36 @@ public:
 private:
     void TopLeftCalibration();
     void BottomRightCalibration();
+    void HandlePreCalibrationCountdown();
+    void UpdateCountdown();
+    void StartTopLeftCalibration();
+    void HandleTopLeftCalibration();
+    void HandleBottomRightCalibration();
+    void StartBottomRightCalibration();
+    void SaveCalibrationAndExit();
+    void ClearScreen();
+    void HandlePostCalibrationCountdown();
+
+    void HandleTopLeftStart();
+    void HandleBottomRightStart();
     int xmin = 0;
     int xmax = 0;
     int ymin = 0;
     int ymax = 0;
-    bool TopLeftCalibrationDone = false;
-    bool startInterval = false;
 
     int seconds = 3;
 
+    bool TopLeftCalibrationDone = false;
+    bool BottomRightCalibrationDone = false;
+    bool startInterval = false;
+    bool preCalibrationDone = false;
+
     long TopLeftStartTime = 0;
     long BottomRightStartTime = 0;
-
-    long preAndPostCalibrationTime = 0;
+    long preCalibrationTime = 0;
     long secondsTime = 0;
-    bool preAndPostCalibrationDone = false;
+
+    long exitCountdownStart = 0;
 
     XPT2046_Bitbang *touchScreen;
 };
