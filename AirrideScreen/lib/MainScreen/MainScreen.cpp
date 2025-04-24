@@ -99,6 +99,7 @@ void MainScreen::OnLoop()
 void MainScreen::GoToSettings1()
 {
     serialManager.clearMessageCallback();
+    storageHandler.ReadSettings();
     screenManager.ChangeScreen("Settings1");
 }
 

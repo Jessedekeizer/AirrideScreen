@@ -7,6 +7,7 @@
 #include <PNGdec.h>
 #include <memory>
 #include "SerialManager.h"
+#include "SettingsDevice.h"
 
 class TFTStorageHandler
 {
@@ -19,34 +20,31 @@ public:
     TFTStorageHandler(const TFTStorageHandler &) = delete;
     TFTStorageHandler &operator=(const TFTStorageHandler &) = delete;
 
-    void PrintScreen(const char *);
+    void PrintImage(const char *, int = 0, int = 0);
     void WriteSettings();
     void WriteLog(String message);
     void ReadFile(const char *);
-    void ReadAirSuspensionData();
-    void sendSettings();
-    void PrintSettings(bool settingIndicator);
+    void ReadSettings();
+    void SendSettings();
     void PrintPressure(double front, double back);
+    void PrintSettingBool(bool value, int x, int y);
     void TpngDraw(PNGDRAW *);
     int32_t TpngSeek(PNGFILE *, int32_t);
     int32_t TpngRead(PNGFILE *, uint8_t *, int32_t);
     void TpngClose(void *);
     void *TpngOpen(const char *, int32_t *);
+    void DrawString(String str, int x = 0, int y = 0);
+    void DrawRect(int x, int y, int width, int height, uint32_t color = TFT_BLACK);
+    SettingsDevice &getSettings() { return settings; }
 
-    double frontMax = 0;
-    double backMax = 0;
-    double rideFront = 0;
-    double rideBack = 0;
-    double frontUpX = 0;
-    double frontDownX = 0;
-    double backUpX = 0;
-    double backDownX = 0;
+    int imageX = 0;
+    int imageY = 0;
 
 private:
     TFT_eSPI tft;
     File pngfile;
     PNG png;
-
+    SettingsDevice settings;
     SPIClass spiSD = SPIClass(VSPI);
 
     TFTStorageHandler();

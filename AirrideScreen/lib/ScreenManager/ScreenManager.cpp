@@ -2,8 +2,11 @@
 #include "MainScreen.h"
 #include "Settings1Screen.h"
 #include "Settings2Screen.h"
+#include "Settings3Screen.h"
+#include "Settings4Screen.h"
 #include "TFTStorageHandler.h"
 #include "SerialManager.h"
+#include "CalibrationScreen.h"
 
 ScreenManager &screenManager = ScreenManager::GetInstance();
 
@@ -12,7 +15,10 @@ ScreenManager::ScreenManager()
     screens = {
         new MainScreen(),
         new Settings1Screen(),
-        new Settings2Screen()};
+        new Settings2Screen(),
+        new Settings3Screen(),
+        new Settings4Screen(),
+        new CalibrationScreen()};
 }
 
 bool ScreenManager::ChangeScreen(const String &screenName)
@@ -48,6 +54,6 @@ void ScreenManager::TransitionToScreen(IScreen *newScreen)
         activeScreen->ReleaseButtons();
     }
     activeScreen = newScreen;
-    storageHandler.PrintScreen(activeScreen->GetPath());
+    storageHandler.PrintImage(activeScreen->GetPath());
     activeScreen->OnSetup();
 }

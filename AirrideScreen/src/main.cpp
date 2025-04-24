@@ -25,9 +25,18 @@ void setup()
   ts.begin();
   storageHandler.GetInstance();
   screenManager.GetInstance();
-  screenManager.ChangeScreen("MainScreen");
-  storageHandler.ReadAirSuspensionData();
-  storageHandler.sendSettings();
+  storageHandler.ReadSettings();
+  storageHandler.SendSettings();
+  SettingsDevice &settings = storageHandler.getSettings();
+  if (!settings.calibrationSet)
+  {
+    screenManager.ChangeScreen("CalibrationScreen");
+  }
+  else
+  {
+    ts.setCalibration(settings.xmin, settings.xmax, settings.ymin, settings.ymax);
+    screenManager.ChangeScreen("MainScreen");
+  }
 }
 
 //====================================================================================
@@ -60,4 +69,9 @@ void printTouchToSerial(TouchPoint p)
   Serial.print(", y = ");
   Serial.print(p.y);
   Serial.println();
+}
+
+XPT2046_Bitbang *GetTouchScreen()
+{
+  return &ts;
 }

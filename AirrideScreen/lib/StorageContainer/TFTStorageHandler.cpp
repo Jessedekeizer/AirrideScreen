@@ -59,71 +59,44 @@ void TFTStorageHandler::PrintPressure(double front, double back)
     tft.drawString(String(back, 1), x, y, fontNum);
 }
 
-void TFTStorageHandler::PrintSettings(bool settingIndicator)
+void TFTStorageHandler::DrawString(String str, int x, int y)
 {
-
-    String Box1 = "";
-    String Box2 = "";
-    String Box3 = "";
-    String Box4 = "";
-    if (settingIndicator)
-    {
-        Box1 = String(rideFront, 1);
-        Box2 = String(rideBack, 1);
-        Box3 = String(frontMax, 1);
-        Box4 = String(backMax, 1);
-    }
-    else
-    {
-        Box1 = String(frontUpX, 1);
-        Box2 = String(frontDownX, 1);
-        Box3 = String(backUpX, 1);
-        Box4 = String(backDownX, 1);
-    }
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.drawString(str, x, y, 2);
+}
 
-    int x = 180;
-    int y = 82;
-    int fontNum = 2;
-    tft.drawString(Box1, x, y, fontNum);
-    y = 122;
-
-    tft.drawString(Box2, x, y, fontNum);
-    y = 167;
-
-    tft.drawString(Box3, x, y, fontNum);
-    y = 207;
-
-    tft.drawString(Box4, x, y, fontNum);
+void TFTStorageHandler::DrawRect(int x, int y, int width, int height, uint32_t color)
+{
+    tft.fillRect(x, y, width, height, color);
 }
 
 void TFTStorageHandler::WriteSettings()
 {
     fs::FS &fs = SD;
-    File file = fs.open("/settings.txt", FILE_WRITE);
-    if (file)
+    File file = fs.open("/settings.bin", FILE_WRITE);
+    if (!file)
     {
-        // Write the first row - Max Pressure
-        file.print(frontMax);
-        file.print('/');
-        file.println(backMax);
-        // Write the second row - Ride Pressure
-        file.print(rideFront);
-        file.print('/');
-        file.println(rideBack);
-        // Write the third row - front modifier
-        file.print(frontUpX);
-        file.print('/');
-        file.println(frontDownX);
-        // Write the fourth row - Back modifier
-        file.print(backUpX);
-        file.print('/');
-        file.println(backDownX);
-
-        // Close the file
-        file.close();
+        serialManager.Debug("Cannot open file to write");
+        return;
     }
+
+    // Write the entire struct in one go
+    size_t bytesWritten = file.write((const uint8_t *)&settings, sizeof(settings));
+
+    if (bytesWritten != sizeof(settings))
+    {
+        serialManager.Debug("Failed to write settings");
+    }
+    else
+    {
+        serialManager.Debug("Settings saved successfully");
+    }
+
+    
+
+    file.close();
 }
+
 void TFTStorageHandler::WriteLog(String message)
 {
     fs::FS &fs = SD;
@@ -151,54 +124,57 @@ void TFTStorageHandler::ReadFile(const char *path)
     }
 }
 
-//====================================================================================
-//                                    FileFormat
-//====================================================================================
-// First row min and max pressure of the airsuspension
-// Front_max / Back_max  \n
-// second row is about the ride pressure
-// Front / Back  \n
-// Third row is about the front modifier
-// Up / Down   \n
-// Fourth row is about the back modifier
-// Up / Down   \n
-void TFTStorageHandler::ReadAirSuspensionData()
+void TFTStorageHandler::PrintSettingBool(bool value, int x, int y)
 {
-    fs::FS &fs = SD;
-    File file = fs.open("/settings.txt");
-    if (file)
+    //square offset from 35x35
+    tft.fillRect(x + 1, y + 1, 33, 33, TFT_BLACK);
+    if (value)
     {
-        // Read the first row - Min and Max Pressure
-        frontMax = file.readStringUntil('/').toDouble();
-        backMax = file.readStringUntil('\n').toDouble();
-
-        // Read the second row - Ride Pressure
-        rideFront = file.readStringUntil('/').toDouble();
-        rideBack = file.readStringUntil('\n').toDouble();
-
-        // Read the third row - Front modifier
-        frontUpX = file.readStringUntil('/').toDouble();
-        frontDownX = file.readStringUntil('\n').toDouble();
-
-        // Read the fourth row - Back modifier
-        backUpX = file.readStringUntil('/').toDouble();
-        backDownX = file.readStringUntil('\n').toDouble();
-
-        // Close the file
-        file.close();
+        // Check mark offset from 35x35
+        PrintImage("/Check.png", x + 4, y + 7);
+    }
+    else
+    {
+        // Cross mark offset from 35x35
+        PrintImage("/Cross.png", x + 8, y + 8);
     }
 }
 
-void TFTStorageHandler::sendSettings()
+void TFTStorageHandler::ReadSettings()
 {
-    serialManager.sendMessage("settings/" + String(frontMax) +
-                              "/" + backMax +
-                              "/" + rideFront +
-                              "/" + rideBack +
-                              "/" + frontUpX +
-                              "/" + frontDownX +
-                              "/" + backUpX +
-                              "/" + backDownX + "/");
+    fs::FS &fs = SD;
+    File file = fs.open("/settings.bin", FILE_READ);
+    if (!file)
+    {
+        serialManager.Debug("Cannot open file to read");
+        return;
+    }
+
+    // Read the entire struct in one go
+    size_t bytesRead = file.read((uint8_t *)&settings, sizeof(settings));
+
+    if (bytesRead != sizeof(settings))
+    {
+        serialManager.Debug("Failed to read settings");
+    }
+    else
+    {
+        serialManager.Debug("Settings loaded successfully");
+    }
+
+    file.close();
+}
+
+void TFTStorageHandler::SendSettings()
+{
+    serialManager.sendMessage("settings/" + String(settings.frontMax) +
+                              "/" + settings.backMax +
+                              "/" + settings.rideFront +
+                              "/" + settings.rideBack +
+                              "/" + settings.frontUpX +
+                              "/" + settings.frontDownX +
+                              "/" + settings.backUpX +
+                              "/" + settings.backDownX + "/");
 }
 
 //=========================================v==========================================
@@ -209,7 +185,7 @@ void TFTStorageHandler::sendSettings()
 // you will need to adapt this function to suit.
 // Callback function to draw pixels to the display
 
-void TFTStorageHandler::PrintScreen(const char *path)
+void TFTStorageHandler::PrintImage(const char *path, int x, int y)
 {
     fs::FS &fs = SD;
     File file = fs.open(path);
@@ -225,6 +201,9 @@ void TFTStorageHandler::PrintScreen(const char *path)
             if (rc == PNG_SUCCESS)
             {
                 tft.startWrite();
+
+                imageX = x;
+                imageY = y;
 
                 uint32_t dt = millis();
                 if (png.getWidth() > MAX_IMAGE_WIDTH)
@@ -246,7 +225,7 @@ void TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
 {
     uint16_t lineBuffer[MAX_IMAGE_WIDTH];
     png.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
-    tft.pushImage(0, 0 + pDraw->y, pDraw->iWidth, 1, lineBuffer);
+    tft.pushImage(imageX, imageY + pDraw->y, pDraw->iWidth, 1, lineBuffer);
 }
 
 void *TFTStorageHandler::TpngOpen(const char *filename, int32_t *size)
