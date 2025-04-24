@@ -25,6 +25,7 @@ private:
     void HandleMachineLearningOff();
     void HandleBluetoothOn();
     void HandleBluetoothOff();
+    void HandleCalibration();
 };
 
 #endif

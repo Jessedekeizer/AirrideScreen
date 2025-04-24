@@ -6,6 +6,7 @@
 #include "Settings4Screen.h"
 #include "TFTStorageHandler.h"
 #include "SerialManager.h"
+#include "CalibrationScreen.h"
 
 ScreenManager &screenManager = ScreenManager::GetInstance();
 
@@ -16,7 +17,8 @@ ScreenManager::ScreenManager()
         new Settings1Screen(),
         new Settings2Screen(),
         new Settings3Screen(),
-        new Settings4Screen()};
+        new Settings4Screen(),
+        new CalibrationScreen()};
 }
 
 bool ScreenManager::ChangeScreen(const String &screenName)

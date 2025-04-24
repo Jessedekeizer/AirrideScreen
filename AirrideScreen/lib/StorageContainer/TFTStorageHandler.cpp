@@ -65,6 +65,11 @@ void TFTStorageHandler::DrawString(String str, int x, int y)
     tft.drawString(str, x, y, 2);
 }
 
+void TFTStorageHandler::DrawRect(int x, int y, int width, int height, uint32_t color)
+{
+    tft.fillRect(x, y, width, height, color);
+}
+
 void TFTStorageHandler::WriteSettings()
 {
     fs::FS &fs = SD;
@@ -86,6 +91,8 @@ void TFTStorageHandler::WriteSettings()
     {
         serialManager.Debug("Settings saved successfully");
     }
+
+    
 
     file.close();
 }
