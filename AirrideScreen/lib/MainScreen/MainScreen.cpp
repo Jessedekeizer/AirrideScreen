@@ -81,16 +81,17 @@ String MainScreen::getValue(String data, char separator, int index)
 
 void MainScreen::OnLoop()
 {
-    if (!rideStarted && (millis() - startRidePrevious > startRideDuration))
+    SettingsDevice &settings = storageHandler.getSettings();
+    if (!rideStarted && (millis() - startRidePrevious > settings.autoRideSec * 1000))
     {
-        if (front < 1.5 && back < 1.5)
+        if (settings.autoRide && front < 1.5 && back < 1.5)
         {
             serialManager.Debug("MainScreen::OnLoop - Sending ride command");
             serialManager.sendMessage("Ride");
         }
         else
         {
-            serialManager.Debug("MainScreen::OnLoop - Not sending ride command, pressure too high");
+            serialManager.Debug("MainScreen::OnLoop - Not sending ride command");
         }
         rideStarted = true;
     }
@@ -105,11 +106,13 @@ void MainScreen::GoToSettings1()
 
 void MainScreen::SendRideCommand()
 {
+    rideStarted = true;
     serialManager.sendMessage("Ride");
 }
 
 void MainScreen::SendParkCommand()
 {
+    rideStarted = true;
     serialManager.sendMessage("Park");
 }
 

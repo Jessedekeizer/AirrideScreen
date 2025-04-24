@@ -14,7 +14,6 @@ public:
     void OnSetup() override;
 
 private:
-    void ReadSerial();
     void GoToSettings1();
     void SendRideCommand();
     void SendParkCommand();
@@ -26,7 +25,6 @@ private:
     String incomingMessage;
     double front = 0;
     double back = 0;
-    long startRideDuration = 5000;
     long startRidePrevious = 0;
     bool rideStarted = false;
 };
