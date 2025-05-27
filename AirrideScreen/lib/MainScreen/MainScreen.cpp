@@ -84,7 +84,7 @@ void MainScreen::OnLoop()
     SettingsDevice &settings = storageHandler.getSettings();
     if (!rideStarted && (millis() - startRidePrevious > settings.autoRideSec * 1000))
     {
-        if (settings.autoRide && front < 1.5 && back < 1.5)
+        if (settings.autoRide && front < 1.5 || back < 1.5)
         {
             serialManager.Debug("MainScreen::OnLoop - Sending ride command");
             serialManager.sendMessage("Ride");
