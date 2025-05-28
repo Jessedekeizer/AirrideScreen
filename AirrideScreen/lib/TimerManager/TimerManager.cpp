@@ -20,12 +20,15 @@ bool TimerManager::addTimer(Timer *timer)
 
 void TimerManager::update()
 {
-    for (int i = 0; i < count; ++i)
+    for (int i = 0; i < count;)
     {
-        if (timers[i])
+        if (timers[i] && timers[i]->Update())
         {
-            timers[i]->update();
+            removeTimer(timers[i]);
+            // Do not increment i, because the current timer is removed
+            continue;
         }
+        ++i;
     }
 }
 

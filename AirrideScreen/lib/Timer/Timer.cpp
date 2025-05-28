@@ -1,35 +1,59 @@
 #include "Timer.h"
+#include "SerialManager.h"
 
-Timer::Timer(unsigned long durationInSeconds, TimerCallback callbackFunc)
-    : duration(durationInSeconds * 1000), callback(callbackFunc), finished(false)
+Timer::Timer(double durationSeconds, TimerCallback callbackFunc, bool repeat, int repeatCount)
+    : duration(durationSeconds * 1000),
+      callback(callbackFunc),
+      repeating(repeat),
+      remainingRepeats(repeatCount),
+      finished(false)
 {
     startTime = millis();
 }
 
-void Timer::update()
+bool Timer::Update()
 {
     if (!finished && millis() - startTime >= duration)
     {
-        finished = true;
         if (callback)
         {
             callback();
         }
+        if (repeating)
+        {
+            if (remainingRepeats > 0)
+            {
+                remainingRepeats--;
+                if (remainingRepeats == 0)
+                {
+                    finished = true;
+                    return true;
+                }
+            }
+
+            Reset();
+        }
+        else
+        {
+            finished = true;
+            return true; // tell manager to remove
+        }
     }
+    return false; // not ready yet
 }
 
-bool Timer::isFinished() const
+bool Timer::IsFinished() const
 {
     return finished;
 }
 
-void Timer::reset()
+void Timer::Reset()
 {
     startTime = millis();
     finished = false;
 }
 
-unsigned long Timer::getDuration() const
+unsigned long Timer::GetDuration() const
 {
     return duration;
 }

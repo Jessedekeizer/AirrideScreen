@@ -1,5 +1,6 @@
 #include <MainScreen.h>
 #include "ScreenManager.h"
+#include "TimerManager.h"
 
 MainScreen::MainScreen()
 {
@@ -38,7 +39,7 @@ MainScreen::MainScreen()
 
 void MainScreen::OnSetup()
 {
-    startRidePrevious = millis();
+    AddRideTimer();
     serialManager.Debug("MainScreen::OnSetup - Setting callback");
     serialManager.setMessageCallback(
         [this](String message)
@@ -79,22 +80,45 @@ String MainScreen::getValue(String data, char separator, int index)
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
+void MainScreen::AddRideTimer()
+{
+    auto &settings = storageHandler.getSettings();
+    if (!settings.autoRide)
+    {
+        serialManager.Debug("MainScreen::addRideTimer - Auto start ride is disabled");
+        return;
+    }
+    if (autoRideTimer != nullptr)
+    {
+        serialManager.Debug("MainScreen::addRideTimer - Timer already exists, not adding again");
+        return;
+    }
+    autoRideTimer = new Timer(settings.autoRideSec, [this]()
+                              { autoStartRide(); });
+    timerManager.addTimer(autoRideTimer);
+    serialManager.Debug("MainScreen::addRideTimer - Timer added");
+}
+
 void MainScreen::OnLoop()
 {
-    SettingsDevice &settings = storageHandler.getSettings();
-    if (!rideStarted && (millis() - startRidePrevious > settings.autoRideSec * 1000))
+}
+
+void MainScreen::autoStartRide()
+{
+    if (rideStarted)
     {
-        if (settings.autoRide && front < 1.5 || back < 1.5)
-        {
-            serialManager.Debug("MainScreen::OnLoop - Sending ride command");
-            serialManager.sendMessage("Ride");
-        }
-        else
-        {
-            serialManager.Debug("MainScreen::OnLoop - Not sending ride command");
-        }
-        rideStarted = true;
+        return;
     }
+    if (front < 1.5 || back < 1.5)
+    {
+        serialManager.Debug("MainScreen::Timer - Sending ride command");
+        serialManager.sendMessage("Ride");
+    }
+    else
+    {
+        serialManager.Debug("MainScreen::Timer - Not sending ride command");
+    }
+    rideStarted = true;
 }
 
 void MainScreen::GoToSettings1()

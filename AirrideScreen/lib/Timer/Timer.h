@@ -2,24 +2,27 @@
 #define TIMER_H
 
 #include <Arduino.h>
+#include <functional>
 
-typedef void (*TimerCallback)();
+typedef std::function<void()> TimerCallback;
 
 class Timer
 {
 public:
-    Timer(unsigned long duration, TimerCallback callback);
+    Timer(double durationSeconds, TimerCallback callbackFunc, bool repeat = false, int repeatCount = -1);
 
-    void update();
-    bool isFinished() const;
-    void reset();
-    unsigned long getDuration() const;
+    bool Update();
+    bool IsFinished() const;
+    void Reset();
+    unsigned long GetDuration() const;
 
 private:
     unsigned long startTime;
     unsigned long duration;
     TimerCallback callback;
     bool finished;
+    bool repeating;
+    int remainingRepeats; // -1 means infinite
 };
 
 #endif
