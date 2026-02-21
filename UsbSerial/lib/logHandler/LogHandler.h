@@ -1,23 +1,22 @@
 #ifndef LOGHANDLER_H
 #define LOGHANDLER_H
 #pragma once
+#include "PressureSensor.h"
 
-extern double AnalogMin;
-extern double AnalogMax;
-extern double BarMax;
-extern double BarTankMax;
-#define frontSensor A0
-#define backSensor A1
-#define tankSensor A2
-extern double fmap(double, double, double, double, double);
-class LogHandler
-{
+class LogHandler {
 public:
-    LogHandler() {};
-    void startFrontLog(bool togetherMove = false);
-    void endFrontLog();
-    void startBackLog(bool togetherMove = false);
-    void endBackLog();
+    LogHandler() {
+    }
+
+    void Begin();
+
+    void StartFrontLog(bool togetherMove = false);
+
+    void EndFrontLog();
+
+    void StartBackLog(bool togetherMove = false);
+
+    void EndBackLog();
 
 private:
     long startTimeFront;
@@ -31,6 +30,11 @@ private:
     double startTankPressureBack;
     bool togetherMoveBack = false;
     bool logBackRunning = false;
+
+    PressureSensor *frontPressureSensor;
+    PressureSensor *backPressureSensor;
+    PressureSensor *tankPressureSensor;
 };
 
+extern LogHandler logHandler;
 #endif
