@@ -1,0 +1,9 @@
+#ifndef USBSERIAL_EPRESSURESENSOR_H
+#define USBSERIAL_EPRESSURESENSOR_H
+
+enum class EPressureSensor {
+    FRONT,
+    BACK,
+    TANK
+};
+#endif //USBSERIAL_EPRESSURESENSOR_H

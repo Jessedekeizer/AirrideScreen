@@ -174,7 +174,8 @@ void TFTStorageHandler::SendSettings()
                               "/" + settings.frontUpX +
                               "/" + settings.frontDownX +
                               "/" + settings.backUpX +
-                              "/" + settings.backDownX + "/");
+                              "/" + settings.backDownX + 
+                              "/" + settings.parkDuration + "/");
 }
 
 //=========================================v==========================================
