@@ -1,6 +1,5 @@
 #include "PressureSensorManager.h"
 #include <Arduino.h>
-
 #include "Settings.h"
 #include "SolenoidManager.h"
 
@@ -24,6 +23,16 @@ PressureSensorManager::PressureSensorManager() {
     backSolenoid = solenoidManager.GetSolenoid(ESolenoid::BACK_UP);
 }
 
+PressureSensorManager::~PressureSensorManager() {
+    frontSolenoid = nullptr;
+    backSolenoid = nullptr;
+
+    for (PressureSensor *pressureSensor: pressureSensors) {
+        delete pressureSensor;
+    }
+    pressureSensors.clear();
+}
+
 void PressureSensorManager::Begin() {
     for (auto pressureSensor: pressureSensors) {
         pressureSensor->Begin();
@@ -43,6 +52,7 @@ PressureSensor *PressureSensorManager::GetPressureSensor(EPressureSensor request
             return pressureSensor;
         }
     }
+    return nullptr;
 }
 
 void PressureSensorManager::CheckIfPressureIsWithinTolerance(PressureSensor *pressureSensor) {

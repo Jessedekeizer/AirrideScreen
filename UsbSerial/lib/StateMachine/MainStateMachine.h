@@ -4,10 +4,10 @@
 
 #include "IState.h"
 
-
-class MainStateMachine {
+class MainStateMachine
+{
 public:
-    MainStateMachine();
+    MainStateMachine() {}
 
     ~MainStateMachine();
 
@@ -24,5 +24,4 @@ private:
     EState requestedState;
 };
 
-
-#endif //USBSERIAL_MAINSTATEMACHINE_H
+#endif // USBSERIAL_MAINSTATEMACHINE_H

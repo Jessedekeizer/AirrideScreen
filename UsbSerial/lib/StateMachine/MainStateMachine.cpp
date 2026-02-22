@@ -7,9 +7,6 @@
 #include "States/Park/ParkState.h"
 #include "States/Ride/RideState.h"
 
-MainStateMachine::MainStateMachine() {
-}
-
 void MainStateMachine::Begin() {
     requestedState = EState::IDLE;
     currentState = new IdleState();
@@ -47,7 +44,7 @@ void MainStateMachine::Loop() {
             ChangeState(requestedState);
             return;
         }
-        if (currentState->GetEState() == stateRequestedByState) {
+        if (currentState->GetEState() != stateRequestedByState) {
             ChangeState(stateRequestedByState);
         }
     }
@@ -59,18 +56,26 @@ void MainStateMachine::ChangeState(EState newState) {
     switch (newState) {
         case EState::IDLE:
             currentState = new IdleState();
+            break;
         case EState::FRONT_UP:
             currentState = new FrontUpState();
+            break;
         case EState::FRONT_DOWN:
             currentState = new FrontDownState();
+            break;
         case EState::BACK_UP:
             currentState = new BackUpState();
+            break;
         case EState::BACK_DOWN:
             currentState = new BackDownState();
+            break;
         case EState::PARK:
             currentState = new ParkState();
+            break;
         case EState::RIDE:
             currentState = new RideState();
+            break;
     }
+    requestedState = newState;
     currentState->Enter();
 }

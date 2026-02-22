@@ -6,7 +6,7 @@
 
 class BackDownState : public IState {
 public:
-    BackDownState() {
+    BackDownState() : solenoid(nullptr) {
     };
 
     EState GetEState() override { return state; }

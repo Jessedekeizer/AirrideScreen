@@ -4,62 +4,54 @@
 #include "Settings.h"
 #include "SolenoidManager.h"
 #include "MainStateMachine.h"
+#include "SerialManager.h"
 
-String incoming = "";
+void setupDebugCallback();
+
+String CreatePressureString();
 
 void saveSettings(String);
 
-String readPressure();
-
 String getValue(String, char, int);
 
-long timePrevious = 0;
+unsigned long timePrevious = 0;
 int timeInterval = 200;
 
-void smoothAnalogRead();
-
-MainStateMachine *mainStateMachine;
+MainStateMachine mainStateMachine;
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600, SERIAL_8N1);
-  Serial1.begin(9600, SERIAL_8N1);
-  Serial1.setTimeout(20);
+  serialManager.Begin(true);
   analogReadResolution(14);
   pressureSensorManager.Begin();
   solenoidManager.Begin();
   logHandler.Begin();
-  mainStateMachine = new MainStateMachine();
-  mainStateMachine->Begin();
+  mainStateMachine.Begin();
+  setupDebugCallback();
 }
 
 void loop() {
-  while (Serial1.available()) {
-    delay(2);
-    char c = Serial1.read();
-    incoming += c;
-  }
-  if (incoming != "") {
-    Serial.println("incoming message:" + incoming);
-  }
-
-  if (incoming.startsWith("settings")) {
-    saveSettings(incoming);
-  } else {
-    mainStateMachine->RequestChangeState(incoming);
-  }
-
   if (millis() - timePrevious > timeInterval) {
     pressureSensorManager.Update();
-    Serial1.println(readPressure());
+    serialManager.SendMessage(CreatePressureString());
     timePrevious = millis();
   }
-
-  incoming = "";
-  mainStateMachine->Loop();
+  serialManager.HandleIncoming();
+  mainStateMachine.Loop();
+  logHandler.SendLog();
 }
 
-String readPressure() {
+void setupDebugCallback() {
+  serialManager.SetMessageCallback(
+    [](String message) {
+      if (message.startsWith("settings")) {
+        saveSettings(message);
+      } else {
+        mainStateMachine.RequestChangeState(message);
+      }
+    });
+}
+
+String CreatePressureString() {
   String message = "BAR/";
   double front = pressureSensorManager.GetPressureSensor(EPressureSensor::FRONT)->GetRawPressure();
   double rear = pressureSensorManager.GetPressureSensor(EPressureSensor::BACK)->GetRawPressure();
@@ -67,6 +59,17 @@ String readPressure() {
   return message + String(front) + "/" + String(rear) + "/";
 }
 
+void saveSettings(String settingString) {
+  settings.frontMax = getValue(settingString, '/', 1).toDouble();
+  settings.backMax = getValue(settingString, '/', 2).toDouble();
+  settings.rideFront = getValue(settingString, '/', 3).toDouble();
+  settings.rideBack = getValue(settingString, '/', 4).toDouble();
+  settings.frontUpX = getValue(settingString, '/', 5).toDouble();
+  settings.frontDownX = getValue(settingString, '/', 6).toDouble();
+  settings.backUpX = getValue(settingString, '/', 7).toDouble();
+  settings.backDownX = getValue(settingString, '/', 8).toDouble();
+  settings.parkDuration = getValue(settingString, '/', 9).toDouble();
+}
 
 String getValue(String data, char separator, int index) {
   int found = 0;
@@ -81,15 +84,4 @@ String getValue(String data, char separator, int index) {
     }
   }
   return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
-}
-
-void saveSettings(String incoming) {
-  settings.frontMax = getValue(incoming, '/', 1).toDouble();
-  settings.backMax = getValue(incoming, '/', 2).toDouble();
-  settings.rideFront = getValue(incoming, '/', 3).toDouble();
-  settings.rideBack = getValue(incoming, '/', 4).toDouble();
-  settings.frontUpX = getValue(incoming, '/', 5).toDouble();
-  settings.frontDownX = getValue(incoming, '/', 6).toDouble();
-  settings.backUpX = getValue(incoming, '/', 7).toDouble();
-  settings.backDownX = getValue(incoming, '/', 8).toDouble();
 }

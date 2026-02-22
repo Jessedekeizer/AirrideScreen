@@ -9,6 +9,8 @@ class SolenoidManager {
 public:
     SolenoidManager();
 
+    ~SolenoidManager();
+
     void Begin();
 
     Solenoid *GetSolenoid(ESolenoid requestedSolenoid);

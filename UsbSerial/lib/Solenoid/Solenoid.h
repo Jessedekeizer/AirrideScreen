@@ -8,7 +8,8 @@ public:
     Solenoid(ESolenoid solenoid, int pin, bool active = true) : solenoid(solenoid), pin(pin), active(active) {
     }
 
-    ~Solenoid();
+    ~Solenoid() {
+    };
 
     void Begin();
 

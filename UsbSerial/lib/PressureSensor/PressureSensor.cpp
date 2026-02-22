@@ -1,26 +1,33 @@
 #include "PressureSensor.h"
-#include <api/Common.h>
+#include <Arduino.h>
 
 void PressureSensor::Begin() {
+    buffer.clear();
+    buffer.reserve(filterSize);
+    bufferTotal = 0;
     for (int i = 0; i < filterSize; i++) {
-        buffer.push_back(readPressure());
+        buffer.push_back(ReadPressure());
         bufferTotal += buffer[i];
     }
 }
 
 void PressureSensor::UpdateBuffer() {
     bufferTotal = bufferTotal - buffer[bufferIndex];
-    buffer[bufferIndex] = readPressure();
+    buffer[bufferIndex] = ReadPressure();
     bufferTotal = bufferTotal + buffer[bufferIndex];
     bufferIndex = (bufferIndex + 1) % filterSize;
     bufferAverage = bufferTotal / filterSize;
 }
 
-double PressureSensor::GetRawPressure() {
-    return readPressure();
+PressureSensor::~PressureSensor() {
+    buffer.clear();
 }
 
-double PressureSensor::readPressure() {
+double PressureSensor::GetRawPressure() {
+    return ReadPressure();
+}
+
+double PressureSensor::ReadPressure() {
     return DMap(analogRead(pin), analogMin, analogMax, 0, barMax);
 }
 

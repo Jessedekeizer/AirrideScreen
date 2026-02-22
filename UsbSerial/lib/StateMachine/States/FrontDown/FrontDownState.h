@@ -5,7 +5,7 @@
 
 class FrontDownState : public IState {
 public:
-    FrontDownState() {
+    FrontDownState() : solenoid(nullptr) {
     };
 
     EState GetEState() override { return state; }

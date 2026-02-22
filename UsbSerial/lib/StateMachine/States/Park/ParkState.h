@@ -6,7 +6,7 @@
 
 class ParkState : public IState {
 public:
-    ParkState() {
+    ParkState() : frontSolenoid(nullptr), backSolenoid(nullptr) {
     };
 
     EState GetEState() override { return state; }

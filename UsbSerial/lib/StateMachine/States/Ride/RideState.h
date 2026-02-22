@@ -7,7 +7,7 @@
 
 class RideState : public IState {
 public:
-    RideState() {
+    RideState() : frontSolenoid(nullptr), backSolenoid(nullptr), frontPressureSensor(nullptr), backPressureSensor(nullptr) {
     };
 
     EState GetEState() override { return state; }

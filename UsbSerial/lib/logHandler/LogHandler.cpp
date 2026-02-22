@@ -1,8 +1,15 @@
 #include "LogHandler.h"
 #include "Arduino.h"
 #include "PressureSensorManager.h"
+#include "SerialManager.h"
 
 LogHandler logHandler;
+
+LogHandler::~LogHandler() {
+    frontPressureSensor = nullptr;
+    backPressureSensor = nullptr;
+    tankPressureSensor = nullptr;
+}
 
 void LogHandler::Begin() {
     frontPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::FRONT);
@@ -11,43 +18,49 @@ void LogHandler::Begin() {
 }
 
 void LogHandler::StartFrontLog(bool together) {
+    sendLogFront = false;
     startPressureFront = frontPressureSensor->GetRawPressure();
     startTankPressureFront = tankPressureSensor->GetRawPressure();
     startTimeFront = millis();
     togetherMoveFront = together;
-    logFrontRunning = true;
 }
 
 void LogHandler::EndFrontLog() {
-    if (!logFrontRunning) {
-        return;
-    }
-    delay(100); //TODO remove
-    double endPresssure = frontPressureSensor->GetRawPressure();
-    bool directionFront = startPressureFront - endPresssure < 0;
-    String message = "LOGF/";
-    message = message + startPressureFront + "/" + endPresssure + "/" + startTankPressureFront + "/" + (
-                  millis() - startTimeFront) + "/" + directionFront + "/" + togetherMoveFront + ";";
-    Serial1.println(message);
+    sendLogFront = true;
+    frontLogPreviousTime = millis();
 }
 
 void LogHandler::StartBackLog(bool together) {
+    sendLogBack = false;
     startPressureBack = backPressureSensor->GetRawPressure();
     startTankPressureBack = tankPressureSensor->GetRawPressure();
     startTimeBack = millis();
     togetherMoveBack = together;
-    logBackRunning = true;
 }
 
 void LogHandler::EndBackLog() {
-    if (!logBackRunning) {
-        return;
+    sendLogBack = true;
+    backLogPreviousTime = millis();
+}
+
+void LogHandler::SendLog() {
+    if (sendLogFront && millis() - frontLogPreviousTime > timeInterval) {
+        double endPressure = frontPressureSensor->GetRawPressure();
+        bool directionFront = startPressureFront - endPressure < 0;
+        String message = CreateLogMessage("LOGF/", startPressureFront, endPressure, startTankPressureFront,(millis() - startTimeFront - timeInterval), directionFront, togetherMoveFront);
+        serialManager.SendMessage(message);
+        sendLogFront = false;
     }
-    delay(100); //TODO remove
-    double endPresssure = backPressureSensor->GetRawPressure();
-    bool directionBack = startPressureFront - endPresssure < 0;
-    String message = "LOGB/";
-    message = message + startPressureBack + "/" + endPresssure + "/" + startTankPressureBack + "/" + (
-                  millis() - startTimeBack) + "/" + directionBack + "/" + togetherMoveBack + ";";
-    Serial1.println(message);
+    if (sendLogBack && millis() - backLogPreviousTime > timeInterval) {
+        double endPressure = backPressureSensor->GetRawPressure();
+        bool directionBack = startPressureFront - endPressure < 0;
+        String message = CreateLogMessage("LOGB/", startPressureBack,endPressure,startTankPressureBack,(millis() - startTimeBack - timeInterval), directionBack,togetherMoveBack);
+        serialManager.SendMessage(message);
+        sendLogBack = false;
+    }
+}
+
+String LogHandler::CreateLogMessage(String message, double startPressure, double endPressure, double startTankPressure,
+    long time, bool direction, bool togetherMove) {
+    return message + startPressure + "/" + endPressure + "/" + startTankPressure + "/" + time + "/" + direction + "/" + togetherMove + ";";
 }

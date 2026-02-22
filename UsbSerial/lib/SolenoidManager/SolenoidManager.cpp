@@ -10,6 +10,13 @@ SolenoidManager::SolenoidManager() {
     };
 }
 
+SolenoidManager::~SolenoidManager() {
+    for (auto solenoid: solenoids) {
+        delete solenoid;
+    }
+    solenoids.clear();
+}
+
 void SolenoidManager::Begin() {
     for (auto solenoid: solenoids) {
         solenoid->Begin();
@@ -22,6 +29,7 @@ Solenoid *SolenoidManager::GetSolenoid(ESolenoid requestedSolenoid) {
             return solenoid;
         }
     }
+    return nullptr;
 }
 
 void SolenoidManager::TurnOffAllSolenoids() {

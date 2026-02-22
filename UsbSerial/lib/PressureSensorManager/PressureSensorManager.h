@@ -10,6 +10,8 @@ class PressureSensorManager {
 public:
     PressureSensorManager();
 
+    ~PressureSensorManager();
+
     PressureSensor *GetPressureSensor(EPressureSensor requestedPressureSensor);
 
     void Update();

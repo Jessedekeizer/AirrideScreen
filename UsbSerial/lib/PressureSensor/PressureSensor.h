@@ -13,6 +13,8 @@ public:
           barMax(barMax) {
     }
 
+    ~PressureSensor();
+
     EPressureSensor GetPressureSensor() { return pressureSensor; }
 
     double GetAveragePressure() { return bufferAverage; }
@@ -36,7 +38,7 @@ private:
     double analogMax;
     double barMax;
 
-    double readPressure();
+    double ReadPressure();
 };
 
 double DMap(double x, double in_min, double in_max, double out_min, double out_max);

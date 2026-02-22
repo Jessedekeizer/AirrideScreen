@@ -6,7 +6,7 @@
 
 class BackUpState : public IState {
 public:
-    BackUpState() {
+    BackUpState() : solenoid(nullptr) {
     };
 
     EState GetEState() override { return state; }
