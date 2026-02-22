@@ -1,1 +1,0 @@
-// singleton met alle vars

@@ -1,48 +1,66 @@
 #include "LogHandler.h"
 #include "Arduino.h"
+#include "PressureSensorManager.h"
+#include "SerialManager.h"
 
-void LogHandler::startFrontLog(bool together)
-{
-    startPressureFront = fmap(analogRead(frontSensor), AnalogMin, AnalogMax, 0, BarMax);
-    startTankPressureFront = fmap(analogRead(tankSensor), AnalogMin, AnalogMax, 0, BarTankMax);
+LogHandler logHandler;
+
+LogHandler::~LogHandler() {
+    frontPressureSensor = nullptr;
+    backPressureSensor = nullptr;
+    tankPressureSensor = nullptr;
+}
+
+void LogHandler::Begin() {
+    frontPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::FRONT);
+    backPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::BACK);
+    tankPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::TANK);
+}
+
+void LogHandler::StartFrontLog(bool together) {
+    sendLogFront = false;
+    startPressureFront = frontPressureSensor->GetRawPressure();
+    startTankPressureFront = tankPressureSensor->GetRawPressure();
     startTimeFront = millis();
     togetherMoveFront = together;
-    logFrontRunning = true;
 }
 
-void LogHandler::endFrontLog()
-{
-    if (!logFrontRunning)
-    {
-        return;
-    }
-    delay(100);
-    double endPresssure = fmap(analogRead(frontSensor), AnalogMin, AnalogMax, 0, BarMax);
-    bool directionFront = startPressureFront - endPresssure < 0;
-    String message = "LOGF/";
-    message = message + startPressureFront + "/" + endPresssure + "/" + startTankPressureFront + "/" + (millis() - startTimeFront) + "/" + directionFront + "/" + togetherMoveFront + ";";
-    Serial1.println(message);
+void LogHandler::EndFrontLog() {
+    sendLogFront = true;
+    frontLogPreviousTime = millis();
 }
 
-void LogHandler::startBackLog(bool together)
-{
-    startPressureBack = fmap(analogRead(backSensor), AnalogMin, AnalogMax, 0, BarMax);
-    startTankPressureBack = fmap(analogRead(tankSensor), AnalogMin, AnalogMax, 0, BarTankMax);
+void LogHandler::StartBackLog(bool together) {
+    sendLogBack = false;
+    startPressureBack = backPressureSensor->GetRawPressure();
+    startTankPressureBack = tankPressureSensor->GetRawPressure();
     startTimeBack = millis();
     togetherMoveBack = together;
-    logBackRunning = true;
 }
 
-void LogHandler::endBackLog()
-{
-    if (!logBackRunning)
-    {
-        return;
+void LogHandler::EndBackLog() {
+    sendLogBack = true;
+    backLogPreviousTime = millis();
+}
+
+void LogHandler::SendLog() {
+    if (sendLogFront && millis() - frontLogPreviousTime > timeInterval) {
+        double endPressure = frontPressureSensor->GetRawPressure();
+        bool directionFront = startPressureFront - endPressure < 0;
+        String message = CreateLogMessage("LOGF/", startPressureFront, endPressure, startTankPressureFront,(millis() - startTimeFront - timeInterval), directionFront, togetherMoveFront);
+        serialManager.SendMessage(message);
+        sendLogFront = false;
     }
-    delay(100);
-    double endPresssure = fmap(analogRead(backSensor), AnalogMin, AnalogMax, 0, BarMax);
-    bool directionBack = startPressureFront - endPresssure < 0;
-    String message = "LOGB/";
-    message = message + startPressureBack + "/" + endPresssure + "/" + startTankPressureBack + "/" + (millis() - startTimeBack) + "/" + directionBack + "/" + togetherMoveBack + ";";
-    Serial1.println(message);
+    if (sendLogBack && millis() - backLogPreviousTime > timeInterval) {
+        double endPressure = backPressureSensor->GetRawPressure();
+        bool directionBack = startPressureFront - endPressure < 0;
+        String message = CreateLogMessage("LOGB/", startPressureBack,endPressure,startTankPressureBack,(millis() - startTimeBack - timeInterval), directionBack,togetherMoveBack);
+        serialManager.SendMessage(message);
+        sendLogBack = false;
+    }
+}
+
+String LogHandler::CreateLogMessage(String message, double startPressure, double endPressure, double startTankPressure,
+    long time, bool direction, bool togetherMove) {
+    return message + startPressure + "/" + endPressure + "/" + startTankPressure + "/" + time + "/" + direction + "/" + togetherMove + ";";
 }

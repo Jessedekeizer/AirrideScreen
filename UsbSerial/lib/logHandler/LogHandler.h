@@ -1,36 +1,48 @@
 #ifndef LOGHANDLER_H
 #define LOGHANDLER_H
 #pragma once
+#include <Arduino.h>
+#include "PressureSensor.h"
 
-extern double AnalogMin;
-extern double AnalogMax;
-extern double BarMax;
-extern double BarTankMax;
-#define frontSensor A0
-#define backSensor A1
-#define tankSensor A2
-extern double fmap(double, double, double, double, double);
-class LogHandler
-{
+class LogHandler {
 public:
-    LogHandler() {};
-    void startFrontLog(bool togetherMove = false);
-    void endFrontLog();
-    void startBackLog(bool togetherMove = false);
-    void endBackLog();
+    LogHandler() {}
+    ~LogHandler();
+
+    void Begin();
+
+    void StartFrontLog(bool togetherMove = false);
+
+    void EndFrontLog();
+
+    void StartBackLog(bool togetherMove = false);
+
+    void EndBackLog();
+
+    void SendLog();
 
 private:
-    long startTimeFront;
-    double startPressureFront;
-    double startTankPressureFront;
+    String CreateLogMessage(String message, double startPressure, double endPressure, double startTankPressure, long time, bool direction, bool togetherMove);
+    unsigned long startTimeFront = 0;
+    double startPressureFront = 0;
+    double startTankPressureFront = 0;
     bool togetherMoveFront = false;
-    bool logFrontRunning = false;
+    bool sendLogFront = false;
 
-    long startTimeBack;
-    double startPressureBack;
-    double startTankPressureBack;
+    unsigned long startTimeBack = 0;
+    double startPressureBack = 0;
+    double startTankPressureBack = 0;
     bool togetherMoveBack = false;
-    bool logBackRunning = false;
+    bool sendLogBack = false;
+
+    int timeInterval = 100;
+    unsigned long frontLogPreviousTime = 0;
+    unsigned long backLogPreviousTime = 0;
+
+    PressureSensor *frontPressureSensor = nullptr;
+    PressureSensor *backPressureSensor = nullptr;
+    PressureSensor *tankPressureSensor = nullptr;
 };
 
+extern LogHandler logHandler;
 #endif
