@@ -110,7 +110,7 @@ void MainScreen::OnLoop()
 
 void MainScreen::autoStartRide()
 {
-    if (rideStarted)
+    if (abortAutoRide)
     {
         return;
     }
@@ -123,7 +123,7 @@ void MainScreen::autoStartRide()
     {
         serialManager.Debug("MainScreen::Timer - Not sending ride command");
     }
-    rideStarted = true;
+    abortAutoRide = true;
 }
 
 void MainScreen::GoToSettings1()
@@ -135,18 +135,19 @@ void MainScreen::GoToSettings1()
 
 void MainScreen::SendRideCommand()
 {
-    rideStarted = true;
+    abortAutoRide = true;
     serialManager.sendMessage("Ride");
 }
 
 void MainScreen::SendParkCommand()
 {
-    rideStarted = true;
+    abortAutoRide = true;
     serialManager.sendMessage("Park");
 }
 
 void MainScreen::HandleFrontUp(Button &sender)
 {
+    abortAutoRide = true;
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
@@ -160,6 +161,7 @@ void MainScreen::HandleFrontUp(Button &sender)
 
 void MainScreen::HandleFrontDown(Button &sender)
 {
+    abortAutoRide = true;
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
@@ -173,6 +175,7 @@ void MainScreen::HandleFrontDown(Button &sender)
 
 void MainScreen::HandleBackUp(Button &sender)
 {
+    abortAutoRide = true;
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
@@ -186,6 +189,7 @@ void MainScreen::HandleBackUp(Button &sender)
 
 void MainScreen::HandleBackDown(Button &sender)
 {
+    abortAutoRide = true;
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {

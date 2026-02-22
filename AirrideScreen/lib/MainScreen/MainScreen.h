@@ -28,7 +28,7 @@ private:
     String incomingMessage;
     double front = 0;
     double back = 0;
-    bool rideStarted = false;
+    bool abortAutoRide = false;
     Timer *autoRideTimer = nullptr;
 };
 
