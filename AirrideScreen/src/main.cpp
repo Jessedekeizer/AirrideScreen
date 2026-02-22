@@ -4,6 +4,7 @@
 #include "SerialManager.h"
 #include "ScreenManager.h"
 #include "TFTStorageHandler.h"
+#include "TimerManager.h"
 
 #define MOSI_PIN 32
 #define MISO_PIN 39
@@ -13,6 +14,9 @@
 XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
+void UpdateTouchScreen();
+
+Timer *tickTimer = nullptr;
 
 //====================================================================================
 //                                    Setup
@@ -27,6 +31,7 @@ void setup()
   screenManager.GetInstance();
   storageHandler.ReadSettings();
   storageHandler.SendSettings();
+  timerManager.GetInstance();
   SettingsDevice &settings = storageHandler.getSettings();
   if (!settings.calibrationSet)
   {
@@ -37,6 +42,9 @@ void setup()
     ts.setCalibration(settings.xmin, settings.xmax, settings.ymin, settings.ymax);
     screenManager.ChangeScreen("MainScreen");
   }
+  tickTimer = new Timer(0.1, []()
+                        { UpdateTouchScreen(); }, true);
+  timerManager.addTimer(tickTimer);
 }
 
 //====================================================================================
@@ -44,31 +52,30 @@ void setup()
 //====================================================================================
 void loop()
 {
+  serialManager.handleIncoming();
+  timerManager.update();
+}
+
+void UpdateTouchScreen()
+{
+  // serialManager.Debug("UpdateTouchScreen called");
   TouchPoint touch = ts.getTouch();
   if (touch.zRaw != 0)
   {
+    // printTouchToSerial(touch);
     screenManager.GetActiveScreen()->HandleTouch(touch.x, touch.y);
   }
   else
   {
     screenManager.GetActiveScreen()->ReleaseButtons();
   }
-
   screenManager.GetActiveScreen()->OnLoop();
-  serialManager.handleIncoming();
-
-  delay(100);
 }
 
 void printTouchToSerial(TouchPoint p)
 {
-  Serial.print("Pressure = ");
-  Serial.print(p.zRaw);
-  Serial.print(", x = ");
-  Serial.print(p.x);
-  Serial.print(", y = ");
-  Serial.print(p.y);
-  Serial.println();
+  serialManager.Debug("Touch: X=" + String(p.x) + ", Y=" + String(p.y) +
+                      ", ZRaw=" + String(p.zRaw));
 }
 
 XPT2046_Bitbang *GetTouchScreen()
