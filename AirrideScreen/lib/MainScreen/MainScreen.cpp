@@ -58,6 +58,11 @@ void MainScreen::OnSetup()
                     serialManager.Debug("Error parsing BAR message");
                 }
             }
+            if (message.startsWith("LOG"))
+            {
+                int semiColonIndex = message.indexOf(";");
+                storageHandler.WriteLog(message.substring(0, semiColonIndex + 1));
+            }
         });
     serialManager.Debug("MainScreen::OnSetup - Callback set complete");
 }
