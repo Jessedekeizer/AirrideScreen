@@ -1,0 +1,7 @@
+{
+  "name": "SettingsScreen",
+  "version": "1.0.0",
+  "build": {
+    "srcDir": "Screens"
+  }
+}

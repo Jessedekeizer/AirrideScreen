@@ -29,6 +29,7 @@ public:
 
     virtual void OnSetup() = 0;
 
+
     String GetName() { return name; };
 
     const char *GetPath() { return path; };

@@ -1,4 +1,4 @@
-#include "Settings2Screen.h"
+#include "../../Settings2Screen/Settings2Screen.h"
 
 Settings2Screen::Settings2Screen()
 {
