@@ -1,13 +1,19 @@
 #ifndef MAINSCREENCOMMUNICATION_H
 #define MAINSCREENCOMMUNICATION_H
-#include "ICommunication.h"
+#include "Communication.h"
+#include "MainScreenData.h"
 
-class MainScreenCommunication : public ICommunication {
+class MainScreenCommunication {
     public:
-    MainScreenCommunication();
-    void Init() override;
-    void SendMessage() override;
-    void ReceiveCallback() override;
+    MainScreenCommunication(Communication& communication, MainScreenData& mainScreenData);
+    void Init() ;
+    void SendMessage();
+    void ReceiveCallback(String message);
+    void Leave();
+
+    private:
+    Communication& communication;
+    MainScreenData& mainScreenData;
 
 };
 

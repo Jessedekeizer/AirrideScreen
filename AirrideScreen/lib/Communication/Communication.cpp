@@ -1,10 +1,10 @@
-#include "CommunicationDistributor.h"
+#include "Communication.h"
 
-CommunicationDistributor::~CommunicationDistributor() {
+Communication::~Communication() {
     subscribers.clear();
 }
 
-unsigned int CommunicationDistributor::Subscribe(Callback callback) {
+unsigned int Communication::Subscribe(Callback callback) {
     Subscription subscriber;
     subscriber.id = nextId++;
     subscriber.callback = callback;
@@ -12,7 +12,7 @@ unsigned int CommunicationDistributor::Subscribe(Callback callback) {
     return subscriber.id;
 }
 
-void CommunicationDistributor::Unsubscribe(int id) {
+void Communication::Unsubscribe(int id) {
     for (int i = 0; i < subscribers.size(); i++) {
         if (subscribers[i].id == id) {
             subscribers.erase(subscribers.begin() + i);
@@ -21,8 +21,17 @@ void CommunicationDistributor::Unsubscribe(int id) {
     }
 }
 
-void CommunicationDistributor::Notify(String message) {
+void Communication::Notify(String message) {
     for (auto subscriber : subscribers) {
         subscriber.callback(message);
     }
+}
+
+void Communication::CheckForMessage() {
+    if (!serial.ReceiveAvailable()) {
+        return;
+    }
+    String message;
+    message = serial.Receive();
+    Notify(message);
 }

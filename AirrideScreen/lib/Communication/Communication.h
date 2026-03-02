@@ -1,18 +1,21 @@
-#ifndef COMMUNICATIONDISTRIBUTOR_H
-#define COMMUNICATIONDISTRIBUTOR_H
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H
 #include <functional>
-#include <arduino.h>
+#include <WString.h>
 #include <vector>
+
+#include "../ISerial/ISerial.h"
 
 using Callback = std::function<void(String message)>;
 
-class CommunicationDistributor {
+class Communication {
     public:
-    CommunicationDistributor(): nextId(1){};
-    ~CommunicationDistributor();
+    Communication(ISerial& serial): nextId(1), serial(serial) {};
+    ~Communication();
     unsigned int Subscribe(Callback callback);
     void Unsubscribe(int id);
     void Notify(String message);
+    void CheckForMessage();
     private:
     struct Subscription {
         unsigned int id;
@@ -20,6 +23,8 @@ class CommunicationDistributor {
     };
     std::vector<Subscription> subscribers;
     unsigned int nextId;
+    ISerial& serial;
+
 };
 
 
