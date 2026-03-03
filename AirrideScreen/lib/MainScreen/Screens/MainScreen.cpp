@@ -1,8 +1,11 @@
 #include <MainScreen.h>
+
+#include "MainScreenCommunication.h"
 #include "ScreenManager.h"
 #include "TimerManager.h"
 
-MainScreen::MainScreen()
+MainScreen::MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings)
+                        : mainScreenData(mainScreenData), mainScreenCommunication(mainScreenCommunication), screenManager(screenManager), settings(settings)
 {
     name = "MainScreen";
     path = "/MainScreen.png";
@@ -39,55 +42,12 @@ MainScreen::MainScreen()
 
 void MainScreen::OnSetup()
 {
+    mainScreenCommunication.Init();
     AddRideTimer();
-    serialManager.Debug("MainScreen::OnSetup - Setting callback");
-    serialManager.setMessageCallback(
-        [this](String message)
-        {
-            serialManager.Debug("Processing message: " + message);
-            if (message.startsWith("BAR"))
-            {
-                try
-                {
-                    front = getValue(message, '/', 1).toDouble();
-                    back = getValue(message, '/', 2).toDouble();
-                    storageHandler.PrintPressure(front, back);
-                }
-                catch (const std::exception &e)
-                {
-                    serialManager.Debug("Error parsing BAR message");
-                }
-            }
-            if (message.startsWith("LOG"))
-            {
-                int semiColonIndex = message.indexOf(";");
-                storageHandler.WriteLog(message.substring(0, semiColonIndex + 1));
-            }
-        });
-    serialManager.Debug("MainScreen::OnSetup - Callback set complete");
-}
-
-String MainScreen::getValue(String data, char separator, int index)
-{
-    int found = 0;
-    int strIndex[] = {0, -1};
-    int maxIndex = data.length() - 1;
-
-    for (int i = 0; i <= maxIndex && found <= index; i++)
-    {
-        if (data.charAt(i) == separator || i == maxIndex)
-        {
-            found++;
-            strIndex[0] = strIndex[1] + 1;
-            strIndex[1] = (i == maxIndex) ? i + 1 : i;
-        }
-    }
-    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
 void MainScreen::AddRideTimer()
 {
-    auto &settings = storageHandler.getSettings();
     if (!settings.autoRide)
     {
         serialManager.Debug("MainScreen::addRideTimer - Auto start ride is disabled");
@@ -99,25 +59,26 @@ void MainScreen::AddRideTimer()
         return;
     }
     autoRideTimer = new Timer(settings.autoRideSec, [this]()
-                              { autoStartRide(); });
+                              { AutoStartRide(); });
     timerManager.addTimer(autoRideTimer);
     serialManager.Debug("MainScreen::addRideTimer - Timer added");
 }
 
 void MainScreen::OnLoop()
 {
+    storageHandler.PrintPressure(mainScreenData.front, mainScreenData.back);
 }
 
-void MainScreen::autoStartRide()
+void MainScreen::AutoStartRide()
 {
     if (abortAutoRide)
     {
         return;
     }
-    if (front < 1.5 || back < 1.5)
+    if (mainScreenData.front < 1.5 || mainScreenData.back < 1.5)
     {
         serialManager.Debug("MainScreen::Timer - Sending ride command");
-        serialManager.sendMessage("Ride");
+        mainScreenCommunication.SendMessage("Ride");
     }
     else
     {
@@ -128,21 +89,21 @@ void MainScreen::autoStartRide()
 
 void MainScreen::GoToSettings1()
 {
+    mainScreenCommunication.Leave();
     serialManager.clearMessageCallback();
-    storageHandler.ReadSettings();
     screenManager.ChangeScreen("Settings1");
 }
 
 void MainScreen::SendRideCommand()
 {
     abortAutoRide = true;
-    serialManager.sendMessage("Ride");
+    mainScreenCommunication.SendMessage("Ride");
 }
 
 void MainScreen::SendParkCommand()
 {
     abortAutoRide = true;
-    serialManager.sendMessage("Park");
+    mainScreenCommunication.SendMessage("Park");
 }
 
 void MainScreen::HandleFrontUp(Button &sender)
@@ -151,11 +112,11 @@ void MainScreen::HandleFrontUp(Button &sender)
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
-        serialManager.sendMessage("Front Up On");
+        mainScreenCommunication.SendMessage("Front Up On");
     }
     else
     {
-        serialManager.sendMessage("Front Up Off");
+        mainScreenCommunication.SendMessage("Front Up Off");
     }
 }
 
@@ -165,11 +126,11 @@ void MainScreen::HandleFrontDown(Button &sender)
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
-        serialManager.sendMessage("Front Down On");
+        mainScreenCommunication.SendMessage("Front Down On");
     }
     else
     {
-        serialManager.sendMessage("Front Down Off");
+        mainScreenCommunication.SendMessage("Front Down Off");
     }
 }
 
@@ -179,11 +140,11 @@ void MainScreen::HandleBackUp(Button &sender)
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
-        serialManager.sendMessage("Back Up On");
+        mainScreenCommunication.SendMessage("Back Up On");
     }
     else
     {
-        serialManager.sendMessage("Back Up Off");
+        mainScreenCommunication.SendMessage("Back Up Off");
     }
 }
 
@@ -193,10 +154,10 @@ void MainScreen::HandleBackDown(Button &sender)
     auto &toggle = static_cast<ToggleButton &>(sender);
     if (toggle.GetState())
     {
-        serialManager.sendMessage("Back Down On");
+        mainScreenCommunication.SendMessage("Back Down On");
     }
     else
     {
-        serialManager.sendMessage("Back Down Off");
+        mainScreenCommunication.SendMessage("Back Down Off");
     }
 }

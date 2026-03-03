@@ -20,6 +20,7 @@ void SerialManager::setMessageCallback(std::function<void(String)> callback) {
 }
 
 void SerialManager::handleIncoming() {
+    return;
     while (Serial2.available()) {
         char c = Serial2.read();
         if (c == '\n' || c == '\r') {

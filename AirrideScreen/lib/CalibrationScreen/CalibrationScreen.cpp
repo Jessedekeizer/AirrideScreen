@@ -14,7 +14,7 @@ constexpr int SCREEN_DEFAULT = 4095;
 constexpr int COUNTDOWN_START = 3;
 constexpr unsigned long COUNTDOWN_INTERVAL = 1000; // 1 second
 
-CalibrationScreen::CalibrationScreen()
+CalibrationScreen::CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings) : screenManager(screenManager), settings(settings)
 {
     name = "CalibrationScreen";
     path = "/CalibrationScreen.png";
@@ -158,13 +158,13 @@ void CalibrationScreen::SaveCalibrationAndExit()
     ymax += (SCREEN_DEFAULT / SCREEN_HEIGHT) * SQUARE_SIZE;
     serialManager.Debug("Saving calibration values: " + String(xmin) + " " + String(xmax) + " " + String(ymin) + " " + String(ymax));
     touchScreen->setCalibration(xmin, xmax, ymin, ymax);
-    SettingsDevice &settings = storageHandler.getSettings();
+
     settings.xmin = xmin;
     settings.xmax = xmax;
     settings.ymin = ymin;
     settings.ymax = ymax;
     settings.calibrationSet = true;
-    storageHandler.WriteSettings();
+    storageHandler.WriteSettings(settings);
     ChangeCalibrationState(ECalibrationState::EXIT_CALIBRATION);
 }
 

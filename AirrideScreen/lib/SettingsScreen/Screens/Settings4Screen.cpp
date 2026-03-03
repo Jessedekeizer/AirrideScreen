@@ -1,6 +1,7 @@
-#include "Settings4Screen.h"
+#include "../include/Settings4Screen.h"
 
-Settings4Screen::Settings4Screen()
+Settings4Screen::Settings4Screen(ScreenManager& screenManager, SettingsScreenCommunication& , SettingsDevice& settingsDevice)
+    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
 {
     name = "Settings4";
     path = "/Settings4.png";
@@ -56,7 +57,6 @@ Settings4Screen::Settings4Screen()
 
 void Settings4Screen::OnSetup()
 {
-    auto &settings = storageHandler.getSettings();
     storageHandler.DrawString(String(settings.parkDuration, 1), 180, 82);
     storageHandler.PrintSettingBool(settings.logging, 172, 112);
     storageHandler.PrintSettingBool(settings.machineLearning, 172, 159);
@@ -70,64 +70,56 @@ void Settings4Screen::HandleMainScreen()
 
 void Settings4Screen::HandleSave()
 {
-    storageHandler.WriteSettings();
-    storageHandler.SendSettings();
-    storageHandler.ReadSettings();
+    storageHandler.WriteSettings(settings);
+    settingsScreenCommunication.SendSettings();
+    storageHandler.ReadSettings(settings);
     screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings4Screen::HandleParkDurationAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.parkDuration, 0.1);
     storageHandler.DrawString(String(settings.parkDuration, 1), 180, 82);
 }
 
 void Settings4Screen::HandleParkDurationSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.parkDuration, -0.1);
     storageHandler.DrawString(String(settings.parkDuration, 1), 180, 82);
 }
 
 void Settings4Screen::HandleLoggingOn()
 {
-    auto &settings = storageHandler.getSettings();
     settings.logging = true;
     storageHandler.PrintSettingBool(settings.logging, 172, 112);
 }
 
 void Settings4Screen::HandleLoggingOff()
 {
-    auto &settings = storageHandler.getSettings();
     settings.logging = false;
     storageHandler.PrintSettingBool(settings.logging, 172, 112);
 }
 
 void Settings4Screen::HandleMachineLearningOn()
 {
-    auto &settings = storageHandler.getSettings();
     settings.machineLearning = true;
     storageHandler.PrintSettingBool(settings.machineLearning, 172, 159);
 }
 
 void Settings4Screen::HandleMachineLearningOff()
 {
-    auto &settings = storageHandler.getSettings();
     settings.machineLearning = false;
     storageHandler.PrintSettingBool(settings.machineLearning, 172, 159);
 }
 
 void Settings4Screen::HandleBluetoothOn()
 {
-    auto &settings = storageHandler.getSettings();
     settings.bluetooth = true;
     storageHandler.PrintSettingBool(settings.bluetooth, 172, 198);
 }
 
 void Settings4Screen::HandleBluetoothOff()
 {
-    auto &settings = storageHandler.getSettings();
     settings.bluetooth = false;
     storageHandler.PrintSettingBool(settings.bluetooth, 172, 198);
 }

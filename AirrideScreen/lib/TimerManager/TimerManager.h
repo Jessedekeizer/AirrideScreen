@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TIMERMANAGER_H
+#define TIMERMANAGER_H
 #include <Arduino.h>
 #include "Timer.h"
 
@@ -29,3 +30,4 @@ private:
 };
 
 extern TimerManager &timerManager;
+#endif

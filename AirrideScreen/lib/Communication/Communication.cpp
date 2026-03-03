@@ -1,7 +1,14 @@
 #include "Communication.h"
 
+Communication::Communication(ISerial &serial): nextId(1), serial(serial) {
+}
+
 Communication::~Communication() {
     subscribers.clear();
+}
+
+void Communication::Setup() {
+    serial.Init(9600);
 }
 
 unsigned int Communication::Subscribe(Callback callback) {
@@ -13,6 +20,9 @@ unsigned int Communication::Subscribe(Callback callback) {
 }
 
 void Communication::Unsubscribe(int id) {
+    if (id == -1) {
+        return;
+    }
     for (int i = 0; i < subscribers.size(); i++) {
         if (subscribers[i].id == id) {
             subscribers.erase(subscribers.begin() + i);
@@ -31,7 +41,13 @@ void Communication::CheckForMessage() {
     if (!serial.ReceiveAvailable()) {
         return;
     }
-    String message;
-    message = serial.Receive();
-    Notify(message);
+    while (serial.ReceiveAvailable()) {
+        String message;
+        message = serial.Receive();
+        Notify(message);
+    }
+}
+
+void Communication::SendMessage(String message) {
+    serial.SendMessage(message);
 }

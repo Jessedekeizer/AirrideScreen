@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCREENMANAGER_H
+#define SCREENMANAGER_H
 #include "IScreen.h"
 #include <memory>
 #include <vector>
@@ -6,20 +7,13 @@
 class ScreenManager
 {
 public:
-    static ScreenManager &GetInstance()
-    {
-        static ScreenManager instance;
-        return instance;
-    }
-
+    ScreenManager();
+    ~ScreenManager();
+    void AddScreen(IScreen* screen);
     bool ChangeScreen(const String &screenName);
     IScreen *GetActiveScreen() const { return activeScreen; }
 
-    ScreenManager(const ScreenManager &) = delete;
-    ScreenManager &operator=(const ScreenManager &) = delete;
-
 private:
-    ScreenManager();
     std::vector<IScreen *> screens;
     IScreen *activeScreen;
 
@@ -27,4 +21,4 @@ private:
     void TransitionToScreen(IScreen *newScreen);
 };
 
-extern ScreenManager &screenManager;
+#endif

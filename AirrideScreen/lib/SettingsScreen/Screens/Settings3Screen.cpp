@@ -1,6 +1,7 @@
-#include "../../Settings3Screen/Settings3Screen.h"
+#include "../include/Settings3Screen.h"
 
-Settings3Screen::Settings3Screen()
+Settings3Screen::Settings3Screen(ScreenManager& screenManager, SettingsScreenCommunication& , SettingsDevice& settingsDevice)
+    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
 {
     name = "Settings3";
     path = "/Settings3.png";
@@ -56,7 +57,6 @@ Settings3Screen::Settings3Screen()
 
 void Settings3Screen::OnSetup()
 {
-    auto &settings = storageHandler.getSettings();
     storageHandler.DrawString(String(settings.autoRideSec, 1), 180, 82);
     storageHandler.PrintSettingBool(settings.autoRide, 172, 112);
     storageHandler.DrawString(String(settings.autoParkSec, 1), 180, 167);
@@ -69,64 +69,56 @@ void Settings3Screen::HandleMainScreen()
 
 void Settings3Screen::HandleSave()
 {
-    storageHandler.WriteSettings();
-    storageHandler.SendSettings();
-    storageHandler.ReadSettings();
+    storageHandler.WriteSettings(settings);
+    settingsScreenCommunication.SendSettings();
+    storageHandler.ReadSettings(settings);
     screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings3Screen::HandleAutoRideSecAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.autoRideSec, 0.1);
     storageHandler.DrawString(String(settings.autoRideSec, 1), 180, 82);
 }
 
 void Settings3Screen::HandleAutoRideSecSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.autoRideSec, -0.1);
     storageHandler.DrawString(String(settings.autoRideSec, 1), 180, 82);
 }
 
 void Settings3Screen::HandleAutoRideOn()
 {
-    auto &settings = storageHandler.getSettings();
     settings.autoRide = true;
     storageHandler.PrintSettingBool(settings.autoRide, 172, 112);
 }
 
 void Settings3Screen::HandleAutoRideOff()
 {
-    auto &settings = storageHandler.getSettings();
     settings.autoRide = false;
     storageHandler.PrintSettingBool(settings.autoRide, 172, 112);
 }
 
 void Settings3Screen::HandleAutoParkSecAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.autoParkSec, 0.1);
     storageHandler.DrawString(String(settings.autoParkSec, 1), 180, 167);
 }
 
 void Settings3Screen::HandleAutoParkSecSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.autoParkSec, -0.1);
     storageHandler.DrawString(String(settings.autoParkSec, 1), 180, 167);
 }
 
 void Settings3Screen::HandleAutoParkOn()
 {
-    auto &settings = storageHandler.getSettings();
     settings.autoPark = true;
     storageHandler.PrintSettingBool(settings.autoPark, 172, 198);
 }
 
 void Settings3Screen::HandleAutoParkOff()
 {
-    auto &settings = storageHandler.getSettings();
     settings.autoPark = false;
     storageHandler.PrintSettingBool(settings.autoPark, 172, 198);
 }

@@ -1,16 +1,17 @@
 #ifndef SETTINGS3SCREEN_H
 #define SETTINGS3SCREEN_H
-#pragma once
 
 #include "IScreen.h"
 #include "ScreenManager.h"
+#include "SettingsScreenCommunication.h"
 #include "TFTStorageHandler.h"
+
 
 class Settings3Screen : public IScreen
 {
 public:
-    Settings3Screen();
-    void OnLoop() override {};
+    Settings3Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice);
+    void OnLoop() override {}
     void OnSetup() override;
 
 private:
@@ -26,6 +27,9 @@ private:
     void HandleAutoParkSecSub();
     void HandleAutoParkOn();
     void HandleAutoParkOff();
+    ScreenManager& screenManager;
+    SettingsScreenCommunication& settingsScreenCommunication;
+    SettingsDevice& settings;
 };
 
 #endif

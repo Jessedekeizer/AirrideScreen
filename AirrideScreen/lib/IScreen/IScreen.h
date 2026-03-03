@@ -1,6 +1,5 @@
 #ifndef ISCREEN_H
 #define ISCREEN_H
-#pragma once
 
 #include <Arduino.h>
 #include <Button.h>

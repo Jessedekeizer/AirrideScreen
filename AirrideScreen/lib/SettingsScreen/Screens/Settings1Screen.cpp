@@ -1,6 +1,7 @@
-#include "../../Settings1Screen/Settings1Screen.h"
+#include "../include/Settings1Screen.h"
 
-Settings1Screen::Settings1Screen()
+Settings1Screen::Settings1Screen(ScreenManager& screenManager, SettingsScreenCommunication& , SettingsDevice& settingsDevice)
+    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
 {
     name = "Settings1";
     path = "/Settings1.png";
@@ -52,7 +53,6 @@ Settings1Screen::Settings1Screen()
 
 void Settings1Screen::OnSetup()
 {
-    auto &settings = storageHandler.getSettings();
     storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
     storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
     storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
@@ -66,64 +66,56 @@ void Settings1Screen::HandleMainScreen()
 
 void Settings1Screen::HandleSave()
 {
-    storageHandler.WriteSettings();
-    storageHandler.SendSettings();
-    storageHandler.ReadSettings();
+    storageHandler.WriteSettings(settings);
+    settingsScreenCommunication.SendSettings();
+    storageHandler.ReadSettings(settings);
     screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings1Screen::HandleRideFU()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.rideFront, 0.1);
     storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
 }
 
 void Settings1Screen::HandleRideFD()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.rideFront, -0.1);
     storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
 }
 
 void Settings1Screen::HandleRideBU()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.rideBack, 0.1);
     storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
 }
 
 void Settings1Screen::HandleRideBD()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.rideBack, -0.1);
     storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
 }
 
 void Settings1Screen::HandleMaxFU()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.frontMax, 0.1);
     storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
 }
 
 void Settings1Screen::HandleMaxFD()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.frontMax, -0.1);
     storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
 }
 
 void Settings1Screen::HandleMaxBU()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.backMax, 0.1);
     storageHandler.DrawString(String(settings.backMax, 1), 180, 207);
 }
 
 void Settings1Screen::HandleMaxBD()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.backMax, -0.1);
     storageHandler.DrawString(String(settings.backMax, 1), 180, 207);
 }

@@ -1,16 +1,16 @@
 #ifndef SETTINGS2SCREEN_H
 #define SETTINGS2SCREEN_H
-#pragma once
 
 #include "IScreen.h"
 #include "ScreenManager.h"
+#include "SettingsScreenCommunication.h"
 #include "TFTStorageHandler.h"
 
 class Settings2Screen : public IScreen
 {
 public:
-    Settings2Screen();
-    void OnLoop() override {};
+    Settings2Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice);
+    void OnLoop() override {}
     void OnSetup() override;
 
 private:
@@ -26,6 +26,9 @@ private:
     void HandleBackUpSub();
     void HandleBackDownAdd();
     void HandleBackDownSub();
+    ScreenManager& screenManager;
+    SettingsScreenCommunication& settingsScreenCommunication;
+    SettingsDevice& settings;
 };
 
 #endif

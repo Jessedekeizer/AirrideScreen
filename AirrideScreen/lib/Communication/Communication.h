@@ -3,19 +3,20 @@
 #include <functional>
 #include <WString.h>
 #include <vector>
+#include "ISerial.h"
 
-#include "../ISerial/ISerial.h"
-
-using Callback = std::function<void(String message)>;
+using Callback = std::function<void(String)>;
 
 class Communication {
     public:
-    Communication(ISerial& serial): nextId(1), serial(serial) {};
+    Communication(ISerial& serial);
     ~Communication();
+    void Setup();
     unsigned int Subscribe(Callback callback);
     void Unsubscribe(int id);
     void Notify(String message);
     void CheckForMessage();
+    void SendMessage(String message);
     private:
     struct Subscription {
         unsigned int id;

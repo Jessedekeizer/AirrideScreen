@@ -1,6 +1,7 @@
-#include "../../Settings2Screen/Settings2Screen.h"
+#include "../include/Settings2Screen.h"
 
-Settings2Screen::Settings2Screen()
+Settings2Screen::Settings2Screen(ScreenManager& screenManager, SettingsScreenCommunication& , SettingsDevice& settingsDevice)
+    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
 {
     name = "Settings2";
     path = "/Settings2.png";
@@ -55,7 +56,6 @@ Settings2Screen::Settings2Screen()
 
 void Settings2Screen::OnSetup()
 {
-    auto &settings = storageHandler.getSettings();
     storageHandler.DrawString(String(settings.backUpX, 1), 180, 82);
     storageHandler.DrawString(String(settings.backDownX, 1), 180, 122);
     storageHandler.DrawString(String(settings.frontUpX, 1), 180, 167);
@@ -69,64 +69,56 @@ void Settings2Screen::HandleMainScreen()
 
 void Settings2Screen::HandleSave()
 {
-    storageHandler.WriteSettings();
-    storageHandler.SendSettings();
-    storageHandler.ReadSettings();
+    storageHandler.WriteSettings(settings);
+    settingsScreenCommunication.SendSettings();
+    storageHandler.ReadSettings(settings);
     screenManager.ChangeScreen("MainScreen");
 }
 
 void Settings2Screen::HandleFrontUpAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.frontUpX, 0.1);
     storageHandler.DrawString(String(settings.frontUpX, 1), 180, 82);
 }
 
 void Settings2Screen::HandleFrontUpSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.frontUpX, -0.1);
     storageHandler.DrawString(String(settings.frontUpX, 1), 180, 82);
 }
 
 void Settings2Screen::HandleFrontDownAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.frontDownX, 0.1);
     storageHandler.DrawString(String(settings.frontDownX, 1), 180, 122);
 }
 
 void Settings2Screen::HandleFrontDownSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.frontDownX, -0.1);
     storageHandler.DrawString(String(settings.frontDownX, 1), 180, 122);
 }
 
 void Settings2Screen::HandleBackUpAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.backUpX, 0.1);
     storageHandler.DrawString(String(settings.backUpX, 1), 180, 167);
 }
 
 void Settings2Screen::HandleBackUpSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.backUpX, -0.1);
     storageHandler.DrawString(String(settings.backUpX, 1), 180, 167);
 }
 
 void Settings2Screen::HandleBackDownAdd()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.backDownX, 0.1);
     storageHandler.DrawString(String(settings.backDownX, 1), 180, 207);
 }
 
 void Settings2Screen::HandleBackDownSub()
 {
-    auto &settings = storageHandler.getSettings();
     settings.adjustValue(settings.backDownX, -0.1);
     storageHandler.DrawString(String(settings.backDownX, 1), 180, 207);
 }

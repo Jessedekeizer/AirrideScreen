@@ -1,8 +1,10 @@
 #ifndef MAINSCREEN_H
 #define MAINSCREEN_H
-#pragma once
 
 #include "IScreen.h"
+#include "MainScreenCommunication.h"
+#include "MainScreenData.h"
+#include "ScreenManager.h"
 #include "TFTStorageHandler.h"
 #include "SerialManager.h"
 #include "Timer.h"
@@ -10,7 +12,7 @@
 class MainScreen : public IScreen
 {
 public:
-    MainScreen();
+    explicit MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings);
     void OnLoop() override;
     void OnSetup() override;
 
@@ -18,16 +20,16 @@ private:
     void GoToSettings1();
     void SendRideCommand();
     void SendParkCommand();
-    void autoStartRide();
+    void AutoStartRide();
     void HandleFrontUp(Button &sender);
     void HandleFrontDown(Button &sender);
     void HandleBackUp(Button &sender);
     void HandleBackDown(Button &sender);
     void AddRideTimer();
-    String getValue(String data, char separator, int index);
-    String incomingMessage;
-    double front = 0;
-    double back = 0;
+    MainScreenData &mainScreenData;
+    MainScreenCommunication &mainScreenCommunication;
+    ScreenManager &screenManager;
+    SettingsDevice &settings;
     bool abortAutoRide = false;
     Timer *autoRideTimer = nullptr;
 };

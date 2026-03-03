@@ -1,6 +1,5 @@
 #ifndef SETTINGSDEVICE_H
 #define SETTINGSDEVICE_H
-#pragma once
 
 struct SettingsDevice
 {

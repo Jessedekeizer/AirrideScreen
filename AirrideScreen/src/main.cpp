@@ -1,10 +1,25 @@
 #include <Arduino.h>
-#include <SPI.h>
 #include <XPT2046_Bitbang.h>
+
+#include "SerialOverPins.h"
+#include "Communication.h"
 #include "SerialManager.h"
 #include "ScreenManager.h"
+
+#include "MainScreenData.h"
+#include "MainScreenCommunication.h"
+#include "MainScreen.h"
+
+#include "SettingsScreenCommunication.h"
+#include "Settings1Screen.h"
+#include "Settings2Screen.h"
+#include "Settings3Screen.h"
+#include "Settings4Screen.h"
+#include "CalibrationScreen.h"
+
 #include "TFTStorageHandler.h"
 #include "TimerManager.h"
+
 
 #define MOSI_PIN 32
 #define MISO_PIN 39
@@ -18,21 +33,47 @@ void UpdateTouchScreen();
 
 Timer *tickTimer = nullptr;
 
-//====================================================================================
-//                                    Setup
-//====================================================================================
+ScreenManager screenManager;
+
+SettingsDevice settings;
+
+SerialOverPins serialOverPins;
+Communication communication(serialOverPins);
+
+MainScreenData mainScreenData;
+MainScreenCommunication mainScreenCommunication(communication, mainScreenData);
+MainScreen mainScreen(mainScreenData, mainScreenCommunication, screenManager, settings);
+
+SettingsScreenCommunication settingsScreenCommunication(communication,settings);
+Settings1Screen  settings1Screen(screenManager, settingsScreenCommunication, settings);
+Settings2Screen  settings2Screen(screenManager, settingsScreenCommunication, settings);
+Settings3Screen  settings3Screen(screenManager, settingsScreenCommunication, settings);
+Settings4Screen  settings4Screen(screenManager, settingsScreenCommunication, settings);
+
+CalibrationScreen calibrationScreen(screenManager,settings);
+
+
 void setup()
 {
+  communication.Setup();
+  //retrieve settings
+  storageHandler.GetInstance();
+  storageHandler.ReadSettings(settings);
+  settingsScreenCommunication.SendSettings();
+
+
+  screenManager.AddScreen(&mainScreen);
+  screenManager.AddScreen(&settings1Screen);
+  screenManager.AddScreen(&settings2Screen);
+  screenManager.AddScreen(&settings3Screen);
+  screenManager.AddScreen(&settings4Screen);
+
   serialManager.GetInstance();
   delay(1000);
   serialManager.setDebugMode(true);
   ts.begin();
-  storageHandler.GetInstance();
-  screenManager.GetInstance();
-  storageHandler.ReadSettings();
-  storageHandler.SendSettings();
   timerManager.GetInstance();
-  SettingsDevice &settings = storageHandler.getSettings();
+
   if (!settings.calibrationSet)
   {
     screenManager.ChangeScreen("CalibrationScreen");
@@ -54,6 +95,7 @@ void loop()
 {
   serialManager.handleIncoming();
   timerManager.update();
+  communication.CheckForMessage();
 }
 
 void UpdateTouchScreen()

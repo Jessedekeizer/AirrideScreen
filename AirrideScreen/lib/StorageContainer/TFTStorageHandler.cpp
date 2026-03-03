@@ -3,9 +3,9 @@
 
 TFTStorageHandler &storageHandler = storageHandler.GetInstance();
 
-void pngDraw(PNGDRAW *pDraw)
+int pngDraw(PNGDRAW *pDraw)
 {
-    storageHandler.TpngDraw(pDraw);
+    return storageHandler.TpngDraw(pDraw);
 }
 
 void *pngOpen(const char *filename, int32_t *size)
@@ -70,7 +70,7 @@ void TFTStorageHandler::DrawRect(int x, int y, int width, int height, uint32_t c
     tft.fillRect(x, y, width, height, color);
 }
 
-void TFTStorageHandler::WriteSettings()
+void TFTStorageHandler::WriteSettings(SettingsDevice &settings)
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.bin", FILE_WRITE);
@@ -140,7 +140,7 @@ void TFTStorageHandler::PrintSettingBool(bool value, int x, int y)
     }
 }
 
-void TFTStorageHandler::ReadSettings()
+void TFTStorageHandler::ReadSettings(SettingsDevice & settings)
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.bin", FILE_READ);
@@ -163,19 +163,6 @@ void TFTStorageHandler::ReadSettings()
     }
 
     file.close();
-}
-
-void TFTStorageHandler::SendSettings()
-{
-    serialManager.sendMessage("settings/" + String(settings.frontMax) +
-                              "/" + settings.backMax +
-                              "/" + settings.rideFront +
-                              "/" + settings.rideBack +
-                              "/" + settings.frontUpX +
-                              "/" + settings.frontDownX +
-                              "/" + settings.backUpX +
-                              "/" + settings.backDownX + 
-                              "/" + settings.parkDuration + "/");
 }
 
 //=========================================v==========================================
@@ -222,11 +209,12 @@ void TFTStorageHandler::PrintImage(const char *path, int x, int y)
     return;
 }
 
-void TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
+int TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
 {
     uint16_t lineBuffer[MAX_IMAGE_WIDTH];
     png.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
     tft.pushImage(imageX, imageY + pDraw->y, pDraw->iWidth, 1, lineBuffer);
+    return 1;
 }
 
 void *TFTStorageHandler::TpngOpen(const char *filename, int32_t *size)

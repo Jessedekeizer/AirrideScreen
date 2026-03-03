@@ -1,6 +1,5 @@
 #ifndef CALIBRATIONSCREEN_H
 #define CALIBRATIONSCREEN_H
-#pragma once
 
 #include "IScreen.h"
 #include "TFTStorageHandler.h"
@@ -14,7 +13,7 @@ XPT2046_Bitbang *GetTouchScreen();
 class CalibrationScreen : public IScreen
 {
 public:
-    CalibrationScreen();
+    CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings);
     void OnLoop() override;
     void OnSetup() override;
 
@@ -55,6 +54,8 @@ private:
     long exitCountdownStart = 0;
 
     XPT2046_Bitbang *touchScreen;
+    SettingsDevice &settings;
+    ScreenManager &screenManager;
 };
 
 #endif

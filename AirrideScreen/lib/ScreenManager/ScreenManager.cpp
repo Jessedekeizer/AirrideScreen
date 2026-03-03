@@ -1,24 +1,22 @@
 #include "ScreenManager.h"
-#include "MainScreen.h"
-#include "Settings1Screen.h"
-#include "Settings2Screen.h"
-#include "Settings3Screen.h"
-#include "Settings4Screen.h"
 #include "TFTStorageHandler.h"
 #include "SerialManager.h"
-#include "CalibrationScreen.h"
 
-ScreenManager &screenManager = ScreenManager::GetInstance();
 
 ScreenManager::ScreenManager()
 {
-    screens = {
-        new MainScreen(),
-        new Settings1Screen(),
-        new Settings2Screen(),
-        new Settings3Screen(),
-        new Settings4Screen(),
-        new CalibrationScreen()};
+}
+
+ScreenManager::~ScreenManager() {
+    for (auto screen : screens) {
+        delete screen;
+        screen = nullptr;
+    }
+    screens.clear();
+}
+
+void ScreenManager::AddScreen(IScreen *screen) {
+    screens.push_back(screen);
 }
 
 bool ScreenManager::ChangeScreen(const String &screenName)

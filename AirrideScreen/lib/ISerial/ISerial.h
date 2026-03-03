@@ -1,5 +1,5 @@
-#ifndef ICOMMUNICATION_H
-#define ICOMMUNICATION_H
+#ifndef ISERIAL_H
+#define ISERIAL_H
 #include <WString.h>
 
 
@@ -13,4 +13,4 @@ class ISerial {
     virtual String Receive() = 0;
 };
 
-#endif //ICOMMUNICATION_H
+#endif //ISERIAL_H
