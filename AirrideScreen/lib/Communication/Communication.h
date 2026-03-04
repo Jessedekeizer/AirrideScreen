@@ -4,14 +4,14 @@
 #include <WString.h>
 #include <vector>
 #include "ISerial.h"
+#include "StringQueue.h"
 
 using Callback = std::function<void(String)>;
 
 class Communication {
     public:
-    Communication(ISerial& serial);
+    Communication(ISerial& serial, StringQueue &stringQueue);
     ~Communication();
-    void Setup();
     unsigned int Subscribe(Callback callback);
     void Unsubscribe(int id);
     void Notify(String message);
@@ -25,6 +25,7 @@ class Communication {
     std::vector<Subscription> subscribers;
     unsigned int nextId;
     ISerial& serial;
+    StringQueue &stringQueue;
 
 };
 

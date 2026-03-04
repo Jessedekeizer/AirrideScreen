@@ -3,9 +3,9 @@
 
 TFTStorageHandler &storageHandler = storageHandler.GetInstance();
 
-int pngDraw(PNGDRAW *pDraw)
+void pngDraw(PNGDRAW *pDraw)
 {
-    return storageHandler.TpngDraw(pDraw);
+    storageHandler.TpngDraw(pDraw);
 }
 
 void *pngOpen(const char *filename, int32_t *size)
@@ -209,12 +209,11 @@ void TFTStorageHandler::PrintImage(const char *path, int x, int y)
     return;
 }
 
-int TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
+void TFTStorageHandler::TpngDraw(PNGDRAW *pDraw)
 {
     uint16_t lineBuffer[MAX_IMAGE_WIDTH];
     png.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
     tft.pushImage(imageX, imageY + pDraw->y, pDraw->iWidth, 1, lineBuffer);
-    return 1;
 }
 
 void *TFTStorageHandler::TpngOpen(const char *filename, int32_t *size)

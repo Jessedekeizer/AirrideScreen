@@ -1,6 +1,6 @@
 #include "../include/Settings3Screen.h"
 
-Settings3Screen::Settings3Screen(ScreenManager& screenManager, SettingsScreenCommunication& , SettingsDevice& settingsDevice)
+Settings3Screen::Settings3Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice)
     : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
 {
     name = "Settings3";

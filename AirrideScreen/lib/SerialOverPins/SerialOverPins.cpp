@@ -1,28 +1,26 @@
 #include "SerialOverPins.h"
-
 #include <HardwareSerial.h>
+#include "SerialManager.h"
 
-void SerialOverPins::Init(int baudrate) {
-    Serial2.begin(baudrate, SERIAL_8N1, 27, 22);
-}
 
 void SerialOverPins::SendMessage(String message) {
-    Serial2.println(message);
+    serial.println(message);
 }
 
 bool SerialOverPins::ReceiveAvailable() {
-    return Serial2.available();
+    return serial.available();
 }
 
-String SerialOverPins::Receive() {
-    String message = "";
-    while (Serial2.available()) {
-        char c = Serial2.read();
-        if (c == '\n' || c == '\r') {
-            if (message.length() > 0) {
-                return message;
+void SerialOverPins::Receive() {
+    while (serial.available()) {
+        char c = serial.read();
+        if (c == '\n') {
+            if (!stringQueue.enqueue(message)) {
+                serialManager.Debug("SerialOverPins::Receive: queue full");
             }
-        } else {
+            message = "";
+        }
+        else if (c != '\r') {
             message += c;
         }
     }

@@ -1,15 +1,14 @@
 #include "Communication.h"
 
-Communication::Communication(ISerial &serial): nextId(1), serial(serial) {
+#include "SerialManager.h"
+
+Communication::Communication(ISerial &serial, StringQueue& stringQueue): nextId(1), serial(serial), stringQueue(stringQueue) {
 }
 
 Communication::~Communication() {
     subscribers.clear();
 }
 
-void Communication::Setup() {
-    serial.Init(9600);
-}
 
 unsigned int Communication::Subscribe(Callback callback) {
     Subscription subscriber;
@@ -38,16 +37,17 @@ void Communication::Notify(String message) {
 }
 
 void Communication::CheckForMessage() {
-    if (!serial.ReceiveAvailable()) {
-        return;
-    }
-    while (serial.ReceiveAvailable()) {
-        String message;
-        message = serial.Receive();
-        Notify(message);
+    serial.Receive();
+    String message;
+
+    if (stringQueue.dequeue(message)) {
+        if (message.length() > 0) {
+            Notify(message);
+        }
     }
 }
 
 void Communication::SendMessage(String message) {
+    serialManager.Debug(message);
     serial.SendMessage(message);
 }

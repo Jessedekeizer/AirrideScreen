@@ -37,8 +37,10 @@ ScreenManager screenManager;
 
 SettingsDevice settings;
 
-SerialOverPins serialOverPins;
-Communication communication(serialOverPins);
+StringQueue stringQueue;
+
+SerialOverPins serialOverPins(Serial2, stringQueue);
+Communication communication(serialOverPins, stringQueue);
 
 MainScreenData mainScreenData;
 MainScreenCommunication mainScreenCommunication(communication, mainScreenData);
@@ -55,7 +57,7 @@ CalibrationScreen calibrationScreen(screenManager,settings);
 
 void setup()
 {
-  communication.Setup();
+  Serial2.begin(9600, SERIAL_8N1, 27, 22);
   //retrieve settings
   storageHandler.GetInstance();
   storageHandler.ReadSettings(settings);
