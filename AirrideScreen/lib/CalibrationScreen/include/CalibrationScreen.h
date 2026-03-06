@@ -3,14 +3,11 @@
 
 #include "IScreen.h"
 #include "TFTStorageHandler.h"
-#include "SerialManager.h"
 #include "XPT2046_Bitbang.h"
 #include "ECalibrationState.h"
 #include "ScreenManager.h"
-#include "CalibrationGeometry.h" // layout macros
 
 #define CALIBRATION_TIME 3000
-XPT2046_Bitbang *GetTouchScreen();
 
 class CalibrationScreen : public IScreen
 {
@@ -44,14 +41,10 @@ private:
 
     ECalibrationState calibrationState;
 
-    bool TopLeftCalibrationDone = false;
-    bool BottomRightCalibrationDone = false;
-    bool preCalibrationDone = false;
-
-    long TopLeftStartTime = 0;
-    long BottomRightStartTime = 0;
-    long preCalibrationTime = 0;
-    long secondsTime = 0;
+    unsigned long TopLeftStartTime = 0;
+    unsigned long BottomRightStartTime = 0;
+    unsigned long preCalibrationTime = 0;
+    unsigned long secondsTime = 0;
 
     long exitCountdownStart = 0;
 

@@ -8,7 +8,7 @@
 class SerialOverPins : public ISerial{
     public:
     SerialOverPins(HardwareSerial &serial, StringQueue &stringQueue) : serial(serial), stringQueue(stringQueue) {};
-    void SendMessage(String message) override;
+    void SendMessage(String& message) override;
     bool ReceiveAvailable() override;
     void Receive() override;
     private:

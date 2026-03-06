@@ -3,7 +3,7 @@
 #include "SerialManager.h"
 
 
-void SerialOverPins::SendMessage(String message) {
+void SerialOverPins::SendMessage(String& message) {
     serial.println(message);
 }
 

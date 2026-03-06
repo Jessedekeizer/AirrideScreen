@@ -7,45 +7,6 @@ SerialManager::SerialManager() {
     Serial.begin(baud, SERIAL_8N1);
 }
 
-
-void SerialManager::clearMessageCallback() {
-    messageCallback = nullptr;
-    Debug("Callback cleared");
-}
-void SerialManager::setMessageCallback(std::function<void(String)> callback) {
-    Debug("Setting new callback");
-    messageCallback = callback;
-    Debug("Callback set successfully");
-}
-
-void SerialManager::handleIncoming() {
-    return;
-    while (Serial2.available()) {
-        char c = Serial2.read();
-        if (c == '\n' || c == '\r') {
-            if (incomingMessage.length() > 0) {
-                Debug("Received: " + incomingMessage);
-                if (messageCallback) {
-                    Debug("Executing callback");
-                    messageCallback(incomingMessage);
-                } else {
-                    Debug("No callback set (ptr: null)");
-                }
-                incomingMessage = "";
-            }
-        } else {
-            incomingMessage += c;
-        }
-    }
-}
-
-void SerialManager::sendMessage(const String& message) {
-    if (debugMode) {
-        Serial.println("Serial2 send: " + message);
-    }
-    Serial2.println(message);
-}
-
 void SerialManager::Debug(const String& message) {
     if (debugMode) {
         Serial.println("Debug: " + message);

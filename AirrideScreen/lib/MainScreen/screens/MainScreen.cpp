@@ -1,5 +1,5 @@
 #include <MainScreen.h>
-#include "MainScreenGeometryDefinitions.h"
+#include "MainScreenGeometry.h"
 
 #include "MainScreenCommunication.h"
 #include "ScreenManager.h"
@@ -91,7 +91,6 @@ void MainScreen::AutoStartRide()
 void MainScreen::GoToSettings1()
 {
     mainScreenCommunication.Leave();
-    serialManager.clearMessageCallback();
     screenManager.RequestScreen(EScreen::SETTINGS1);
 }
 

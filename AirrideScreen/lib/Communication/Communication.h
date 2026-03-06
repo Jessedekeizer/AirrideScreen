@@ -3,8 +3,8 @@
 #include <functional>
 #include <WString.h>
 #include <vector>
-#include "ISerial.h"
-#include "StringQueue.h"
+#include "../ISerial/ISerial.h"
+#include "../StringQueue/StringQueue.h"
 
 using Callback = std::function<void(String)>;
 

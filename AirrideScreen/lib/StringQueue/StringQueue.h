@@ -2,7 +2,6 @@
 #define STRINGQUEUE_H
 
 #define QUEUE_SIZE 10
-#include "SerialManager.h"
 
 struct StringQueue {
     String messages[QUEUE_SIZE];

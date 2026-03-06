@@ -6,12 +6,9 @@
 #include "MainScreenData.h"
 #include "ScreenManager.h"
 #include "TFTStorageHandler.h"
-#include "SerialManager.h"
 #include "Timer.h"
 
-#include "MainScreenGeometryDefinitions.h"
-
-// geometry defines for main screen buttons moved to separate header
+#include "MainScreenGeometry.h"
 
 class MainScreen : public IScreen
 {
