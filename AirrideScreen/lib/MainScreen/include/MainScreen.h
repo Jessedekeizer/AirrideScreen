@@ -9,6 +9,10 @@
 #include "SerialManager.h"
 #include "Timer.h"
 
+#include "MainScreenGeometryDefinitions.h"
+
+// geometry defines for main screen buttons moved to separate header
+
 class MainScreen : public IScreen
 {
 public:
@@ -18,13 +22,9 @@ public:
 
 private:
     void GoToSettings1();
-    void SendRideCommand();
-    void SendParkCommand();
+    void HandlePushButton(Button &sender);
     void AutoStartRide();
-    void HandleFrontUp(Button &sender);
-    void HandleFrontDown(Button &sender);
-    void HandleBackUp(Button &sender);
-    void HandleBackDown(Button &sender);
+    void HandleToggleButton(Button &sender);
     void AddRideTimer();
     MainScreenData &mainScreenData;
     MainScreenCommunication &mainScreenCommunication;

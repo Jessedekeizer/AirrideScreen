@@ -3,22 +3,22 @@
 
 #include "IScreen.h"
 #include "ScreenManager.h"
+#include "SettingsScreenBase.h"
 #include "SettingsScreenCommunication.h"
 #include "TFTStorageHandler.h"
 
-
-class Settings3Screen : public IScreen
-{
+class Settings3Screen : public SettingsScreenBase {
 public:
-    Settings3Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice);
-    void OnLoop() override {}
+    Settings3Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice);
+
+    void OnLoop() override {
+    }
+
     void OnSetup() override;
 
 private:
-    void HandleMainScreen();
-    void HandleSave();
-    void HandleSettings1();
-    void HandleSettings3();
+    void HandleSettings2();
+    void HandleSettings4();
     void HandleAutoRideSecAdd();
     void HandleAutoRideSecSub();
     void HandleAutoRideOn();
@@ -27,9 +27,6 @@ private:
     void HandleAutoParkSecSub();
     void HandleAutoParkOn();
     void HandleAutoParkOff();
-    ScreenManager& screenManager;
-    SettingsScreenCommunication& settingsScreenCommunication;
-    SettingsDevice& settings;
 };
 
 #endif

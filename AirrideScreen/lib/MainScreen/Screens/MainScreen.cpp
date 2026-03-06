@@ -1,43 +1,44 @@
 #include <MainScreen.h>
+#include "MainScreenGeometryDefinitions.h"
 
 #include "MainScreenCommunication.h"
 #include "ScreenManager.h"
 #include "TimerManager.h"
 
 MainScreen::MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings)
-                        : mainScreenData(mainScreenData), mainScreenCommunication(mainScreenCommunication), screenManager(screenManager), settings(settings)
+    : mainScreenData(mainScreenData), mainScreenCommunication(mainScreenCommunication), screenManager(screenManager), settings(settings)
 {
-    name = "MainScreen";
+    name = EScreen::MAIN;
     path = "/MainScreen.png";
 
     buttons = std::vector<Button *>();
 
     // Front buttons
-    buttons.push_back(new ToggleButton(0, 0, 70, 120, "Front Up",
+    buttons.push_back(new ToggleButton(FRONT_UP_X, FRONT_UP_Y, FRONT_UP_W, FRONT_UP_H, FRONT_UP,
                                        [this](Button &button)
-                                       { HandleFrontUp(button); }));
-    buttons.push_back(new ToggleButton(0, 120, 70, 120, "Front Down",
+                                       { HandleToggleButton(button); }));
+    buttons.push_back(new ToggleButton(FRONT_DOWN_X, FRONT_DOWN_Y, FRONT_DOWN_W, FRONT_DOWN_H, FRONT_DOWN,
                                        [this](Button &button)
-                                       { HandleFrontDown(button); }));
+                                       { HandleToggleButton(button); }));
 
     // Back buttons
-    buttons.push_back(new ToggleButton(263, 0, 70, 120, "Back Up",
+    buttons.push_back(new ToggleButton(BACK_UP_X, BACK_UP_Y, BACK_UP_W, BACK_UP_H, BACK_UP,
                                        [this](Button &button)
-                                       { HandleBackUp(button); }));
-    buttons.push_back(new ToggleButton(263, 120, 70, 120, "Back Down",
+                                       { HandleToggleButton(button); }));
+    buttons.push_back(new ToggleButton(BACK_DOWN_X, BACK_DOWN_Y, BACK_DOWN_W, BACK_DOWN_H, BACK_DOWN,
                                        [this](Button &button)
-                                       { HandleBackDown(button); }));
+                                       { HandleToggleButton(button); }));
 
     // Control buttons
-    buttons.push_back(new PushButton(132, 174, 48, 42, "Settings1",
+    buttons.push_back(new PushButton(SETTINGS1_X, SETTINGS1_Y, SETTINGS1_W, SETTINGS1_H, SETTINGS1,
                                      [this](Button &button)
                                      { GoToSettings1(); }));
-    buttons.push_back(new PushButton(84, 174, 48, 42, "Ride",
+    buttons.push_back(new PushButton(RIDE_X, RIDE_Y, RIDE_W, RIDE_H, RIDE,
                                      [this](Button &button)
-                                     { SendRideCommand(); }));
-    buttons.push_back(new PushButton(186, 174, 48, 42, "Park",
+                                     { HandleToggleButton(button); }));
+    buttons.push_back(new PushButton(PARK_X, PARK_Y, PARK_W, PARK_H, PARK,
                                      [this](Button &button)
-                                     { SendParkCommand(); }));
+                                     { HandlePushButton(button); }));
 };
 
 void MainScreen::OnSetup()
@@ -78,7 +79,7 @@ void MainScreen::AutoStartRide()
     if (mainScreenData.front < 1.5 || mainScreenData.back < 1.5)
     {
         serialManager.Debug("MainScreen::Timer - Sending ride command");
-        mainScreenCommunication.SendMessage("Ride");
+        mainScreenCommunication.SendMessagePushButton(RIDE);
     }
     else
     {
@@ -91,73 +92,18 @@ void MainScreen::GoToSettings1()
 {
     mainScreenCommunication.Leave();
     serialManager.clearMessageCallback();
-    screenManager.ChangeScreen("Settings1");
+    screenManager.RequestScreen(EScreen::SETTINGS1);
 }
 
-void MainScreen::SendRideCommand()
+void MainScreen::HandlePushButton(Button &sender)
 {
     abortAutoRide = true;
-    mainScreenCommunication.SendMessage("Ride");
+    mainScreenCommunication.SendMessagePushButton(static_cast<EMainScreenButtons>(sender.GetName()));
 }
 
-void MainScreen::SendParkCommand()
-{
-    abortAutoRide = true;
-    mainScreenCommunication.SendMessage("Park");
-}
-
-void MainScreen::HandleFrontUp(Button &sender)
+void MainScreen::HandleToggleButton(Button &sender)
 {
     abortAutoRide = true;
     auto &toggle = static_cast<ToggleButton &>(sender);
-    if (toggle.GetState())
-    {
-        mainScreenCommunication.SendMessage("Front Up On");
-    }
-    else
-    {
-        mainScreenCommunication.SendMessage("Front Up Off");
-    }
-}
-
-void MainScreen::HandleFrontDown(Button &sender)
-{
-    abortAutoRide = true;
-    auto &toggle = static_cast<ToggleButton &>(sender);
-    if (toggle.GetState())
-    {
-        mainScreenCommunication.SendMessage("Front Down On");
-    }
-    else
-    {
-        mainScreenCommunication.SendMessage("Front Down Off");
-    }
-}
-
-void MainScreen::HandleBackUp(Button &sender)
-{
-    abortAutoRide = true;
-    auto &toggle = static_cast<ToggleButton &>(sender);
-    if (toggle.GetState())
-    {
-        mainScreenCommunication.SendMessage("Back Up On");
-    }
-    else
-    {
-        mainScreenCommunication.SendMessage("Back Up Off");
-    }
-}
-
-void MainScreen::HandleBackDown(Button &sender)
-{
-    abortAutoRide = true;
-    auto &toggle = static_cast<ToggleButton &>(sender);
-    if (toggle.GetState())
-    {
-        mainScreenCommunication.SendMessage("Back Down On");
-    }
-    else
-    {
-        mainScreenCommunication.SendMessage("Back Down Off");
-    }
+    mainScreenCommunication.SendToggleButtonPress(static_cast<EMainScreenButtons>(toggle.GetName()), toggle.GetState());
 }

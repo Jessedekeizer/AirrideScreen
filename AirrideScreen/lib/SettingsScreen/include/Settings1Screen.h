@@ -1,33 +1,29 @@
 #ifndef SETTINGS1SCREEN_H
 #define SETTINGS1SCREEN_H
 
-#include "IScreen.h"
 #include "TFTStorageHandler.h"
 #include "ScreenManager.h"
+#include "SettingsScreenBase.h"
 #include "SettingsScreenCommunication.h"
 
-class Settings1Screen : public IScreen
-{
+class Settings1Screen : public SettingsScreenBase {
 public:
-    Settings1Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice);
-    void OnLoop() override {};
+    Settings1Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice);
+
+    void OnLoop() override {
+    };
     void OnSetup() override;
 
 private:
-    void HandleMainScreen();
-    void HandleSave();
-    void HandleRideFU();
-    void HandleRideFD();
-    void HandleRideBU();
-    void HandleRideBD();
-    void HandleMaxFU();
-    void HandleMaxFD();
-    void HandleMaxBU();
-    void HandleMaxBD();
+    void HandleRideFrontAdd();
+    void HandleRideFrontSub();
+    void HandleRideBackAdd();
+    void HandleRideBackSub();
+    void HandleMaxFrontAdd();
+    void HandleMaxFrontSub();
+    void HandleMaxBackAdd();
+    void HandleMaxBackSub();
     void HandleSettings2();
-    ScreenManager& screenManager;
-    SettingsScreenCommunication& settingsScreenCommunication;
-    SettingsDevice& settings;
 };
 
 #endif

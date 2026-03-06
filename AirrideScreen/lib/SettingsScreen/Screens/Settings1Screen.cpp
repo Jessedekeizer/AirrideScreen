@@ -1,126 +1,115 @@
-#include "../include/Settings1Screen.h"
+#include "Settings1Screen.h"
 
-Settings1Screen::Settings1Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice)
-    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
+#include "ESettingsScreenButtons.h"
+
+Settings1Screen::Settings1Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice)
+    : SettingsScreenBase(screenManager, settingsScreenCommunication, settingsDevice)
 {
-    name = "Settings1";
+    name = EScreen::SETTINGS1;
     path = "/Settings1.png";
     buttons = std::vector<Button *>();
 
-    buttons.push_back(new PushButton(10, 10, 50, 50, "MainScreen",
+    buttons.push_back(new PushButton(SETTINGSBTN_MAIN_X, SETTINGSBTN_MAIN_Y, SETTINGSBTN_MAIN_W, SETTINGSBTN_MAIN_H, MAIN_SCREEN,
                                      [this](Button &button)
-                                     { HandleMainScreen(); }));
+                                     { GoToMainScreen(); }));
 
-    buttons.push_back(new PushButton(260, 10, 50, 50, "save",
+    buttons.push_back(new PushButton(SETTINGSBTN_SAVE_X, SETTINGSBTN_SAVE_Y, SETTINGSBTN_SAVE_W, SETTINGSBTN_SAVE_H, SAVE,
                                      [this](Button &button)
-                                     { HandleSave(); }));
+                                     { SaveSettings(); }));
 
-    buttons.push_back(new PushButton(126, 73, 35, 35, "RideFD",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, RIDE_FRONT_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleRideFD(); }));
+                                     { HandleRideFrontSub(); }));
 
-    buttons.push_back(new PushButton(218, 73, 35, 35, "RideFU",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, RIDE_FRONT_ADD,
                                      [this](Button &button)
-                                     { HandleRideFU(); }));
+                                     { HandleRideFrontAdd(); }));
 
-    buttons.push_back(new PushButton(126, 112, 35, 35, "RideBD",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, RIDE_BACK_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleRideBD(); }));
+                                     { HandleRideBackSub(); }));
 
-    buttons.push_back(new PushButton(218, 112, 35, 35, "RideBU",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, RIDE_BACK_ADD,
                                      [this](Button &button)
-                                     { HandleRideBU(); }));
-    buttons.push_back(new PushButton(126, 159, 35, 35, "MaxFD",
+                                     { HandleRideBackAdd(); }));
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, MAX_FRONT_ADD,
                                      [this](Button &button)
-                                     { HandleMaxFD(); }));
+                                     { HandleMaxFrontSub(); }));
 
-    buttons.push_back(new PushButton(218, 159, 35, 35, "MaxFU",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, MAX_FRONT_ADD,
                                      [this](Button &button)
-                                     { HandleMaxFU(); }));
+                                     { HandleMaxFrontAdd(); }));
 
-    buttons.push_back(new PushButton(126, 198, 35, 35, "MaxBD",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, MAX_BACK_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleMaxBD(); }));
+                                     { HandleMaxBackSub(); }));
 
-    buttons.push_back(new PushButton(218, 198, 35, 35, "MaxBU",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, MAX_BACK_ADD,
                                      [this](Button &button)
-                                     { HandleMaxBU(); }));
+                                     { HandleMaxBackAdd(); }));
 
-    buttons.push_back(new PushButton(275, 198, 30, 30, "Settings2",
+    buttons.push_back(new PushButton(SETTINGSBTN_NAV_RIGHT_X, SETTINGSBTN_NAV_BOTTOM_Y, SETTINGSBTN_NAV_SIZE, SETTINGSBTN_NAV_SIZE, SETTINGS2,
                                      [this](Button &button)
                                      { HandleSettings2(); }));
 }
 
 void Settings1Screen::OnSetup()
 {
-    storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
-    storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
-    storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
-    storageHandler.DrawString(String(settings.backMax, 1), 180, 207);
+    storageHandler.DrawString(String(settings.rideFront, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
+    storageHandler.DrawString(String(settings.rideBack, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.DrawString(String(settings.frontMax, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
+    storageHandler.DrawString(String(settings.backMax, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW4_Y);
 }
 
-void Settings1Screen::HandleMainScreen()
-{
-    screenManager.ChangeScreen("MainScreen");
-}
-
-void Settings1Screen::HandleSave()
-{
-    storageHandler.WriteSettings(settings);
-    settingsScreenCommunication.SendSettings();
-    storageHandler.ReadSettings(settings);
-    screenManager.ChangeScreen("MainScreen");
-}
-
-void Settings1Screen::HandleRideFU()
+void Settings1Screen::HandleRideFrontAdd()
 {
     settings.adjustValue(settings.rideFront, 0.1);
-    storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
+    storageHandler.DrawString(String(settings.rideFront, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
-void Settings1Screen::HandleRideFD()
+void Settings1Screen::HandleRideFrontSub()
 {
     settings.adjustValue(settings.rideFront, -0.1);
-    storageHandler.DrawString(String(settings.rideFront, 1), 180, 82);
+    storageHandler.DrawString(String(settings.rideFront, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
-void Settings1Screen::HandleRideBU()
+void Settings1Screen::HandleRideBackAdd()
 {
     settings.adjustValue(settings.rideBack, 0.1);
-    storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
+    storageHandler.DrawString(String(settings.rideBack, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW2_Y);
 }
 
-void Settings1Screen::HandleRideBD()
+void Settings1Screen::HandleRideBackSub()
 {
     settings.adjustValue(settings.rideBack, -0.1);
-    storageHandler.DrawString(String(settings.rideBack, 1), 180, 122);
+    storageHandler.DrawString(String(settings.rideBack, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW2_Y);
 }
 
-void Settings1Screen::HandleMaxFU()
+void Settings1Screen::HandleMaxFrontAdd()
 {
     settings.adjustValue(settings.frontMax, 0.1);
-    storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
+    storageHandler.DrawString(String(settings.frontMax, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
 }
 
-void Settings1Screen::HandleMaxFD()
+void Settings1Screen::HandleMaxFrontSub()
 {
     settings.adjustValue(settings.frontMax, -0.1);
-    storageHandler.DrawString(String(settings.frontMax, 1), 180, 167);
+    storageHandler.DrawString(String(settings.frontMax, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
 }
 
-void Settings1Screen::HandleMaxBU()
+void Settings1Screen::HandleMaxBackAdd()
 {
     settings.adjustValue(settings.backMax, 0.1);
-    storageHandler.DrawString(String(settings.backMax, 1), 180, 207);
+    storageHandler.DrawString(String(settings.backMax, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW4_Y);
 }
 
-void Settings1Screen::HandleMaxBD()
+void Settings1Screen::HandleMaxBackSub()
 {
     settings.adjustValue(settings.backMax, -0.1);
-    storageHandler.DrawString(String(settings.backMax, 1), 180, 207);
+    storageHandler.DrawString(String(settings.backMax, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings1Screen::HandleSettings2()
 {
-    screenManager.ChangeScreen("Settings2");
+    screenManager.RequestScreen(EScreen::SETTINGS2);
 }

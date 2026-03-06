@@ -2,7 +2,7 @@
 
 #include "SerialManager.h"
 
-void SettingsScreenCommunication::SendSettings() {
+void SettingsScreenCommunication::SendSettings(SettingsDevice &settings) {
     serialManager.Debug("try settings send");
     communication.SendMessage("settings/" + String(settings.frontMax) +
                               "/" + settings.backMax +

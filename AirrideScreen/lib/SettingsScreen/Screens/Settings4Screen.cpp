@@ -1,135 +1,124 @@
-#include "../include/Settings4Screen.h"
+#include "Settings4Screen.h"
+#include "ESettingsScreenButtons.h"
 
-Settings4Screen::Settings4Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice)
-    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
+Settings4Screen::Settings4Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice)
+    : SettingsScreenBase(screenManager, settingsScreenCommunication, settingsDevice)
 {
-    name = "Settings4";
+    name = EScreen::SETTINGS4;
     path = "/Settings4.png";
     buttons = std::vector<Button *>();
-    buttons.push_back(new PushButton(10, 10, 50, 50, "MainScreen",
+    buttons.push_back(new PushButton(SETTINGSBTN_MAIN_X, SETTINGSBTN_MAIN_Y, SETTINGSBTN_MAIN_W, SETTINGSBTN_MAIN_H, MAIN_SCREEN,
                                      [this](Button &button)
-                                     { HandleMainScreen(); }));
+                                     { GoToMainScreen(); }));
 
-    buttons.push_back(new PushButton(260, 10, 50, 50, "save",
+    buttons.push_back(new PushButton(SETTINGSBTN_SAVE_X, SETTINGSBTN_SAVE_Y, SETTINGSBTN_SAVE_W, SETTINGSBTN_SAVE_H, SAVE,
                                      [this](Button &button)
-                                     { HandleSave(); }));
+                                     { SaveSettings(); }));
 
-    buttons.push_back(new PushButton(126, 73, 35, 35, "ParkDurS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, PARK_DURATION_SECONDS_SUBTRACT,
                                      [this](Button &button)
                                      { HandleParkDurationSub(); }));
 
-    buttons.push_back(new PushButton(218, 73, 35, 35, "ParkDurA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, PARK_DURATION_SECONDS_SUBTRACT,
                                      [this](Button &button)
                                      { HandleParkDurationAdd(); }));
 
-    buttons.push_back(new PushButton(126, 112, 35, 35, "LoggingOn",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, LOGGING_ON,
                                      [this](Button &button)
                                      { HandleLoggingOn(); }));
 
-    buttons.push_back(new PushButton(218, 112, 35, 35, "LoggingOff",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, LOGGING_OFF,
                                      [this](Button &button)
                                      { HandleLoggingOff(); }));
 
-    buttons.push_back(new PushButton(126, 159, 35, 35, "MachineLearningOn",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, MACHINE_LEARNING_ON,
                                      [this](Button &button)
                                      { HandleMachineLearningOn(); }));
 
-    buttons.push_back(new PushButton(218, 159, 35, 35, "MachineLearningOff",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, MACHINE_LEARNING_OFF,
                                      [this](Button &button)
                                      { HandleMachineLearningOff(); }));
 
-    buttons.push_back(new PushButton(126, 198, 35, 35, "BluetoothOn",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, BLUETOOTH_ON,
                                      [this](Button &button)
                                      { HandleBluetoothOn(); }));
 
-    buttons.push_back(new PushButton(218, 198, 35, 35, "BluetoothOff",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, BLUETOOTH_OFF,
                                      [this](Button &button)
                                      { HandleBluetoothOff(); }));
 
-                                     buttons.push_back(new PushButton(269, 112, 35, 35, "Calibration",
+    // calibration button doesn't follow grid, use defined X while sharing size
+    buttons.push_back(new PushButton(SETTINGSBTN_CALIB_X, 112, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, CALIBRATION,
                                      [this](Button &button)
                                      { HandleCalibration(); }));
 
-    buttons.push_back(new PushButton(10, 198, 30, 30, "Settings3",
+    buttons.push_back(new PushButton(SETTINGSBTN_NAV_LEFT_X, SETTINGSBTN_NAV_BOTTOM_Y, SETTINGSBTN_NAV_SIZE, SETTINGSBTN_NAV_SIZE, SETTINGS3,
                                      [this](Button &button)
                                      { HandleSettings3(); }));
 }
 
 void Settings4Screen::OnSetup()
 {
-    storageHandler.DrawString(String(settings.parkDuration, 1), 180, 82);
-    storageHandler.PrintSettingBool(settings.logging, 172, 112);
-    storageHandler.PrintSettingBool(settings.machineLearning, 172, 159);
-    storageHandler.PrintSettingBool(settings.bluetooth, 172, 198);
-}
-
-void Settings4Screen::HandleMainScreen()
-{
-    screenManager.ChangeScreen("MainScreen");
-}
-
-void Settings4Screen::HandleSave()
-{
-    storageHandler.WriteSettings(settings);
-    settingsScreenCommunication.SendSettings();
-    storageHandler.ReadSettings(settings);
-    screenManager.ChangeScreen("MainScreen");
+    storageHandler.DrawString(String(settings.parkDuration, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
+    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW3_Y);
+    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings4Screen::HandleParkDurationAdd()
 {
     settings.adjustValue(settings.parkDuration, 0.1);
-    storageHandler.DrawString(String(settings.parkDuration, 1), 180, 82);
+    storageHandler.DrawString(String(settings.parkDuration, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
 void Settings4Screen::HandleParkDurationSub()
 {
     settings.adjustValue(settings.parkDuration, -0.1);
-    storageHandler.DrawString(String(settings.parkDuration, 1), 180, 82);
+    storageHandler.DrawString(String(settings.parkDuration, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
 void Settings4Screen::HandleLoggingOn()
 {
     settings.logging = true;
-    storageHandler.PrintSettingBool(settings.logging, 172, 112);
+    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
 }
 
 void Settings4Screen::HandleLoggingOff()
 {
     settings.logging = false;
-    storageHandler.PrintSettingBool(settings.logging, 172, 112);
+    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
 }
 
 void Settings4Screen::HandleMachineLearningOn()
 {
     settings.machineLearning = true;
-    storageHandler.PrintSettingBool(settings.machineLearning, 172, 159);
+    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW3_Y);
 }
 
 void Settings4Screen::HandleMachineLearningOff()
 {
     settings.machineLearning = false;
-    storageHandler.PrintSettingBool(settings.machineLearning, 172, 159);
+    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW3_Y);
 }
 
 void Settings4Screen::HandleBluetoothOn()
 {
     settings.bluetooth = true;
-    storageHandler.PrintSettingBool(settings.bluetooth, 172, 198);
+    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings4Screen::HandleBluetoothOff()
 {
     settings.bluetooth = false;
-    storageHandler.PrintSettingBool(settings.bluetooth, 172, 198);
+    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings4Screen::HandleSettings3()
 {
-    screenManager.ChangeScreen("Settings3");
+    screenManager.RequestScreen(EScreen::SETTINGS3);
 }
 
 void Settings4Screen::HandleCalibration()
 {
-    screenManager.ChangeScreen("CalibrationScreen");
+    screenManager.RequestScreen(EScreen::CALIBRATION);
 }

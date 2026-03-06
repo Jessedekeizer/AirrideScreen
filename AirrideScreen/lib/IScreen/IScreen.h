@@ -5,36 +5,34 @@
 #include <Button.h>
 #include <vector>
 
-class IScreen
-{
+#include "EScreens.h"
+
+class IScreen {
 public:
-    void HandleTouch(int touchX, int touchY)
-    {
-        for (Button *button : buttons)
-        {
+    virtual ~IScreen() = default;
+
+    void HandleTouch(int touchX, int touchY) {
+        for (Button *button: buttons) {
             button->CheckTouch(touchX, touchY);
         };
     }
 
     virtual void OnLoop() = 0;
 
-    void ReleaseButtons()
-    {
-        for (Button *button : buttons)
-        {
+    void ReleaseButtons() {
+        for (Button *button: buttons) {
             button->ReleaseButton();
         }
     };
 
     virtual void OnSetup() = 0;
 
-
-    String GetName() { return name; };
+    EScreen GetName() { return name; };
 
     const char *GetPath() { return path; };
 
 protected:
-    String name;
+    EScreen name;
     const char *path;
     bool isActive;
     std::vector<Button *> buttons;

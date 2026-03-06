@@ -4,20 +4,19 @@
 #include <memory>
 #include <vector>
 
-class ScreenManager
-{
+class ScreenManager {
 public:
     ScreenManager();
     ~ScreenManager();
-    void AddScreen(IScreen* screen);
-    bool ChangeScreen(const String &screenName);
+    void AddScreen(IScreen *screen);
+    bool RequestScreen(EScreen requestedScreen);
     IScreen *GetActiveScreen() const { return activeScreen; }
 
 private:
     std::vector<IScreen *> screens;
     IScreen *activeScreen;
 
-    IScreen *FindScreen(const String &screenName);
+    IScreen *FindScreen(EScreen newScreen);
     void TransitionToScreen(IScreen *newScreen);
 };
 

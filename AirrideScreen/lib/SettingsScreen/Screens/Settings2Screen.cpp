@@ -1,134 +1,123 @@
-#include "../include/Settings2Screen.h"
+#include "Settings2Screen.h"
 
-Settings2Screen::Settings2Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice)
-    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
+#include "ESettingsScreenButtons.h"
+
+Settings2Screen::Settings2Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice)
+    : SettingsScreenBase(screenManager, settingsScreenCommunication, settingsDevice)
 {
-    name = "Settings2";
+    name = EScreen::SETTINGS2;
     path = "/Settings2.png";
     buttons = std::vector<Button *>();
-    buttons.push_back(new PushButton(10, 10, 50, 50, "MainScreen",
+    buttons.push_back(new PushButton(SETTINGSBTN_MAIN_X, SETTINGSBTN_MAIN_Y, SETTINGSBTN_MAIN_W, SETTINGSBTN_MAIN_H, MAIN_SCREEN,
                                      [this](Button &button)
-                                     { HandleMainScreen(); }));
+                                     { SaveSettings(); }));
 
-    buttons.push_back(new PushButton(260, 10, 50, 50, "save",
+    buttons.push_back(new PushButton(SETTINGSBTN_SAVE_X, SETTINGSBTN_SAVE_Y, SETTINGSBTN_SAVE_W, SETTINGSBTN_SAVE_H, SAVE,
                                      [this](Button &button)
-                                     { HandleSave(); }));
+                                     { GoToMainScreen(); }));
 
-    buttons.push_back(new PushButton(126, 73, 35, 35, "FrontUS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, FRONT_UP_FACTOR_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleFrontUpSub(); }));
+                                     { HandleFrontUpFactorSub(); }));
 
-    buttons.push_back(new PushButton(218, 73, 35, 35, "FrontUA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, FRONT_UP_FACTOR_ADD,
                                      [this](Button &button)
-                                     { HandleFrontUpAdd(); }));
+                                     { HandleFrontUpFactorAdd(); }));
 
-    buttons.push_back(new PushButton(126, 112, 35, 35, "FrontDS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, FRONT_DOWN_FACTOR_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleFrontDownSub(); }));
+                                     { HandleFrontDownFactorSub(); }));
 
-    buttons.push_back(new PushButton(218, 112, 35, 35, "FrontDA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, FRONT_DOWN_FACTOR_ADD,
                                      [this](Button &button)
-                                     { HandleFrontDownAdd(); }));
+                                     { HandleFrontDownFactorAdd(); }));
 
-    buttons.push_back(new PushButton(126, 159, 35, 35, "BackUS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, BACK_UP_FACTOR_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleBackUpSub(); }));
+                                     { HandleBackUpFactorSub(); }));
 
-    buttons.push_back(new PushButton(218, 159, 35, 35, "BackUA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, BACK_UP_FACTOR_ADD,
                                      [this](Button &button)
-                                     { HandleBackUpAdd(); }));
+                                     { HandleBackUpFactorAdd(); }));
 
-    buttons.push_back(new PushButton(126, 198, 35, 35, "BackDS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, BACK_DOWN_FACTOR_SUBTRACT,
                                      [this](Button &button)
-                                     { HandleBackDownSub(); }));
+                                     { HandleBackDownFactorSub(); }));
 
-    buttons.push_back(new PushButton(218, 198, 35, 35, "BackDA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, BACK_DOWN_FACTOR_ADD,
                                      [this](Button &button)
-                                     { HandleBackDownAdd(); }));
-    buttons.push_back(new PushButton(10, 198, 30, 30, "Settings1",
+                                     { HandleBackDownFactorAdd(); }));
+    buttons.push_back(new PushButton(SETTINGSBTN_NAV_LEFT_X, SETTINGSBTN_NAV_BOTTOM_Y, SETTINGSBTN_NAV_SIZE, SETTINGSBTN_NAV_SIZE, SETTINGS1,
                                      [this](Button &button)
                                      { HandleSettings1(); }));
 
-    buttons.push_back(new PushButton(275, 198, 30, 30, "Settings2",
+    buttons.push_back(new PushButton(SETTINGSBTN_NAV_RIGHT_X, SETTINGSBTN_NAV_BOTTOM_Y, SETTINGSBTN_NAV_SIZE, SETTINGSBTN_NAV_SIZE, SETTINGS3,
                                      [this](Button &button)
                                      { HandleSettings3(); }));
 }
 
 void Settings2Screen::OnSetup()
 {
-    storageHandler.DrawString(String(settings.backUpX, 1), 180, 82);
-    storageHandler.DrawString(String(settings.backDownX, 1), 180, 122);
-    storageHandler.DrawString(String(settings.frontUpX, 1), 180, 167);
-    storageHandler.DrawString(String(settings.frontDownX, 1), 180, 207);
+    storageHandler.DrawString(String(settings.backUpX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
+    storageHandler.DrawString(String(settings.backDownX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.DrawString(String(settings.frontUpX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
+    storageHandler.DrawString(String(settings.frontDownX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW4_Y);
 }
 
-void Settings2Screen::HandleMainScreen()
-{
-    screenManager.ChangeScreen("MainScreen");
-}
-
-void Settings2Screen::HandleSave()
-{
-    storageHandler.WriteSettings(settings);
-    settingsScreenCommunication.SendSettings();
-    storageHandler.ReadSettings(settings);
-    screenManager.ChangeScreen("MainScreen");
-}
-
-void Settings2Screen::HandleFrontUpAdd()
+void Settings2Screen::HandleFrontUpFactorAdd()
 {
     settings.adjustValue(settings.frontUpX, 0.1);
-    storageHandler.DrawString(String(settings.frontUpX, 1), 180, 82);
+    storageHandler.DrawString(String(settings.frontUpX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
-void Settings2Screen::HandleFrontUpSub()
+void Settings2Screen::HandleFrontUpFactorSub()
 {
     settings.adjustValue(settings.frontUpX, -0.1);
-    storageHandler.DrawString(String(settings.frontUpX, 1), 180, 82);
+    storageHandler.DrawString(String(settings.frontUpX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
-void Settings2Screen::HandleFrontDownAdd()
+void Settings2Screen::HandleFrontDownFactorAdd()
 {
     settings.adjustValue(settings.frontDownX, 0.1);
-    storageHandler.DrawString(String(settings.frontDownX, 1), 180, 122);
+    storageHandler.DrawString(String(settings.frontDownX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW2_Y);
 }
 
-void Settings2Screen::HandleFrontDownSub()
+void Settings2Screen::HandleFrontDownFactorSub()
 {
     settings.adjustValue(settings.frontDownX, -0.1);
-    storageHandler.DrawString(String(settings.frontDownX, 1), 180, 122);
+    storageHandler.DrawString(String(settings.frontDownX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW2_Y);
 }
 
-void Settings2Screen::HandleBackUpAdd()
+void Settings2Screen::HandleBackUpFactorAdd()
 {
     settings.adjustValue(settings.backUpX, 0.1);
-    storageHandler.DrawString(String(settings.backUpX, 1), 180, 167);
+    storageHandler.DrawString(String(settings.backUpX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
 }
 
-void Settings2Screen::HandleBackUpSub()
+void Settings2Screen::HandleBackUpFactorSub()
 {
     settings.adjustValue(settings.backUpX, -0.1);
-    storageHandler.DrawString(String(settings.backUpX, 1), 180, 167);
+    storageHandler.DrawString(String(settings.backUpX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
 }
 
-void Settings2Screen::HandleBackDownAdd()
+void Settings2Screen::HandleBackDownFactorAdd()
 {
     settings.adjustValue(settings.backDownX, 0.1);
-    storageHandler.DrawString(String(settings.backDownX, 1), 180, 207);
+    storageHandler.DrawString(String(settings.backDownX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW4_Y);
 }
 
-void Settings2Screen::HandleBackDownSub()
+void Settings2Screen::HandleBackDownFactorSub()
 {
     settings.adjustValue(settings.backDownX, -0.1);
-    storageHandler.DrawString(String(settings.backDownX, 1), 180, 207);
+    storageHandler.DrawString(String(settings.backDownX, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings2Screen::HandleSettings1()
 {
-    screenManager.ChangeScreen("Settings1");
+    screenManager.RequestScreen(EScreen::SETTINGS1);
 }
 
 void Settings2Screen::HandleSettings3()
 {
-    screenManager.ChangeScreen("Settings3");
+    screenManager.RequestScreen(EScreen::SETTINGS3);
 }

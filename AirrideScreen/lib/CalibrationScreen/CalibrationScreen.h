@@ -3,9 +3,11 @@
 
 #include "IScreen.h"
 #include "TFTStorageHandler.h"
+#include "SerialManager.h"
 #include "XPT2046_Bitbang.h"
 #include "ECalibrationState.h"
 #include "ScreenManager.h"
+#include "CalibrationGeometry.h" // layout macros
 
 #define CALIBRATION_TIME 3000
 XPT2046_Bitbang *GetTouchScreen();
@@ -13,7 +15,7 @@ XPT2046_Bitbang *GetTouchScreen();
 class CalibrationScreen : public IScreen
 {
 public:
-    CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings);
+    CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings, XPT2046_Bitbang &touchScreen);
     void OnLoop() override;
     void OnSetup() override;
 
@@ -53,7 +55,7 @@ private:
 
     long exitCountdownStart = 0;
 
-    XPT2046_Bitbang *touchScreen;
+    XPT2046_Bitbang &touchScreen;
     SettingsDevice &settings;
     ScreenManager &screenManager;
 };

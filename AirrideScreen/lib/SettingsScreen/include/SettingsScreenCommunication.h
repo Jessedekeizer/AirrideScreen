@@ -6,14 +6,16 @@
 #include "SettingsDevice.h"
 
 class SettingsScreenCommunication {
-    public:
-    SettingsScreenCommunication(Communication& communication, SettingsDevice& settings) : communication(communication), settings(settings) {};
-    ~SettingsScreenCommunication(){};
-    void SendSettings();
+public:
+    SettingsScreenCommunication(Communication &communication, SettingsDevice &settings) : communication(communication) {
+    };
+
+    ~SettingsScreenCommunication() {
+    };
+    void SendSettings(SettingsDevice &settings);
 
 private:
-    Communication& communication;
-    SettingsDevice& settings;
+    Communication &communication;
 };
 
 #endif //SETTINGSSCREENCOMMUNICATION_H

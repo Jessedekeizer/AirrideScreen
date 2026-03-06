@@ -1,134 +1,124 @@
-#include "../include/Settings3Screen.h"
+#include "Settings3Screen.h"
 
-Settings3Screen::Settings3Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice)
-    : screenManager(screenManager),settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice)
+#include "ESettingsScreenButtons.h"
+
+Settings3Screen::Settings3Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice)
+    : SettingsScreenBase(screenManager, settingsScreenCommunication, settingsDevice)
 {
-    name = "Settings3";
+    name = EScreen::SETTINGS3;
     path = "/Settings3.png";
     buttons = std::vector<Button *>();
-    buttons.push_back(new PushButton(10, 10, 50, 50, "MainScreen",
+    buttons.push_back(new PushButton(SETTINGSBTN_MAIN_X, SETTINGSBTN_MAIN_Y, SETTINGSBTN_MAIN_W, SETTINGSBTN_MAIN_H, MAIN_SCREEN,
                                      [this](Button &button)
-                                     { HandleMainScreen(); }));
+                                     { SaveSettings(); }));
 
-    buttons.push_back(new PushButton(260, 10, 50, 50, "save",
+    buttons.push_back(new PushButton(SETTINGSBTN_SAVE_X, SETTINGSBTN_SAVE_Y, SETTINGSBTN_SAVE_W, SETTINGSBTN_SAVE_H, SAVE,
                                      [this](Button &button)
-                                     { HandleSave(); }));
+                                     { GoToMainScreen(); }));
 
-    buttons.push_back(new PushButton(126, 73, 35, 35, "AutoRideSecS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_RIDE_SECONDS_SUBTRACT,
                                      [this](Button &button)
                                      { HandleAutoRideSecSub(); }));
 
-    buttons.push_back(new PushButton(218, 73, 35, 35, "AutoRideSecA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW1_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_RIDE_SECONDS_ADD,
                                      [this](Button &button)
                                      { HandleAutoRideSecAdd(); }));
 
-    buttons.push_back(new PushButton(126, 112, 35, 35, "AutoRideOn",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_RIDE_ON,
                                      [this](Button &button)
                                      { HandleAutoRideOn(); }));
 
-    buttons.push_back(new PushButton(218, 112, 35, 35, "AutoRideOff",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW2_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_RIDE_OFF,
                                      [this](Button &button)
                                      { HandleAutoRideOff(); }));
 
-    buttons.push_back(new PushButton(126, 159, 35, 35, "AutoParkSecS",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_PARK_SECONDS_SUBTRACT,
                                      [this](Button &button)
                                      { HandleAutoParkSecSub(); }));
 
-    buttons.push_back(new PushButton(218, 159, 35, 35, "AutoParkSecA",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW3_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_PARK_SECONDS_ADD,
                                      [this](Button &button)
                                      { HandleAutoParkSecAdd(); }));
 
-    buttons.push_back(new PushButton(126, 198, 35, 35, "AutoParkOn",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL1_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_PARK_ON,
                                      [this](Button &button)
                                      { HandleAutoParkOn(); }));
 
-    buttons.push_back(new PushButton(218, 198, 35, 35, "AutoParkOff",
+    buttons.push_back(new PushButton(SETTINGSBTN_ADJ_COL2_X, SETTINGSBTN_ADJ_ROW4_Y, SETTINGSBTN_ADJ_W, SETTINGSBTN_ADJ_H, AUTO_PARK_OFF,
                                      [this](Button &button)
                                      { HandleAutoParkOff(); }));
 
-    buttons.push_back(new PushButton(10, 198, 30, 30, "Settings2",
+    buttons.push_back(new PushButton(SETTINGSBTN_NAV_LEFT_X, SETTINGSBTN_NAV_BOTTOM_Y, SETTINGSBTN_NAV_SIZE, SETTINGSBTN_NAV_SIZE, SETTINGS2,
                                      [this](Button &button)
-                                     { HandleSettings1(); }));
+                                     { HandleSettings2(); }));
 
-    buttons.push_back(new PushButton(275, 198, 30, 30, "Settings4",
+    buttons.push_back(new PushButton(SETTINGSBTN_NAV_RIGHT_X, SETTINGSBTN_NAV_BOTTOM_Y, SETTINGSBTN_NAV_SIZE, SETTINGSBTN_NAV_SIZE, SETTINGS4,
                                      [this](Button &button)
-                                     { HandleSettings3(); }));
+                                     { HandleSettings4(); }));
 }
 
 void Settings3Screen::OnSetup()
 {
-    storageHandler.DrawString(String(settings.autoRideSec, 1), 180, 82);
-    storageHandler.PrintSettingBool(settings.autoRide, 172, 112);
-    storageHandler.DrawString(String(settings.autoParkSec, 1), 180, 167);
-    storageHandler.PrintSettingBool(settings.autoPark, 172, 198);
-}
-void Settings3Screen::HandleMainScreen()
-{
-    screenManager.ChangeScreen("MainScreen");
-}
-
-void Settings3Screen::HandleSave()
-{
-    storageHandler.WriteSettings(settings);
-    settingsScreenCommunication.SendSettings();
-    storageHandler.ReadSettings(settings);
-    screenManager.ChangeScreen("MainScreen");
+    storageHandler.DrawString(String(settings.autoRideSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
+    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.DrawString(String(settings.autoParkSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
+    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings3Screen::HandleAutoRideSecAdd()
 {
     settings.adjustValue(settings.autoRideSec, 0.1);
-    storageHandler.DrawString(String(settings.autoRideSec, 1), 180, 82);
+    storageHandler.DrawString(String(settings.autoRideSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
 void Settings3Screen::HandleAutoRideSecSub()
 {
     settings.adjustValue(settings.autoRideSec, -0.1);
-    storageHandler.DrawString(String(settings.autoRideSec, 1), 180, 82);
+    storageHandler.DrawString(String(settings.autoRideSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
 }
 
 void Settings3Screen::HandleAutoRideOn()
 {
     settings.autoRide = true;
-    storageHandler.PrintSettingBool(settings.autoRide, 172, 112);
+    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
 }
 
 void Settings3Screen::HandleAutoRideOff()
 {
     settings.autoRide = false;
-    storageHandler.PrintSettingBool(settings.autoRide, 172, 112);
+    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
 }
 
 void Settings3Screen::HandleAutoParkSecAdd()
 {
     settings.adjustValue(settings.autoParkSec, 0.1);
-    storageHandler.DrawString(String(settings.autoParkSec, 1), 180, 167);
+    storageHandler.DrawString(String(settings.autoParkSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
 }
 
 void Settings3Screen::HandleAutoParkSecSub()
 {
     settings.adjustValue(settings.autoParkSec, -0.1);
-    storageHandler.DrawString(String(settings.autoParkSec, 1), 180, 167);
+    storageHandler.DrawString(String(settings.autoParkSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
 }
 
 void Settings3Screen::HandleAutoParkOn()
 {
     settings.autoPark = true;
-    storageHandler.PrintSettingBool(settings.autoPark, 172, 198);
+    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
 }
 
 void Settings3Screen::HandleAutoParkOff()
 {
     settings.autoPark = false;
-    storageHandler.PrintSettingBool(settings.autoPark, 172, 198);
+    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
 }
 
-void Settings3Screen::HandleSettings1()
+void Settings3Screen::HandleSettings2()
 {
-    screenManager.ChangeScreen("Settings2");
+    screenManager.RequestScreen(EScreen::SETTINGS2);
 }
 
-void Settings3Screen::HandleSettings3()
+void Settings3Screen::HandleSettings4()
 {
-    screenManager.ChangeScreen("Settings4");
+    screenManager.RequestScreen(EScreen::SETTINGS3);
 }

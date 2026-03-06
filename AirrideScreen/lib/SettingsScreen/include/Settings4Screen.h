@@ -3,19 +3,20 @@
 
 #include "IScreen.h"
 #include "ScreenManager.h"
+#include "SettingsScreenBase.h"
 #include "SettingsScreenCommunication.h"
 #include "TFTStorageHandler.h"
 
-class Settings4Screen : public IScreen
-{
+class Settings4Screen : public SettingsScreenBase {
 public:
-    Settings4Screen(ScreenManager& screenManager, SettingsScreenCommunication& settingsScreenCommunication, SettingsDevice& settingsDevice);
-    void OnLoop() override {}
+    Settings4Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice);
+
+    void OnLoop() override {
+    }
+
     void OnSetup() override;
 
 private:
-    void HandleMainScreen();
-    void HandleSave();
     void HandleSettings3();
     void HandleParkDurationAdd();
     void HandleParkDurationSub();
@@ -26,9 +27,6 @@ private:
     void HandleBluetoothOn();
     void HandleBluetoothOff();
     void HandleCalibration();
-    ScreenManager& screenManager;
-    SettingsScreenCommunication& settingsScreenCommunication;
-    SettingsDevice& settings;
 };
 
 #endif

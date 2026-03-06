@@ -20,13 +20,16 @@
 #include "TFTStorageHandler.h"
 #include "TimerManager.h"
 
-
 #define MOSI_PIN 32
 #define MISO_PIN 39
 #define CLK_PIN 25
 #define CS_PIN 33
 
-XPT2046_Bitbang ts(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
+#define SERIAL_BAUD_RATE 9600
+#define SERIAL2_RX_PIN 27
+#define SERIAL2_TX_PIN 22
+
+XPT2046_Bitbang touchScreen(MOSI_PIN, MISO_PIN, CLK_PIN, CS_PIN);
 
 void printTouchToSerial(TouchPoint);
 void UpdateTouchScreen();
@@ -46,23 +49,21 @@ MainScreenData mainScreenData;
 MainScreenCommunication mainScreenCommunication(communication, mainScreenData);
 MainScreen mainScreen(mainScreenData, mainScreenCommunication, screenManager, settings);
 
-SettingsScreenCommunication settingsScreenCommunication(communication,settings);
-Settings1Screen  settings1Screen(screenManager, settingsScreenCommunication, settings);
-Settings2Screen  settings2Screen(screenManager, settingsScreenCommunication, settings);
-Settings3Screen  settings3Screen(screenManager, settingsScreenCommunication, settings);
-Settings4Screen  settings4Screen(screenManager, settingsScreenCommunication, settings);
+SettingsScreenCommunication settingsScreenCommunication(communication, settings);
+Settings1Screen settings1Screen(screenManager, settingsScreenCommunication, settings);
+Settings2Screen settings2Screen(screenManager, settingsScreenCommunication, settings);
+Settings3Screen settings3Screen(screenManager, settingsScreenCommunication, settings);
+Settings4Screen settings4Screen(screenManager, settingsScreenCommunication, settings);
 
-CalibrationScreen calibrationScreen(screenManager,settings);
-
+CalibrationScreen calibrationScreen(screenManager, settings, touchScreen);
 
 void setup()
 {
-  Serial2.begin(9600, SERIAL_8N1, 27, 22);
-  //retrieve settings
+  Serial2.begin(SERIAL_BAUD_RATE, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
+  // retrieve settings
   storageHandler.GetInstance();
   storageHandler.ReadSettings(settings);
-  settingsScreenCommunication.SendSettings();
-
+  settingsScreenCommunication.SendSettings(settings);
 
   screenManager.AddScreen(&mainScreen);
   screenManager.AddScreen(&settings1Screen);
@@ -73,17 +74,17 @@ void setup()
   serialManager.GetInstance();
   delay(1000);
   serialManager.setDebugMode(true);
-  ts.begin();
+  touchScreen.begin();
   timerManager.GetInstance();
 
   if (!settings.calibrationSet)
   {
-    screenManager.ChangeScreen("CalibrationScreen");
+    screenManager.RequestScreen(EScreen::CALIBRATION);
   }
   else
   {
-    ts.setCalibration(settings.xmin, settings.xmax, settings.ymin, settings.ymax);
-    screenManager.ChangeScreen("MainScreen");
+    touchScreen.setCalibration(settings.xmin, settings.xmax, settings.ymin, settings.ymax);
+    screenManager.RequestScreen(EScreen::MAIN);
   }
   tickTimer = new Timer(0.1, []()
                         { UpdateTouchScreen(); }, true);
@@ -102,8 +103,7 @@ void loop()
 
 void UpdateTouchScreen()
 {
-  // serialManager.Debug("UpdateTouchScreen called");
-  TouchPoint touch = ts.getTouch();
+  TouchPoint touch = touchScreen.getTouch();
   if (touch.zRaw != 0)
   {
     // printTouchToSerial(touch);
@@ -120,9 +120,4 @@ void printTouchToSerial(TouchPoint p)
 {
   serialManager.Debug("Touch: X=" + String(p.x) + ", Y=" + String(p.y) +
                       ", ZRaw=" + String(p.zRaw));
-}
-
-XPT2046_Bitbang *GetTouchScreen()
-{
-  return &ts;
 }
