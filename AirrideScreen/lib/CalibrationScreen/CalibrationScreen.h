@@ -4,9 +4,10 @@
 
 #include "IScreen.h"
 #include "TFTStorageHandler.h"
-#include "SerialManager.h"
 #include "XPT2046_Bitbang.h"
+#include "ECalibrationState.h"
 #include "ScreenManager.h"
+
 #define CALIBRATION_TIME 3000
 XPT2046_Bitbang *GetTouchScreen();
 
@@ -18,6 +19,7 @@ public:
     void OnSetup() override;
 
 private:
+    void ChangeCalibrationState(ECalibrationState newState);
     void TopLeftCalibration();
     void BottomRightCalibration();
     void HandlePreCalibrationCountdown();
@@ -39,9 +41,10 @@ private:
 
     int seconds = 3;
 
+    ECalibrationState calibrationState;
+
     bool TopLeftCalibrationDone = false;
     bool BottomRightCalibrationDone = false;
-    bool startInterval = false;
     bool preCalibrationDone = false;
 
     long TopLeftStartTime = 0;

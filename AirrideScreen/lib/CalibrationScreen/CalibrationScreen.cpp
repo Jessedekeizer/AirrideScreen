@@ -5,7 +5,11 @@
 constexpr int SCREEN_WIDTH = 320;
 constexpr int SCREEN_HEIGHT = 240;
 constexpr int TEXT_X_POS = 80;
-constexpr int TEXT_Y_POS = 110;
+constexpr int TEXT_Y_POS = 90;
+constexpr int PRE_POST_X_POS = 100;
+constexpr int NUMBER_X_POS = 160;
+constexpr int NUMBER_Y_POS = 110;
+constexpr int SQUARE_SIZE = 10;
 constexpr int SCREEN_DEFAULT = 4095;
 constexpr int COUNTDOWN_START = 3;
 constexpr unsigned long COUNTDOWN_INTERVAL = 1000; // 1 second
@@ -24,27 +28,43 @@ CalibrationScreen::CalibrationScreen()
                                      { HandleBottomRightStart(); }));
 }
 
+void CalibrationScreen::OnSetup()
+{
+    touchScreen = GetTouchScreen();
+    secondsTime = millis();
+    preCalibrationTime = millis();
+    xmin = 0;
+    ymin = 0;
+    xmax = SCREEN_DEFAULT;
+    ymax = SCREEN_DEFAULT;
+    TopLeftStartTime = 0;
+    BottomRightStartTime = 0;
+    seconds = COUNTDOWN_START;
+    ClearScreen();
+    storageHandler.DrawString("Starting calibration in:", PRE_POST_X_POS, TEXT_Y_POS);
+    storageHandler.DrawString(String(seconds), NUMBER_X_POS, NUMBER_Y_POS);
+    ChangeCalibrationState(ECalibrationState::START_CALIBRATION);
+}
+
 void CalibrationScreen::OnLoop()
 {
-    if (!preCalibrationDone)
-    {
-        HandlePreCalibrationCountdown();
-        return;
+    switch (calibrationState) {
+        case ECalibrationState::START_CALIBRATION:
+            HandlePreCalibrationCountdown();
+            break;
+        case ECalibrationState::TOUCH_TOP_LEFT:
+        case ECalibrationState::TOUCH_BOTTOM_RIGHT:
+            break;
+        case ECalibrationState::TOP_LEFT_COUNTDOWN:
+            HandleTopLeftCalibration();
+            break;
+        case ECalibrationState::BOTTOM_RIGHT_COUNTDOWN:
+            HandleBottomRightCalibration();
+            break;
+        case ECalibrationState::EXIT_CALIBRATION:
+            HandlePostCalibrationCountdown();
+            break;
     }
-
-    if (!TopLeftCalibrationDone)
-    {
-        HandleTopLeftCalibration();
-        return;
-    }
-
-    if (!BottomRightCalibrationDone)
-    {
-        HandleBottomRightCalibration();
-        return;
-    }
-
-    HandlePostCalibrationCountdown();
 }
 
 void CalibrationScreen::HandlePreCalibrationCountdown()
@@ -76,26 +96,24 @@ void CalibrationScreen::UpdateCountdown()
     if (millis() - secondsTime > COUNTDOWN_INTERVAL)
     {
         secondsTime = millis();
-        storageHandler.DrawRect(150, TEXT_Y_POS, 10, 10);
-        storageHandler.DrawString(String(--seconds), 160, TEXT_Y_POS);
+        storageHandler.DrawRect(150, NUMBER_Y_POS, SQUARE_SIZE, SQUARE_SIZE);
+        storageHandler.DrawString(String(--seconds), NUMBER_X_POS, NUMBER_Y_POS);
     }
 }
 
 void CalibrationScreen::StartTopLeftCalibration()
 {
-    preCalibrationDone = true;
-    TopLeftCalibrationDone = false;
-    startInterval = false;
     ClearScreen();
     storageHandler.PrintImage("/Cross.png", 0, 0);
     storageHandler.DrawString("Press the top left corner", TEXT_X_POS, TEXT_Y_POS);
     TopLeftStartTime = 0;
     BottomRightStartTime = 0;
+    ChangeCalibrationState(ECalibrationState::TOUCH_TOP_LEFT);
 }
 
 void CalibrationScreen::HandleTopLeftCalibration()
 {
-    if (startInterval && (millis() - TopLeftStartTime > CALIBRATION_TIME))
+    if (millis() - TopLeftStartTime > CALIBRATION_TIME)
     {
         StartBottomRightCalibration();
     }
@@ -107,7 +125,7 @@ void CalibrationScreen::HandleTopLeftCalibration()
 
 void CalibrationScreen::HandleBottomRightCalibration()
 {
-    if (startInterval && (millis() - BottomRightStartTime > CALIBRATION_TIME))
+    if (millis() - BottomRightStartTime > CALIBRATION_TIME)
     {
         SaveCalibrationAndExit();
     }
@@ -119,27 +137,25 @@ void CalibrationScreen::HandleBottomRightCalibration()
 
 void CalibrationScreen::StartBottomRightCalibration()
 {
-    startInterval = false;
     ClearScreen();
     storageHandler.DrawString("Press the bottom right corner", TEXT_X_POS, TEXT_Y_POS);
     storageHandler.PrintImage("/Cross.png", 300, 220);
-    TopLeftCalibrationDone = true;
+    ChangeCalibrationState(ECalibrationState::TOUCH_BOTTOM_RIGHT);
 }
 
 void CalibrationScreen::SaveCalibrationAndExit()
 {
-    BottomRightCalibrationDone = true;
     exitCountdownStart = millis();
     secondsTime = millis();
     ClearScreen();
     seconds = COUNTDOWN_START;
-    storageHandler.DrawString("Exit calibration in:", 100, 90);
-    storageHandler.DrawString(String(seconds), 160, TEXT_Y_POS);
+    storageHandler.DrawString("Exit calibration in:", PRE_POST_X_POS, TEXT_Y_POS);
+    storageHandler.DrawString(String(seconds), NUMBER_X_POS, NUMBER_Y_POS);
     // adjust for middle of cross
-    xmin -= (SCREEN_DEFAULT / SCREEN_WIDTH) * 10;
-    xmax += (SCREEN_DEFAULT / SCREEN_WIDTH) * 10;
-    ymin -= (SCREEN_DEFAULT / SCREEN_HEIGHT) * 10;
-    ymax += (SCREEN_DEFAULT / SCREEN_HEIGHT) * 10;
+    xmin -= (SCREEN_DEFAULT / SCREEN_WIDTH) * SQUARE_SIZE;
+    xmax += (SCREEN_DEFAULT / SCREEN_WIDTH) * SQUARE_SIZE;
+    ymin -= (SCREEN_DEFAULT / SCREEN_HEIGHT) * SQUARE_SIZE;
+    ymax += (SCREEN_DEFAULT / SCREEN_HEIGHT) * SQUARE_SIZE;
     serialManager.Debug("Saving calibration values: " + String(xmin) + " " + String(xmax) + " " + String(ymin) + " " + String(ymax));
     touchScreen->setCalibration(xmin, xmax, ymin, ymax);
     SettingsDevice &settings = storageHandler.getSettings();
@@ -149,27 +165,11 @@ void CalibrationScreen::SaveCalibrationAndExit()
     settings.ymax = ymax;
     settings.calibrationSet = true;
     storageHandler.WriteSettings();
+    ChangeCalibrationState(ECalibrationState::EXIT_CALIBRATION);
 }
 
-void CalibrationScreen::OnSetup()
-{
-    touchScreen = GetTouchScreen();
-    secondsTime = millis();
-    preCalibrationTime = millis();
-    preCalibrationDone = false;
-    TopLeftCalibrationDone = false;
-    BottomRightCalibrationDone = false;
-    startInterval = false;
-    xmin = 0;
-    ymin = 0;
-    xmax = SCREEN_DEFAULT;
-    ymax = SCREEN_DEFAULT;
-    TopLeftStartTime = 0;
-    BottomRightStartTime = 0;
-    seconds = COUNTDOWN_START;
-    ClearScreen();
-    storageHandler.DrawString("Starting calibration in:", 100, 90);
-    storageHandler.DrawString(String(seconds), 160, TEXT_Y_POS);
+void CalibrationScreen::ChangeCalibrationState(ECalibrationState newState) {
+    calibrationState = newState;
 }
 
 void CalibrationScreen::ClearScreen()
@@ -191,17 +191,16 @@ void CalibrationScreen::TopLeftCalibration()
 
 void CalibrationScreen::HandleTopLeftStart()
 {
-    if (TopLeftStartTime == 0)
+    if (calibrationState == ECalibrationState::TOUCH_TOP_LEFT)
     {
         serialManager.Debug("TopLeft starting");
-        startInterval = true;
         TopLeftStartTime = millis();
-        return;
+        ChangeCalibrationState(ECalibrationState::TOP_LEFT_COUNTDOWN);
     }
 }
+
 void CalibrationScreen::BottomRightCalibration()
 {
-
     TouchPoint touch = touchScreen->getTouch();
     if (touch.zRaw != 0)
     {
@@ -213,11 +212,10 @@ void CalibrationScreen::BottomRightCalibration()
 
 void CalibrationScreen::HandleBottomRightStart()
 {
-    if (TopLeftCalibrationDone && BottomRightStartTime == 0)
+    if (calibrationState == ECalibrationState::TOUCH_BOTTOM_RIGHT)
     {
         serialManager.Debug("BottomRight starting");
-        startInterval = true;
         BottomRightStartTime = millis();
-        return;
+        ChangeCalibrationState(ECalibrationState::BOTTOM_RIGHT_COUNTDOWN);
     }
 }
