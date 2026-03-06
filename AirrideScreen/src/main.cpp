@@ -15,7 +15,7 @@
 #include "Settings2Screen.h"
 #include "Settings3Screen.h"
 #include "Settings4Screen.h"
-#include "../lib/CalibrationScreen/include/CalibrationScreen.h"
+#include "CalibrationScreen.h"
 
 #include "TFTStorageHandler.h"
 #include "TimerManager.h"

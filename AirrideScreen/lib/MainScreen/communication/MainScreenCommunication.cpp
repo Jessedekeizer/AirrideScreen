@@ -28,7 +28,7 @@ void MainScreenCommunication::SendMessagePushButton(EMainScreenButtons button) {
     communication.SendMessage(message);
 }
 
-void MainScreenCommunication::ReceiveCallback(String message) {
+void MainScreenCommunication::ReceiveCallback(String& message) {
     serialManager.Debug("Processing message: " + message);
     if (message.startsWith("BAR")) {
         try {

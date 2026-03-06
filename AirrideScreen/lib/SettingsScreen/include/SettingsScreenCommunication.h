@@ -2,7 +2,7 @@
 #define SETTINGSSCREENCOMMUNICATION_H
 #include <WString.h>
 
-#include "Communication.h"
+#include "../../../../SharedLib/Communication/Communication/Communication.h"
 #include "SettingsDevice.h"
 
 class SettingsScreenCommunication {
