@@ -4,7 +4,6 @@
 
 #include "Solenoid.h"
 
-
 class SolenoidManager {
 public:
     SolenoidManager();
@@ -13,14 +12,14 @@ public:
 
     void Begin();
 
-    Solenoid *GetSolenoid(ESolenoid requestedSolenoid);
+    void AddSolenoid(Solenoid &solenoid);
+
+    Solenoid &GetSolenoid(ESolenoid requestedSolenoid);
 
     void TurnOffAllSolenoids();
 
 private:
     std::vector<Solenoid *> solenoids;
 };
-
-extern SolenoidManager solenoidManager;
 
 #endif //USBSERIAL_SOLENOIDMANAGER_H

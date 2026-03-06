@@ -5,14 +5,38 @@
 #include "SolenoidManager.h"
 #include "MainStateMachine.h"
 #include "SerialManager.h"
+#include "PressureSensor.h"
+#include "Solenoid.h"
+#include "MainCommunication.h"
+
+Solenoid frontDownSolenoid(ESolenoid::FRONT_DOWN, 4);
+Solenoid frontUpSolenoid(ESolenoid::FRONT_UP, 5);
+Solenoid backUpSolenoid(ESolenoid::BACK_UP, 6);
+Solenoid backDownSolenoid(ESolenoid::BACK_DOWN, 7);
+
+SolenoidManager solenoidManager;
+
+#define analogMin  1638.4
+#define analogMax  14745.6
+#define barMax  14.82
+#define barTankMax 15.2
+#define frontFilterSize 16
+#define backFilterSize 10
+
+PressureSensor frontPressureSensor(EPressureSensor::FRONT, A0, frontFilterSize, analogMin, analogMax, barMax);
+PressureSensor backPressureSensor(EPressureSensor::BACK, A1, backFilterSize,analogMin,analogMax,barMax);
+PressureSensor tankPressureSensor(EPressureSensor::TANK, A2, backFilterSize,analogMin,analogMax,barTankMax);
+
+PressureSensorManager pressureSensorManager(frontUpSolenoid, backUpSolenoid);
+
+Settings settings;
+
+//TODO add ISERIAL and StringQUeue
+Communication communication();
+
+MainCommunication mainCommunication(communication, settings);
 
 void setupDebugCallback();
-
-String CreatePressureString();
-
-void saveSettings(String);
-
-String getValue(String, char, int);
 
 unsigned long timePrevious = 0;
 int timeInterval = 200;
@@ -20,10 +44,18 @@ int timeInterval = 200;
 MainStateMachine mainStateMachine;
 
 void setup() {
+  solenoidManager.AddSolenoid(frontDownSolenoid);
+  solenoidManager.AddSolenoid(frontUpSolenoid);
+  solenoidManager.AddSolenoid(backDownSolenoid);
+  solenoidManager.AddSolenoid(backUpSolenoid);
+  pressureSensorManager.AddPressureSensor(frontPressureSensor);
+  pressureSensorManager.AddPressureSensor(backPressureSensor);
+  pressureSensorManager.AddPressureSensor(tankPressureSensor);
+
   serialManager.Begin(true);
-  analogReadResolution(14);
-  pressureSensorManager.Begin();
+
   solenoidManager.Begin();
+  pressureSensorManager.Begin();
   logHandler.Begin();
   mainStateMachine.Begin();
   setupDebugCallback();
@@ -43,45 +75,7 @@ void loop() {
 void setupDebugCallback() {
   serialManager.SetMessageCallback(
     [](String message) {
-      if (message.startsWith("settings")) {
-        saveSettings(message);
-      } else {
-        mainStateMachine.RequestChangeState(message);
-      }
+      mainStateMachine.RequestChangeState(message);
     });
 }
 
-String CreatePressureString() {
-  String message = "BAR/";
-  double front = pressureSensorManager.GetPressureSensor(EPressureSensor::FRONT)->GetRawPressure();
-  double rear = pressureSensorManager.GetPressureSensor(EPressureSensor::BACK)->GetRawPressure();
-
-  return message + String(front) + "/" + String(rear) + "/";
-}
-
-void saveSettings(String settingString) {
-  settings.frontMax = getValue(settingString, '/', 1).toDouble();
-  settings.backMax = getValue(settingString, '/', 2).toDouble();
-  settings.rideFront = getValue(settingString, '/', 3).toDouble();
-  settings.rideBack = getValue(settingString, '/', 4).toDouble();
-  settings.frontUpX = getValue(settingString, '/', 5).toDouble();
-  settings.frontDownX = getValue(settingString, '/', 6).toDouble();
-  settings.backUpX = getValue(settingString, '/', 7).toDouble();
-  settings.backDownX = getValue(settingString, '/', 8).toDouble();
-  settings.parkDuration = getValue(settingString, '/', 9).toDouble();
-}
-
-String getValue(String data, char separator, int index) {
-  int found = 0;
-  int strIndex[] = {0, -1};
-  int maxIndex = data.length() - 1;
-
-  for (int i = 0; i <= maxIndex && found <= index; i++) {
-    if (data.charAt(i) == separator || i == maxIndex) {
-      found++;
-      strIndex[0] = strIndex[1] + 1;
-      strIndex[1] = (i == maxIndex) ? i + 1 : i;
-    }
-  }
-  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
-}

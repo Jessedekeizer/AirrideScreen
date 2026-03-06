@@ -1,32 +1,28 @@
 #ifndef USBSERIAL_PRESSURESENSORMANAGER_H
 #define USBSERIAL_PRESSURESENSORMANAGER_H
 #include <vector>
-
 #include "PressureSensor.h"
 #include "Solenoid.h"
 
-
 class PressureSensorManager {
 public:
-    PressureSensorManager();
+    PressureSensorManager(Solenoid &frontSolenoid, Solenoid &backSolenoid);
 
     ~PressureSensorManager();
 
-    PressureSensor *GetPressureSensor(EPressureSensor requestedPressureSensor);
+    PressureSensor &GetPressureSensor(EPressureSensor requestedPressureSensor);
 
     void Update();
 
     void Begin();
+    void AddPressureSensor(PressureSensor &pressureSensor);
 
 private:
-    void CheckIfPressureIsWithinTolerance(PressureSensor *pressureSensor);
+    void CheckIfPressureIsWithinTolerance(PressureSensor *pressureSensor, Solenoid &solenoid);
 
     std::vector<PressureSensor *> pressureSensors;
-    Solenoid *frontSolenoid;
-    Solenoid *backSolenoid;
+    Solenoid &frontSolenoid;
+    Solenoid &backSolenoid;
 };
-
-extern PressureSensorManager pressureSensorManager;
-
 
 #endif //USBSERIAL_PRESSURESENSORMANAGER_H
