@@ -1,13 +1,13 @@
-#ifndef USBSERIAL_BACKUPSTATE_H
-#define USBSERIAL_BACKUPSTATE_H
-#include "IState.h"
+#ifndef BACKUPSTATE_H
+#define BACKUPSTATE_H
+#include "../../include/IState.h"
+#include "LogHandler.h"
 #include "Solenoid.h"
 
 
 class BackUpState : public IState {
 public:
-    BackUpState() : solenoid(nullptr) {
-    };
+    BackUpState(Solenoid &backUpSolenoid, LogHandler &logHandler);
 
     EState GetEState() override { return state; }
 
@@ -19,8 +19,9 @@ public:
 
 private:
     const EState state = EState::BACK_UP;
-    Solenoid *solenoid;
+    Solenoid &backUpSolenoid;
+    LogHandler &logHandler;
 };
 
 
-#endif //USBSERIAL_BACKUPSTATE_H
+#endif //BACKUPSTATE_H

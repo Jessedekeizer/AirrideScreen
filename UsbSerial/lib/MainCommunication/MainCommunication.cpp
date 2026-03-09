@@ -8,6 +8,10 @@ void MainCommunication::SendPressure(double front, double back) {
     communication.SendMessage("BAR/" + String(front) + "/" + String(back) + "/");
 }
 
+void MainCommunication::SendMessage(String &message) {
+    communication.SendMessage(message);
+}
+
 void MainCommunication::Init() {
     communicationId = communication.Subscribe([this](String &message) { ReceiveCallback(message); });
 }

@@ -41,5 +41,8 @@
 
 // boolean display x coordinate (shared)
 #define SETTINGS_BOOL_X 172
+#define SETTINGS_BOOL_Y_ROW2 112
+#define SETTINGS_BOOL_Y_ROW3 159
+#define SETTINGS_BOOL_Y_ROW4 198
 
 #endif // SETTINGSSCREENGEOMETRY_H

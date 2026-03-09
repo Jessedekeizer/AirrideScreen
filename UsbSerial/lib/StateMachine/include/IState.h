@@ -1,5 +1,5 @@
-#ifndef USBSERIAL_STATE_H
-#define USBSERIAL_STATE_H
+#ifndef STATE_H
+#define STATE_H
 #include "EState.h"
 
 class IState {
@@ -18,4 +18,4 @@ public:
     virtual void Leave() = 0;
 };
 
-#endif //USBSERIAL_STATE_H
+#endif //STATE_H

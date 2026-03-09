@@ -60,9 +60,9 @@ Settings4Screen::Settings4Screen(ScreenManager &screenManager, SettingsScreenCom
 void Settings4Screen::OnSetup()
 {
     storageHandler.DrawString(String(settings.parkDuration, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
-    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
-    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW3_Y);
-    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
+    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW2);
+    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW3);
+    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW4);
 }
 
 void Settings4Screen::HandleParkDurationAdd()
@@ -80,37 +80,37 @@ void Settings4Screen::HandleParkDurationSub()
 void Settings4Screen::HandleLoggingOn()
 {
     settings.logging = true;
-    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW2);
 }
 
 void Settings4Screen::HandleLoggingOff()
 {
     settings.logging = false;
-    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.PrintSettingBool(settings.logging, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW2);
 }
 
 void Settings4Screen::HandleMachineLearningOn()
 {
     settings.machineLearning = true;
-    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW3_Y);
+    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW3);
 }
 
 void Settings4Screen::HandleMachineLearningOff()
 {
     settings.machineLearning = false;
-    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW3_Y);
+    storageHandler.PrintSettingBool(settings.machineLearning, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW3);
 }
 
 void Settings4Screen::HandleBluetoothOn()
 {
     settings.bluetooth = true;
-    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
+    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW4);
 }
 
 void Settings4Screen::HandleBluetoothOff()
 {
     settings.bluetooth = false;
-    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
+    storageHandler.PrintSettingBool(settings.bluetooth, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW4);
 }
 
 void Settings4Screen::HandleSettings3()

@@ -1,16 +1,15 @@
 #include "BackUpState.h"
 
-#include "LogHandler.h"
-#include "SolenoidManager.h"
+BackUpState::BackUpState(Solenoid &backUpSolenoid, LogHandler &logHandler)
+    : backUpSolenoid(backUpSolenoid), logHandler(logHandler) {
+}
 
 void BackUpState::Enter() {
-    solenoid = solenoidManager.GetSolenoid(ESolenoid::BACK_UP);
     logHandler.StartBackLog();
-    solenoid->TurnOn();
+    backUpSolenoid.TurnOn();
 }
 
 void BackUpState::Leave() {
-    solenoid->TurnOff();
+    backUpSolenoid.TurnOff();
     logHandler.EndBackLog();
-    solenoid = nullptr;
 }

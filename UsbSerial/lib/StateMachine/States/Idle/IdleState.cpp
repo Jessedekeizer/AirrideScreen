@@ -1,6 +1,7 @@
 #include "IdleState.h"
 
-#include "SolenoidManager.h"
+IdleState::IdleState(SolenoidManager &solenoidManager) : solenoidManager(solenoidManager) {
+}
 
 void IdleState::Enter() {
     solenoidManager.TurnOffAllSolenoids();

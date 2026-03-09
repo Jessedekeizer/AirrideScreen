@@ -3,13 +3,12 @@
 #pragma once
 #include <Arduino.h>
 #include "PressureSensor.h"
+#include "MainCommunication.h"
 
 class LogHandler {
 public:
-    LogHandler() {}
+    LogHandler(MainCommunication &communication,PressureSensor &frontPressureSensor, PressureSensor &backPressureSensor, PressureSensor &tankPressureSensor);
     ~LogHandler();
-
-    void Begin();
 
     void StartFrontLog(bool togetherMove = false);
 
@@ -39,10 +38,10 @@ private:
     unsigned long frontLogPreviousTime = 0;
     unsigned long backLogPreviousTime = 0;
 
-    PressureSensor *frontPressureSensor = nullptr;
-    PressureSensor *backPressureSensor = nullptr;
-    PressureSensor *tankPressureSensor = nullptr;
-};
+    MainCommunication &communication;
 
-extern LogHandler logHandler;
+    PressureSensor &frontPressureSensor;
+    PressureSensor &backPressureSensor;
+    PressureSensor &tankPressureSensor;
+};
 #endif

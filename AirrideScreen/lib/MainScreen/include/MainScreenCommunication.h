@@ -1,6 +1,6 @@
 #ifndef MAINSCREENCOMMUNICATION_H
 #define MAINSCREENCOMMUNICATION_H
-#include "../../../../SharedLib/Communication/Communication/Communication.h"
+#include "Communication.h"
 #include "EMainScreenButtons.h"
 #include "MainScreenData.h"
 

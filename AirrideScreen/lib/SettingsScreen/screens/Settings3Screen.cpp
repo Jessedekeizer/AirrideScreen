@@ -60,9 +60,9 @@ Settings3Screen::Settings3Screen(ScreenManager &screenManager, SettingsScreenCom
 void Settings3Screen::OnSetup()
 {
     storageHandler.DrawString(String(settings.autoRideSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW1_Y);
-    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW2);
     storageHandler.DrawString(String(settings.autoParkSec, 1), SETTINGS_TEXT_X, SETTINGS_TEXT_ROW3_Y);
-    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
+    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW4);
 }
 
 void Settings3Screen::HandleAutoRideSecAdd()
@@ -80,13 +80,13 @@ void Settings3Screen::HandleAutoRideSecSub()
 void Settings3Screen::HandleAutoRideOn()
 {
     settings.autoRide = true;
-    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW2);
 }
 
 void Settings3Screen::HandleAutoRideOff()
 {
     settings.autoRide = false;
-    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW2_Y);
+    storageHandler.PrintSettingBool(settings.autoRide, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW2);
 }
 
 void Settings3Screen::HandleAutoParkSecAdd()
@@ -104,13 +104,13 @@ void Settings3Screen::HandleAutoParkSecSub()
 void Settings3Screen::HandleAutoParkOn()
 {
     settings.autoPark = true;
-    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
+    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW4);
 }
 
 void Settings3Screen::HandleAutoParkOff()
 {
     settings.autoPark = false;
-    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_TEXT_ROW4_Y);
+    storageHandler.PrintSettingBool(settings.autoPark, SETTINGS_BOOL_X, SETTINGS_BOOL_Y_ROW4);
 }
 
 void Settings3Screen::HandleSettings2()
@@ -120,5 +120,5 @@ void Settings3Screen::HandleSettings2()
 
 void Settings3Screen::HandleSettings4()
 {
-    screenManager.RequestScreen(EScreen::SETTINGS3);
+    screenManager.RequestScreen(EScreen::SETTINGS4);
 }

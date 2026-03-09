@@ -1,13 +1,13 @@
-#ifndef USBSERIAL_PARKSTATE_H
-#define USBSERIAL_PARKSTATE_H
-#include "IState.h"
+#ifndef PARKSTATE_H
+#define PARKSTATE_H
+#include "../../include/IState.h"
+#include "LogHandler.h"
 #include "Solenoid.h"
 
 
 class ParkState : public IState {
 public:
-    ParkState() : frontSolenoid(nullptr), backSolenoid(nullptr) {
-    };
+    ParkState(Solenoid &frontSolenoid, Solenoid &backSolenoid, LogHandler &logHandler, Settings &settings);
 
     EState GetEState() override { return state; }
 
@@ -19,8 +19,10 @@ public:
 
 private:
     const EState state = EState::PARK;
-    Solenoid *frontSolenoid;
-    Solenoid *backSolenoid;
+    Solenoid &frontSolenoid;
+    Solenoid &backSolenoid;
+    LogHandler &logHandler;
+    Settings &settings;
     long timePrevious = 0;
     long timeNow = 0;
 
@@ -28,4 +30,4 @@ private:
 };
 
 
-#endif //USBSERIAL_PARKSTATE_H
+#endif //PARKSTATE_H

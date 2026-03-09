@@ -1,15 +1,12 @@
 #include "RideState.h"
 
-#include <api/Common.h>
-
-#include "LogHandler.h"
-#include "PressureSensorManager.h"
-#include "Settings.h"
-#include "SolenoidManager.h"
+RideState::RideState(SolenoidManager &solenoidManager, LogHandler &logHandler, Settings &settings,
+                     PressureSensor &frontPressureSensor, PressureSensor &backPressureSensor)
+    : solenoidManager(solenoidManager), logHandler(logHandler), settings(settings),
+      frontPressureSensor(frontPressureSensor), backPressureSensor(backPressureSensor) {
+}
 
 void RideState::Enter() {
-    frontPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::FRONT);
-    backPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::BACK);
     SetupRide();
 }
 
@@ -17,19 +14,19 @@ void RideState::SetupRide() {
     rideFrontDone = false;
     rideBackDone = false;
 
-    double currentFront = frontPressureSensor->GetAveragePressure();
-    double currentBack = backPressureSensor->GetAveragePressure();
+    double currentFront = frontPressureSensor.GetAveragePressure();
+    double currentBack = backPressureSensor.GetAveragePressure();
 
     if (currentFront > settings.rideFront) {
         frontTimePrevious = millis();
         frontTimeInterval = CalculateTime(currentFront, settings.rideFront, settings.frontDownX);
 
-        frontSolenoid = solenoidManager.GetSolenoid(ESolenoid::FRONT_DOWN);
+        frontSolenoid = &solenoidManager.GetSolenoid(ESolenoid::FRONT_DOWN);
         frontSolenoid->TurnOn();
     } else if (currentFront < settings.rideFront) {
         frontTimePrevious = millis();
         frontTimeInterval = CalculateTime(currentFront, settings.rideFront, settings.frontUpX);
-        frontSolenoid = solenoidManager.GetSolenoid(ESolenoid::FRONT_UP);
+        frontSolenoid = &solenoidManager.GetSolenoid(ESolenoid::FRONT_UP);
         frontSolenoid->TurnOn();
     } else {
         rideFrontDone = true;
@@ -39,12 +36,12 @@ void RideState::SetupRide() {
         backTimePrevious = millis();
         backTimeInterval = CalculateTime(currentBack, settings.rideBack, settings.backDownX);
 
-        backSolenoid = solenoidManager.GetSolenoid(ESolenoid::BACK_DOWN);
+        backSolenoid = &solenoidManager.GetSolenoid(ESolenoid::BACK_DOWN);
         backSolenoid->TurnOn();
     } else if (currentBack < settings.rideBack) {
         backTimePrevious = millis();
         backTimeInterval = CalculateTime(currentBack, settings.rideBack, settings.backUpX);
-        backSolenoid = solenoidManager.GetSolenoid(ESolenoid::BACK_UP);
+        backSolenoid = &solenoidManager.GetSolenoid(ESolenoid::BACK_UP);
         backSolenoid->TurnOn();
     } else {
         rideBackDone = true;
@@ -66,8 +63,6 @@ long RideState::CalculateTime(double current, double desired, double x) {
 void RideState::Leave() {
     frontSolenoid = nullptr;
     backSolenoid = nullptr;
-    frontPressureSensor = nullptr;
-    backPressureSensor = nullptr;
 }
 
 EState RideState::Loop() {

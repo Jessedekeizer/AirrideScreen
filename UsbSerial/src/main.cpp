@@ -8,6 +8,7 @@
 #include "PressureSensor.h"
 #include "Solenoid.h"
 #include "MainCommunication.h"
+#include "SerialOverPins.h"
 
 Solenoid frontDownSolenoid(ESolenoid::FRONT_DOWN, 4);
 Solenoid frontUpSolenoid(ESolenoid::FRONT_UP, 5);
@@ -30,20 +31,26 @@ PressureSensor tankPressureSensor(EPressureSensor::TANK, A2, backFilterSize,anal
 PressureSensorManager pressureSensorManager(frontUpSolenoid, backUpSolenoid);
 
 Settings settings;
+StringQueue stringQueue;
+SerialOverPins serial(Serial1, stringQueue);
 
-//TODO add ISERIAL and StringQUeue
-Communication communication();
+Communication communication(serial, stringQueue);
 
 MainCommunication mainCommunication(communication, settings);
 
-void setupDebugCallback();
+LogHandler logHandler(mainCommunication, frontPressureSensor, backPressureSensor, tankPressureSensor);
 
 unsigned long timePrevious = 0;
 int timeInterval = 200;
 
-MainStateMachine mainStateMachine;
+MainStateMachineData mainStateMachineData;
+MainStateMachineCommunication mainStateMachineCommunication(communication, mainStateMachineData);
+
+MainStateMachine mainStateMachine(mainStateMachineData, mainStateMachineCommunication, solenoidManager, logHandler,
+                                  pressureSensorManager);
 
 void setup() {
+  Serial1.begin(9600, SERIAL_8N1);
   solenoidManager.AddSolenoid(frontDownSolenoid);
   solenoidManager.AddSolenoid(frontUpSolenoid);
   solenoidManager.AddSolenoid(backDownSolenoid);
@@ -56,26 +63,17 @@ void setup() {
 
   solenoidManager.Begin();
   pressureSensorManager.Begin();
-  logHandler.Begin();
   mainStateMachine.Begin();
-  setupDebugCallback();
 }
 
 void loop() {
   if (millis() - timePrevious > timeInterval) {
     pressureSensorManager.Update();
-    serialManager.SendMessage(CreatePressureString());
+    mainCommunication.SendPressure(frontPressureSensor.GetRawPressure(), backPressureSensor.GetRawPressure());
     timePrevious = millis();
   }
-  serialManager.HandleIncoming();
+  communication.CheckForMessage();
   mainStateMachine.Loop();
   logHandler.SendLog();
-}
-
-void setupDebugCallback() {
-  serialManager.SetMessageCallback(
-    [](String message) {
-      mainStateMachine.RequestChangeState(message);
-    });
 }
 

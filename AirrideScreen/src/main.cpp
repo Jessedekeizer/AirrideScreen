@@ -70,6 +70,7 @@ void setup()
   screenManager.AddScreen(&settings2Screen);
   screenManager.AddScreen(&settings3Screen);
   screenManager.AddScreen(&settings4Screen);
+  screenManager.AddScreen(&calibrationScreen);
 
   serialManager.GetInstance();
   delay(1000);

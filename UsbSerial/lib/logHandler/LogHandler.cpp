@@ -3,24 +3,19 @@
 #include "PressureSensorManager.h"
 #include "SerialManager.h"
 
-LogHandler logHandler;
-
-LogHandler::~LogHandler() {
-    frontPressureSensor = nullptr;
-    backPressureSensor = nullptr;
-    tankPressureSensor = nullptr;
+LogHandler::LogHandler(MainCommunication &communication, PressureSensor &frontPressureSensor,
+                       PressureSensor &backPressureSensor, PressureSensor &tankPressureSensor)
+    : communication(communication), frontPressureSensor(frontPressureSensor), backPressureSensor(backPressureSensor),
+      tankPressureSensor(tankPressureSensor) {
 }
 
-void LogHandler::Begin() {
-    frontPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::FRONT);
-    backPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::BACK);
-    tankPressureSensor = pressureSensorManager.GetPressureSensor(EPressureSensor::TANK);
+LogHandler::~LogHandler() {
 }
 
 void LogHandler::StartFrontLog(bool together) {
     sendLogFront = false;
-    startPressureFront = frontPressureSensor->GetRawPressure();
-    startTankPressureFront = tankPressureSensor->GetRawPressure();
+    startPressureFront = frontPressureSensor.GetRawPressure();
+    startTankPressureFront = tankPressureSensor.GetRawPressure();
     startTimeFront = millis();
     togetherMoveFront = together;
 }
@@ -32,8 +27,8 @@ void LogHandler::EndFrontLog() {
 
 void LogHandler::StartBackLog(bool together) {
     sendLogBack = false;
-    startPressureBack = backPressureSensor->GetRawPressure();
-    startTankPressureBack = tankPressureSensor->GetRawPressure();
+    startPressureBack = backPressureSensor.GetRawPressure();
+    startTankPressureBack = tankPressureSensor.GetRawPressure();
     startTimeBack = millis();
     togetherMoveBack = together;
 }
@@ -45,22 +40,26 @@ void LogHandler::EndBackLog() {
 
 void LogHandler::SendLog() {
     if (sendLogFront && millis() - frontLogPreviousTime > timeInterval) {
-        double endPressure = frontPressureSensor->GetRawPressure();
+        double endPressure = frontPressureSensor.GetRawPressure();
         bool directionFront = startPressureFront - endPressure < 0;
-        String message = CreateLogMessage("LOGF/", startPressureFront, endPressure, startTankPressureFront,(millis() - startTimeFront - timeInterval), directionFront, togetherMoveFront);
-        serialManager.SendMessage(message);
+        String message = CreateLogMessage("LOGF/", startPressureFront, endPressure, startTankPressureFront,
+                                          (millis() - startTimeFront - timeInterval), directionFront,
+                                          togetherMoveFront);
+        communication.SendMessage(message);
         sendLogFront = false;
     }
     if (sendLogBack && millis() - backLogPreviousTime > timeInterval) {
-        double endPressure = backPressureSensor->GetRawPressure();
+        double endPressure = backPressureSensor.GetRawPressure();
         bool directionBack = startPressureFront - endPressure < 0;
-        String message = CreateLogMessage("LOGB/", startPressureBack,endPressure,startTankPressureBack,(millis() - startTimeBack - timeInterval), directionBack,togetherMoveBack);
-        serialManager.SendMessage(message);
+        String message = CreateLogMessage("LOGB/", startPressureBack, endPressure, startTankPressureBack,
+                                          (millis() - startTimeBack - timeInterval), directionBack, togetherMoveBack);
+        communication.SendMessage(message);
         sendLogBack = false;
     }
 }
 
 String LogHandler::CreateLogMessage(String message, double startPressure, double endPressure, double startTankPressure,
-    long time, bool direction, bool togetherMove) {
-    return message + startPressure + "/" + endPressure + "/" + startTankPressure + "/" + time + "/" + direction + "/" + togetherMove + ";";
+                                    long time, bool direction, bool togetherMove) {
+    return message + startPressure + "/" + endPressure + "/" + startTankPressure + "/" + time + "/" + direction + "/" +
+           togetherMove + ";";
 }

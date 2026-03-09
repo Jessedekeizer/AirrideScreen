@@ -1,12 +1,12 @@
-#ifndef USBSERIAL_IDLESTATE_H
-#define USBSERIAL_IDLESTATE_H
-#include "IState.h"
+#ifndef IDLESTATE_H
+#define IDLESTATE_H
+#include "../../include/IState.h"
+#include "SolenoidManager.h"
 
 
 class IdleState : public IState {
 public:
-    IdleState() {
-    };
+    IdleState(SolenoidManager &solenoidManager);
 
     EState GetEState() override { return state; }
 
@@ -19,7 +19,8 @@ public:
 
 private:
     const EState state = EState::IDLE;
+    SolenoidManager &solenoidManager;
 };
 
 
-#endif //USBSERIAL_IDLESTATE_H
+#endif //IDLESTATE_H
