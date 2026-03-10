@@ -46,6 +46,11 @@ void MainScreen::OnSetup()
     AddRideTimer();
 }
 
+MainScreen::~MainScreen() {
+    timerManager.removeTimer(autoRideTimer);
+    delete autoRideTimer;
+}
+
 void MainScreen::AddRideTimer()
 {
     if (!settings.autoRide)

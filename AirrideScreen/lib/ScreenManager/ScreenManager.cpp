@@ -6,10 +6,7 @@ ScreenManager::ScreenManager() {
 }
 
 ScreenManager::~ScreenManager() {
-    for (auto screen: screens) {
-        delete screen;
-        screen = nullptr;
-    }
+    activeScreen = nullptr;
     screens.clear();
 }
 
@@ -18,12 +15,12 @@ void ScreenManager::AddScreen(IScreen *screen) {
 }
 
 bool ScreenManager::RequestScreen(EScreen requestedScreen) {
-    serialManager.Debug("ScreenManager::ChangeScreen - Changing to: " + static_cast<int>(requestedScreen));
+    serialManager.Debug("ScreenManager::ChangeScreen - Changing to: " + String(static_cast<int>(requestedScreen)));
 
     IScreen *newScreen = FindScreen(requestedScreen);
     if (!newScreen || newScreen == activeScreen)
         return false;
-    serialManager.Debug("ScreenManager::ChangeScreen - Transitioning to screen: " + static_cast<int>(newScreen->GetName()));
+    serialManager.Debug("ScreenManager::ChangeScreen - Transitioning to screen: " + String(static_cast<int>(newScreen->GetName())));
     TransitionToScreen(newScreen);
     return true;
 }

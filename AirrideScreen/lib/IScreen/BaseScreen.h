@@ -6,6 +6,13 @@ class BaseScreen : public IScreen {
 public:
     BaseScreen(EScreen name, const char *path) : name(name), path(path), isActive(false) {};
 
+    virtual ~BaseScreen() {
+        for (Button *button: buttons) {
+            delete button;
+        }
+        buttons.clear();
+    }
+
     void HandleTouch(int touchX, int touchY) override {
         for (Button *button: buttons) {
             button->CheckTouch(touchX, touchY);

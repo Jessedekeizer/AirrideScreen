@@ -12,10 +12,10 @@
 
 Settings settings;
 
-Solenoid frontDownSolenoid(ESolenoid::FRONT_DOWN, 4);
-Solenoid frontUpSolenoid(ESolenoid::FRONT_UP, 5);
-Solenoid backUpSolenoid(ESolenoid::BACK_UP, 6);
-Solenoid backDownSolenoid(ESolenoid::BACK_DOWN, 7);
+Solenoid frontDownSolenoid(ESolenoid::FRONT_DOWN, PIN_D4);
+Solenoid frontUpSolenoid(ESolenoid::FRONT_UP, PIN_D5);
+Solenoid backUpSolenoid(ESolenoid::BACK_UP, PIN_D6);
+Solenoid backDownSolenoid(ESolenoid::BACK_DOWN, PIN_D7);
 SolenoidManager solenoidManager;
 
 #define analogMin  1638.4

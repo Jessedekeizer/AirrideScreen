@@ -1,15 +1,13 @@
 #ifndef CALIBRATIONSCREEN_H
 #define CALIBRATIONSCREEN_H
 
-#include "IScreen.h"
+#include "BaseScreen.h"
 #include "TFTStorageHandler.h"
 #include "XPT2046_Bitbang.h"
 #include "ECalibrationState.h"
 #include "ScreenManager.h"
 
-#define CALIBRATION_TIME 3000
-
-class CalibrationScreen : public IScreen
+class CalibrationScreen : public BaseScreen
 {
 public:
     CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings, XPT2046_Bitbang &touchScreen);

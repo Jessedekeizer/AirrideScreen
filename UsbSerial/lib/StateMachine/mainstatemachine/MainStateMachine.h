@@ -1,10 +1,10 @@
 #ifndef MAINSTATEMACHINE_H
 #define MAINSTATEMACHINE_H
 #include "SolenoidManager.h"
-#include "../include/IState.h"
+#include "IState.h"
 #include "LogHandler.h"
 #include "MainStateMachineCommunication.h"
-#include "../include/MainStateMachineData.h"
+#include "MainStateMachineData.h"
 #include "PressureSensorManager.h"
 
 class MainStateMachine {
@@ -25,7 +25,6 @@ public:
 private:
     void ChangeState(EState newState);
 
-    EState requestedState;
     IState *currentState;
     SolenoidManager &solenoidManager;
     LogHandler &logHandler;

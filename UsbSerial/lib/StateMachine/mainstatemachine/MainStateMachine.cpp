@@ -28,19 +28,15 @@ MainStateMachine::~MainStateMachine() {
 }
 
 void MainStateMachine::Begin() {
-    requestedState = EState::IDLE;
-    mainStateMachineData.newRequestedState = requestedState;
-    ChangeState(requestedState);
+    mainStateMachineData.newRequestedState = EState::IDLE;
+    ChangeState(mainStateMachineData.newRequestedState);
 }
 
 void MainStateMachine::Loop() {
-    if (mainStateMachineData.newRequestedState != requestedState) {
-        requestedState = mainStateMachineData.newRequestedState;
-    }
     if (currentState) {
         EState stateRequestedByState = currentState->Loop();
-        if (currentState->GetEState() != requestedState) {
-            ChangeState(requestedState);
+        if (currentState->GetEState() != mainStateMachineData.newRequestedState) {
+            ChangeState(mainStateMachineData.newRequestedState);
             return;
         }
         if (currentState->GetEState() != stateRequestedByState) {
@@ -80,6 +76,6 @@ void MainStateMachine::ChangeState(EState newState) {
                                          pressureSensorManager.GetPressureSensor(EPressureSensor::BACK));
             break;
     }
-    requestedState = newState;
+    mainStateMachineData.newRequestedState = newState;
     currentState->Enter();
 }

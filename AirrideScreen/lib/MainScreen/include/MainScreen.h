@@ -16,6 +16,7 @@ public:
     MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings);
     void OnLoop() override;
     void OnSetup() override;
+    ~MainScreen() override;
 
 private:
     void GoToSettings1();

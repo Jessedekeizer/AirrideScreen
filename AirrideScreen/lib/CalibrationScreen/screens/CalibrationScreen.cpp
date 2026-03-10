@@ -4,16 +4,14 @@
 #include "SerialManager.h"
 
 // Constants for calibration process
+#define CALIBRATION_TIME 3000
 constexpr int SCREEN_DEFAULT = 4095;
 constexpr int COUNTDOWN_START = 3;
 constexpr unsigned long COUNTDOWN_INTERVAL = 1000; // 1 second
 
 CalibrationScreen::CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings, XPT2046_Bitbang &touchScreen)
-    : screenManager(screenManager), settings(settings), touchScreen(touchScreen)
+    : screenManager(screenManager), settings(settings), touchScreen(touchScreen), BaseScreen(EScreen::CALIBRATION, "/CalibrationScreen.png")
 {
-    name = EScreen::CALIBRATION;
-    path = "/CalibrationScreen.png";
-    buttons = std::vector<Button *>();
     buttons.push_back(new PushButton(CAL_BTN_TOPLEFT_X, CAL_BTN_TOPLEFT_Y, CAL_BTN_SIZE, CAL_BTN_SIZE, TOP_LEFT,
                                      [this](Button &button)
                                      { HandleTopLeftStart(); }));
