@@ -1,22 +1,28 @@
-#include "../include/MainStateMachine.h"
-#include "../States/BackDown/BackDownState.h"
-#include "../States/BackUp/BackUpState.h"
-#include "../States/FrontDown/FrontDownState.h"
-#include "../States/FrontUp/FrontUpState.h"
-#include "../States/Idle/IdleState.h"
-#include "../States/Park/ParkState.h"
-#include "../States/Ride/RideState.h"
+#include "MainStateMachine.h"
+#include "BackDownState.h"
+#include "BackUpState.h"
+#include "FrontDownState.h"
+#include "FrontUpState.h"
+#include "IdleState.h"
+#include "ParkState.h"
+#include "RideState.h"
 
 MainStateMachine::MainStateMachine(MainStateMachineData &mainStateMachineData,
                                    MainStateMachineCommunication &mainStateMachineCommunication,
-                                   SolenoidManager &solenoidManager, LogHandler &logHandler,
-                                   PressureSensorManager &pressureSensorManager)
-    : mainStateMachineData(mainStateMachineData), mainStateMachineCommunication(mainStateMachineCommunication),
-      solenoidManager(solenoidManager), logHandler(logHandler), pressureSensorManager(pressureSensorManager) {
+                                   SolenoidManager &solenoidManager,
+                                   PressureSensorManager &pressureSensorManager,
+                                   LogHandler &logHandler,
+                                   Settings &settings) : mainStateMachineData(mainStateMachineData),
+                                                         mainStateMachineCommunication(mainStateMachineCommunication),
+                                                         solenoidManager(solenoidManager),
+                                                         pressureSensorManager(pressureSensorManager),
+                                                         logHandler(logHandler),
+                                                         settings(settings) {
 }
 
 MainStateMachine::~MainStateMachine() {
     currentState->Leave();
+    mainStateMachineCommunication.Leave();
     delete currentState;
     currentState = nullptr;
 }

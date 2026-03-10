@@ -10,11 +10,12 @@
 #include "MainCommunication.h"
 #include "SerialOverPins.h"
 
+Settings settings;
+
 Solenoid frontDownSolenoid(ESolenoid::FRONT_DOWN, 4);
 Solenoid frontUpSolenoid(ESolenoid::FRONT_UP, 5);
 Solenoid backUpSolenoid(ESolenoid::BACK_UP, 6);
 Solenoid backDownSolenoid(ESolenoid::BACK_DOWN, 7);
-
 SolenoidManager solenoidManager;
 
 #define analogMin  1638.4
@@ -27,27 +28,24 @@ SolenoidManager solenoidManager;
 PressureSensor frontPressureSensor(EPressureSensor::FRONT, A0, frontFilterSize, analogMin, analogMax, barMax);
 PressureSensor backPressureSensor(EPressureSensor::BACK, A1, backFilterSize,analogMin,analogMax,barMax);
 PressureSensor tankPressureSensor(EPressureSensor::TANK, A2, backFilterSize,analogMin,analogMax,barTankMax);
+PressureSensorManager pressureSensorManager(frontUpSolenoid, backUpSolenoid, settings);
 
-PressureSensorManager pressureSensorManager(frontUpSolenoid, backUpSolenoid);
-
-Settings settings;
 StringQueue stringQueue;
 SerialOverPins serial(Serial1, stringQueue);
-
 Communication communication(serial, stringQueue);
 
-MainCommunication mainCommunication(communication, settings);
-
-LogHandler logHandler(mainCommunication, frontPressureSensor, backPressureSensor, tankPressureSensor);
-
-unsigned long timePrevious = 0;
-int timeInterval = 200;
+LogHandlerCommunication logHandlerCommunication(communication);
+LogHandler logHandler(logHandlerCommunication, frontPressureSensor, backPressureSensor, tankPressureSensor);
 
 MainStateMachineData mainStateMachineData;
 MainStateMachineCommunication mainStateMachineCommunication(communication, mainStateMachineData);
+MainStateMachine mainStateMachine(mainStateMachineData, mainStateMachineCommunication, solenoidManager,
+                                  pressureSensorManager, logHandler, settings);
 
-MainStateMachine mainStateMachine(mainStateMachineData, mainStateMachineCommunication, solenoidManager, logHandler,
-                                  pressureSensorManager);
+MainCommunication mainCommunication(communication, settings);
+
+unsigned long timePrevious = 0;
+int timeInterval = 200;
 
 void setup() {
   Serial1.begin(9600, SERIAL_8N1);

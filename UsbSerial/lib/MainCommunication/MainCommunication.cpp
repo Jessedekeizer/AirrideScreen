@@ -1,15 +1,11 @@
 #include "MainCommunication.h"
 
 MainCommunication::MainCommunication(Communication &communication, Settings &settings)
-    : communication(communication), settings(settings) {
+    : communication(communication), settings(settings), communicationId(-1) {
 }
 
 void MainCommunication::SendPressure(double front, double back) {
     communication.SendMessage("BAR/" + String(front) + "/" + String(back) + "/");
-}
-
-void MainCommunication::SendMessage(String &message) {
-    communication.SendMessage(message);
 }
 
 void MainCommunication::Init() {

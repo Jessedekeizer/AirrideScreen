@@ -1,5 +1,5 @@
-#ifndef USBSERIAL_SOLENOIDMANAGER_H
-#define USBSERIAL_SOLENOIDMANAGER_H
+#ifndef SOLENOIDMANAGER_H
+#define SOLENOIDMANAGER_H
 #include <vector>
 
 #include "Solenoid.h"
@@ -22,4 +22,4 @@ private:
     std::vector<Solenoid *> solenoids;
 };
 
-#endif //USBSERIAL_SOLENOIDMANAGER_H
+#endif //SOLENOIDMANAGER_H

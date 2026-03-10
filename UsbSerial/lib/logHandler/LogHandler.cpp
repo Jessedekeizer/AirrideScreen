@@ -3,7 +3,7 @@
 #include "PressureSensorManager.h"
 #include "SerialManager.h"
 
-LogHandler::LogHandler(MainCommunication &communication, PressureSensor &frontPressureSensor,
+LogHandler::LogHandler(LogHandlerCommunication &communication, PressureSensor &frontPressureSensor,
                        PressureSensor &backPressureSensor, PressureSensor &tankPressureSensor)
     : communication(communication), frontPressureSensor(frontPressureSensor), backPressureSensor(backPressureSensor),
       tankPressureSensor(tankPressureSensor) {
@@ -45,7 +45,7 @@ void LogHandler::SendLog() {
         String message = CreateLogMessage("LOGF/", startPressureFront, endPressure, startTankPressureFront,
                                           (millis() - startTimeFront - timeInterval), directionFront,
                                           togetherMoveFront);
-        communication.SendMessage(message);
+        communication.SendLog(message);
         sendLogFront = false;
     }
     if (sendLogBack && millis() - backLogPreviousTime > timeInterval) {
@@ -53,7 +53,7 @@ void LogHandler::SendLog() {
         bool directionBack = startPressureFront - endPressure < 0;
         String message = CreateLogMessage("LOGB/", startPressureBack, endPressure, startTankPressureBack,
                                           (millis() - startTimeBack - timeInterval), directionBack, togetherMoveBack);
-        communication.SendMessage(message);
+        communication.SendLog(message);
         sendLogBack = false;
     }
 }

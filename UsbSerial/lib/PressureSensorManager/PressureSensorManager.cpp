@@ -1,10 +1,8 @@
 #include "PressureSensorManager.h"
 #include <Arduino.h>
-#include "Settings.h"
-#include "SolenoidManager.h"
 
-PressureSensorManager::PressureSensorManager(Solenoid &frontSolenoid, Solenoid &backSolenoid)
-    : frontSolenoid(frontSolenoid), backSolenoid(backSolenoid) {
+PressureSensorManager::PressureSensorManager(Solenoid &frontSolenoid, Solenoid &backSolenoid, Settings &settings)
+    : frontSolenoid(frontSolenoid), backSolenoid(backSolenoid), settings(settings) {
 }
 
 PressureSensorManager::~PressureSensorManager() {

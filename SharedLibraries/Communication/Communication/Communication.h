@@ -12,7 +12,7 @@ class Communication {
     public:
     Communication(ISerial& serial, StringQueue &stringQueue);
     ~Communication();
-    unsigned int Subscribe(Callback callback);
+    int Subscribe(Callback callback);
     void Unsubscribe(int id);
     void Notify(String message);
     void CheckForMessage();

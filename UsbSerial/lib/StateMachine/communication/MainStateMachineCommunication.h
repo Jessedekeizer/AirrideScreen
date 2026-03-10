@@ -3,7 +3,6 @@
 #include "Communication.h"
 #include "MainStateMachineData.h"
 
-
 class MainStateMachineCommunication {
 public:
     MainStateMachineCommunication(Communication &communication, MainStateMachineData &mainStateMachineData);
@@ -13,7 +12,7 @@ public:
     void Leave();
 
 private:
-    void RequestChangeState(String requestedStateMessage);
+    void RequestChangeState(String &requestedStateMessage);
 
     void ReceiveCallback(String &message);
 
@@ -21,6 +20,5 @@ private:
     MainStateMachineData &mainStateMachineData;
     int communicationId;
 };
-
 
 #endif //MAINSTATEMACHINECOMMUNICATION_H

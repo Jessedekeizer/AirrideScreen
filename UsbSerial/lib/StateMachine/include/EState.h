@@ -1,5 +1,5 @@
-#ifndef USBSERIAL_ESTATE_H
-#define USBSERIAL_ESTATE_H
+#ifndef ESTATE_H
+#define ESTATE_H
 
 enum class EState {
     IDLE,
@@ -11,4 +11,4 @@ enum class EState {
     PARK
 };
 
-#endif //USBSERIAL_ESTATE_H
+#endif //ESTATE_H

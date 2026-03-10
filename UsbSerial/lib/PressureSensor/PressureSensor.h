@@ -1,9 +1,8 @@
-#ifndef USBSERIAL_PRESSURESENSOR_H
-#define USBSERIAL_PRESSURESENSOR_H
+#ifndef PRESSURESENSOR_H
+#define PRESSURESENSOR_H
 #include <vector>
 
 #include "EPressureSensor.h"
-
 
 class PressureSensor {
 public:
@@ -43,4 +42,4 @@ private:
 
 double DMap(double x, double in_min, double in_max, double out_min, double out_max);
 
-#endif //USBSERIAL_PRESSURESENSOR_H
+#endif //PRESSURESENSOR_H

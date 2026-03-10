@@ -1,19 +1,20 @@
 #ifndef MAINSTATEMACHINE_H
 #define MAINSTATEMACHINE_H
-#include <Arduino.h>
 #include "SolenoidManager.h"
-#include "IState.h"
+#include "../include/IState.h"
 #include "LogHandler.h"
 #include "MainStateMachineCommunication.h"
-#include "MainStateMachineData.h"
+#include "../include/MainStateMachineData.h"
 #include "PressureSensorManager.h"
 
 class MainStateMachine {
 public:
     MainStateMachine(MainStateMachineData &mainStateMachineData,
-                     MainStateMachineCommunication &mainStateMachineCommunication, SolenoidManager &solenoidManager,
+                     MainStateMachineCommunication &mainStateMachineCommunication,
+                     SolenoidManager &solenoidManager,
+                     PressureSensorManager &pressureSensorManager,
                      LogHandler &logHandler,
-                     PressureSensorManager &pressureSensorManager);
+                     Settings &settings);
 
     ~MainStateMachine();
 
@@ -28,6 +29,7 @@ private:
     IState *currentState;
     SolenoidManager &solenoidManager;
     LogHandler &logHandler;
+    Settings &settings;
     PressureSensorManager &pressureSensorManager;
     MainStateMachineCommunication &mainStateMachineCommunication;
     MainStateMachineData &mainStateMachineData;

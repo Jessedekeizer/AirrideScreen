@@ -10,8 +10,6 @@ public:
 
     void SendPressure(double front, double back);
 
-    void SendMessage(String &message);
-
     void Init();
 
     void Leave();

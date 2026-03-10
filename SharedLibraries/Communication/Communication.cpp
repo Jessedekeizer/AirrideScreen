@@ -10,7 +10,7 @@ Communication::~Communication() {
 }
 
 
-unsigned int Communication::Subscribe(Callback callback) {
+int Communication::Subscribe(Callback callback) {
     Subscription subscriber;
     subscriber.id = nextId++;
     subscriber.callback = callback;

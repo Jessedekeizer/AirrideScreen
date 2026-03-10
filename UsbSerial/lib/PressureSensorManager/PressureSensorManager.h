@@ -1,12 +1,13 @@
-#ifndef USBSERIAL_PRESSURESENSORMANAGER_H
-#define USBSERIAL_PRESSURESENSORMANAGER_H
+#ifndef PRESSURESENSORMANAGER_H
+#define PRESSURESENSORMANAGER_H
 #include <vector>
 #include "PressureSensor.h"
+#include "Settings.h"
 #include "Solenoid.h"
 
 class PressureSensorManager {
 public:
-    PressureSensorManager(Solenoid &frontSolenoid, Solenoid &backSolenoid);
+    PressureSensorManager(Solenoid &frontSolenoid, Solenoid &backSolenoid, Settings &settings);
 
     ~PressureSensorManager();
 
@@ -23,6 +24,7 @@ private:
     std::vector<PressureSensor *> pressureSensors;
     Solenoid &frontSolenoid;
     Solenoid &backSolenoid;
+    Settings &settings;
 };
 
-#endif //USBSERIAL_PRESSURESENSORMANAGER_H
+#endif //PRESSURESENSORMANAGER_H

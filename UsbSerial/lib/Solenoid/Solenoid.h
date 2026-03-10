@@ -1,7 +1,6 @@
-#ifndef USBSERIAL_SOLENOID_H
-#define USBSERIAL_SOLENOID_H
+#ifndef SOLENOID_H
+#define SOLENOID_H
 #include "ESolenoid.h"
-
 
 class Solenoid {
 public:
@@ -27,5 +26,4 @@ private:
     bool active;
 };
 
-
-#endif //USBSERIAL_SOLENOID_H
+#endif //SOLENOID_H

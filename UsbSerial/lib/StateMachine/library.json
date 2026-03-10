@@ -3,6 +3,18 @@
   "version": "0.0.0",
   "build": {
     "srcDir": ".",
-    "includeDir": "include"
+    "includeDir": ".",
+    "flags": [
+      "-I communication",
+      "-I include",
+      "-I mainstatemachine",
+      "-I States/BackDown",
+      "-I States/BackUp",
+      "-I States/FrontDown",
+      "-I States/FrontUp",
+      "-I States/Idle",
+      "-I States/Park",
+      "-I States/Ride"
+    ]
   }
 }
