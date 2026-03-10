@@ -1,7 +1,7 @@
 #ifndef MAINSCREEN_H
 #define MAINSCREEN_H
 
-#include "IScreen.h"
+#include "BaseScreen.h"
 #include "MainScreenCommunication.h"
 #include "MainScreenData.h"
 #include "ScreenManager.h"
@@ -10,10 +10,10 @@
 
 #include "MainScreenGeometry.h"
 
-class MainScreen : public IScreen
+class MainScreen : public BaseScreen
 {
 public:
-    explicit MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings);
+    MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings);
     void OnLoop() override;
     void OnSetup() override;
 

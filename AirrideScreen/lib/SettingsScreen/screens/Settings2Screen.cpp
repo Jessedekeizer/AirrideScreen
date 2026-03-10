@@ -3,11 +3,8 @@
 #include "ESettingsScreenButtons.h"
 
 Settings2Screen::Settings2Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice)
-    : SettingsScreenBase(screenManager, settingsScreenCommunication, settingsDevice)
+    : SettingsScreenBase(screenManager, settingsScreenCommunication, settingsDevice, EScreen::SETTINGS2, "/Settings2.png")
 {
-    name = EScreen::SETTINGS2;
-    path = "/Settings2.png";
-    buttons = std::vector<Button *>();
     buttons.push_back(new PushButton(SETTINGSBTN_MAIN_X, SETTINGSBTN_MAIN_Y, SETTINGSBTN_MAIN_W, SETTINGSBTN_MAIN_H, MAIN_SCREEN,
                                      [this](Button &button)
                                      { SaveSettings(); }));

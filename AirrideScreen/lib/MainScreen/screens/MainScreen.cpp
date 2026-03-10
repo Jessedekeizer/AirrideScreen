@@ -5,15 +5,16 @@
 #include "ScreenManager.h"
 #include "TimerManager.h"
 
-MainScreen::MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings)
-    : mainScreenData(mainScreenData), mainScreenCommunication(mainScreenCommunication), screenManager(screenManager), settings(settings)
+MainScreen::MainScreen(MainScreenData &mainScreenData,
+    MainScreenCommunication &mainScreenCommunication,
+    ScreenManager &screenManager,
+    SettingsDevice &settings)
+    : mainScreenData(mainScreenData),
+    mainScreenCommunication(mainScreenCommunication),
+    screenManager(screenManager),
+    settings(settings),
+    BaseScreen(EScreen::MAIN, "/MainScreen.png")
 {
-    name = EScreen::MAIN;
-    path = "/MainScreen.png";
-
-    buttons = std::vector<Button *>();
-
-    // Front buttons
     buttons.push_back(new ToggleButton(FRONT_UP_X, FRONT_UP_Y, FRONT_UP_W, FRONT_UP_H, FRONT_UP,
                                        [this](Button &button)
                                        { HandleToggleButton(button); }));
@@ -21,7 +22,6 @@ MainScreen::MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &
                                        [this](Button &button)
                                        { HandleToggleButton(button); }));
 
-    // Back buttons
     buttons.push_back(new ToggleButton(BACK_UP_X, BACK_UP_Y, BACK_UP_W, BACK_UP_H, BACK_UP,
                                        [this](Button &button)
                                        { HandleToggleButton(button); }));
@@ -29,7 +29,6 @@ MainScreen::MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &
                                        [this](Button &button)
                                        { HandleToggleButton(button); }));
 
-    // Control buttons
     buttons.push_back(new PushButton(SETTINGS1_X, SETTINGS1_Y, SETTINGS1_W, SETTINGS1_H, SETTINGS1,
                                      [this](Button &button)
                                      { GoToSettings1(); }));

@@ -11,31 +11,17 @@ class IScreen {
 public:
     virtual ~IScreen() = default;
 
-    void HandleTouch(int touchX, int touchY) {
-        for (Button *button: buttons) {
-            button->CheckTouch(touchX, touchY);
-        };
-    }
+    virtual void HandleTouch(int touchX, int touchY) = 0;
 
     virtual void OnLoop() = 0;
 
-    void ReleaseButtons() {
-        for (Button *button: buttons) {
-            button->ReleaseButton();
-        }
-    };
+    virtual void ReleaseButtons() = 0;
 
     virtual void OnSetup() = 0;
 
-    EScreen GetName() { return name; };
+    virtual EScreen GetName() = 0;
 
-    const char *GetPath() { return path; };
-
-protected:
-    EScreen name;
-    const char *path;
-    bool isActive;
-    std::vector<Button *> buttons;
+    virtual const char *GetPath() = 0;
 };
 
 #endif

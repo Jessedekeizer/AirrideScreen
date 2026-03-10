@@ -2,13 +2,12 @@
 
 #include "SerialManager.h"
 
-Communication::Communication(ISerial &serial, StringQueue& stringQueue): nextId(1), serial(serial), stringQueue(stringQueue) {
+Communication::Communication(ISerial &serial, StringQueue &stringQueue) : nextId(1), serial(serial), stringQueue(stringQueue) {
 }
 
 Communication::~Communication() {
     subscribers.clear();
 }
-
 
 int Communication::Subscribe(Callback callback) {
     Subscription subscriber;
@@ -31,7 +30,7 @@ void Communication::Unsubscribe(int id) {
 }
 
 void Communication::Notify(String message) {
-    for (auto subscriber : subscribers) {
+    for (auto subscriber: subscribers) {
         subscriber.callback(message);
     }
 }
