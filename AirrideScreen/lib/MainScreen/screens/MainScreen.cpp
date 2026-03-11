@@ -34,7 +34,7 @@ MainScreen::MainScreen(MainScreenData &mainScreenData,
                                      { GoToSettings1(); }));
     buttons.push_back(new PushButton(RIDE_X, RIDE_Y, RIDE_W, RIDE_H, RIDE,
                                      [this](Button &button)
-                                     { HandleToggleButton(button); }));
+                                     { HandlePushButton(button); }));
     buttons.push_back(new PushButton(PARK_X, PARK_Y, PARK_W, PARK_H, PARK,
                                      [this](Button &button)
                                      { HandlePushButton(button); }));

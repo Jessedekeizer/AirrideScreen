@@ -1,6 +1,7 @@
 #include "MainStateMachineCommunication.h"
 
 #include "EState.h"
+#include "SerialManager.h"
 
 MainStateMachineCommunication::MainStateMachineCommunication(Communication &communication,
                                                              MainStateMachineData &
@@ -17,6 +18,7 @@ void MainStateMachineCommunication::Leave() {
 }
 
 void MainStateMachineCommunication::ReceiveCallback(String &message) {
+    serialManager.Debug(message);
     RequestChangeState(message);
 }
 

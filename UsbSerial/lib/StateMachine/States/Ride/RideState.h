@@ -1,12 +1,11 @@
 #ifndef RIDESTATE_H
 #define RIDESTATE_H
-#include "../../include/IState.h"
+#include "IState.h"
 #include "LogHandler.h"
 #include "PressureSensor.h"
 #include "Settings.h"
 #include "Solenoid.h"
 #include "SolenoidManager.h"
-
 
 class RideState : public IState {
 public:
@@ -43,6 +42,5 @@ private:
 
     void SetupRide();
 };
-
 
 #endif //RIDESTATE_H

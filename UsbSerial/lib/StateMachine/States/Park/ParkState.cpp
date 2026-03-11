@@ -1,4 +1,5 @@
 #include "ParkState.h"
+#include "Arduino.h"
 
 ParkState::ParkState(Solenoid &frontSolenoid, Solenoid &backSolenoid, LogHandler &logHandler, Settings &settings)
     : frontSolenoid(frontSolenoid), backSolenoid(backSolenoid), logHandler(logHandler), settings(settings) {

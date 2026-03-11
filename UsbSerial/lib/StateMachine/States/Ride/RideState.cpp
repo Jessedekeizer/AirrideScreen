@@ -1,4 +1,5 @@
 #include "RideState.h"
+#include "Arduino.h"
 
 RideState::RideState(SolenoidManager &solenoidManager, LogHandler &logHandler, Settings &settings,
                      PressureSensor &frontPressureSensor, PressureSensor &backPressureSensor)
@@ -23,12 +24,14 @@ void RideState::SetupRide() {
 
         frontSolenoid = &solenoidManager.GetSolenoid(ESolenoid::FRONT_DOWN);
         frontSolenoid->TurnOn();
-    } else if (currentFront < settings.rideFront) {
+    }
+    else if (currentFront < settings.rideFront) {
         frontTimePrevious = millis();
         frontTimeInterval = CalculateTime(currentFront, settings.rideFront, settings.frontUpX);
         frontSolenoid = &solenoidManager.GetSolenoid(ESolenoid::FRONT_UP);
         frontSolenoid->TurnOn();
-    } else {
+    }
+    else {
         rideFrontDone = true;
     }
 
@@ -38,19 +41,22 @@ void RideState::SetupRide() {
 
         backSolenoid = &solenoidManager.GetSolenoid(ESolenoid::BACK_DOWN);
         backSolenoid->TurnOn();
-    } else if (currentBack < settings.rideBack) {
+    }
+    else if (currentBack < settings.rideBack) {
         backTimePrevious = millis();
         backTimeInterval = CalculateTime(currentBack, settings.rideBack, settings.backUpX);
         backSolenoid = &solenoidManager.GetSolenoid(ESolenoid::BACK_UP);
         backSolenoid->TurnOn();
-    } else {
+    }
+    else {
         rideBackDone = true;
     }
 
     if (!rideFrontDone && !rideBackDone) {
         logHandler.StartFrontLog(true);
         logHandler.StartBackLog(true);
-    } else {
+    }
+    else {
         logHandler.StartFrontLog();
         logHandler.StartBackLog();
     }

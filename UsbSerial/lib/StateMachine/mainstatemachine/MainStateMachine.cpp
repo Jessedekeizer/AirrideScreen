@@ -6,6 +6,7 @@
 #include "IdleState.h"
 #include "ParkState.h"
 #include "RideState.h"
+#include "SerialManager.h"
 
 MainStateMachine::MainStateMachine(MainStateMachineData &mainStateMachineData,
                                    MainStateMachineCommunication &mainStateMachineCommunication,
@@ -50,6 +51,7 @@ void MainStateMachine::ChangeState(EState newState) {
         currentState->Leave();
         delete currentState;
     }
+    serialManager.Debug("Changing state to: " + static_cast<int>(newState));
     switch (newState) {
         case EState::IDLE:
             currentState = new IdleState(solenoidManager);

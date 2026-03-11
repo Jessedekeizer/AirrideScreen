@@ -1,5 +1,7 @@
 #include "MainCommunication.h"
 
+#include "SerialManager.h"
+
 MainCommunication::MainCommunication(Communication &communication, Settings &settings)
     : communication(communication), settings(settings), communicationId(-1) {
 }
@@ -18,6 +20,7 @@ void MainCommunication::Leave() {
 
 void MainCommunication::ReceiveCallback(String &message) {
     if (message.startsWith("settings")) {
+        serialManager.Debug(message);
         SaveSettings(message);
     }
 }
