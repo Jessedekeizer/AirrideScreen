@@ -70,7 +70,7 @@ void TFTStorageHandler::DrawRect(int x, int y, int width, int height, uint32_t c
     tft.fillRect(x, y, width, height, color);
 }
 
-void TFTStorageHandler::WriteSettings()
+void TFTStorageHandler::WriteSettings(SettingsDevice &settings)
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.bin", FILE_WRITE);
@@ -140,7 +140,7 @@ void TFTStorageHandler::PrintSettingBool(bool value, int x, int y)
     }
 }
 
-void TFTStorageHandler::ReadSettings()
+void TFTStorageHandler::ReadSettings(SettingsDevice & settings)
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.bin", FILE_READ);
@@ -163,19 +163,6 @@ void TFTStorageHandler::ReadSettings()
     }
 
     file.close();
-}
-
-void TFTStorageHandler::SendSettings()
-{
-    serialManager.sendMessage("settings/" + String(settings.frontMax) +
-                              "/" + settings.backMax +
-                              "/" + settings.rideFront +
-                              "/" + settings.rideBack +
-                              "/" + settings.frontUpX +
-                              "/" + settings.frontDownX +
-                              "/" + settings.backUpX +
-                              "/" + settings.backDownX + 
-                              "/" + settings.parkDuration + "/");
 }
 
 //=========================================v==========================================

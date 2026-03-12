@@ -1,16 +1,15 @@
 #include "FrontDownState.h"
 
-#include "LogHandler.h"
-#include "SolenoidManager.h"
+FrontDownState::FrontDownState(Solenoid &frontDownSolenoid, LogHandler &logHandler)
+    : frontDownSolenoid(frontDownSolenoid), logHandler(logHandler) {
+}
 
 void FrontDownState::Enter() {
-    solenoid = solenoidManager.GetSolenoid(ESolenoid::FRONT_DOWN);
     logHandler.StartFrontLog();
-    solenoid->TurnOn();
+    frontDownSolenoid.TurnOn();
 }
 
 void FrontDownState::Leave() {
-    solenoid->TurnOff();
+    frontDownSolenoid.TurnOff();
     logHandler.EndFrontLog();
-    solenoid = nullptr;
 }

@@ -1,5 +1,5 @@
-#ifndef USBSERIAL_ESOLENOID_H
-#define USBSERIAL_ESOLENOID_H
+#ifndef ESOLENOID_H
+#define ESOLENOID_H
 
 enum class ESolenoid {
     FRONT_UP,
@@ -8,4 +8,4 @@ enum class ESolenoid {
     BACK_DOWN
 };
 
-#endif //USBSERIAL_ESOLENOID_H
+#endif //ESOLENOID_H

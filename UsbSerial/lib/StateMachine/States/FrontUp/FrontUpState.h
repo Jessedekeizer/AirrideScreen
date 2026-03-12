@@ -1,13 +1,13 @@
-#ifndef USBSERIAL_FRONTUPSTATE_H
-#define USBSERIAL_FRONTUPSTATE_H
-#include "IState.h"
+#ifndef FRONTUPSTATE_H
+#define FRONTUPSTATE_H
+#include "../../include/IState.h"
+#include "LogHandler.h"
 #include "Solenoid.h"
 
 
 class FrontUpState : public IState {
 public:
-    FrontUpState() : solenoid(nullptr) {
-    };
+    FrontUpState(Solenoid &frontUpSolenoid, LogHandler &logHandler);
 
     EState GetEState() override { return state; }
 
@@ -19,8 +19,9 @@ public:
 
 private:
     const EState state = EState::FRONT_UP;
-    Solenoid *solenoid;
+    Solenoid &frontUpSolenoid;
+    LogHandler &logHandler;
 };
 
 
-#endif //USBSERIAL_FRONTUPSTATE_H
+#endif //FRONTUPSTATE_H

@@ -1,9 +1,8 @@
-#ifndef USBSERIAL_SOLENOIDMANAGER_H
-#define USBSERIAL_SOLENOIDMANAGER_H
+#ifndef SOLENOIDMANAGER_H
+#define SOLENOIDMANAGER_H
 #include <vector>
 
 #include "Solenoid.h"
-
 
 class SolenoidManager {
 public:
@@ -13,7 +12,9 @@ public:
 
     void Begin();
 
-    Solenoid *GetSolenoid(ESolenoid requestedSolenoid);
+    void AddSolenoid(Solenoid &solenoid);
+
+    Solenoid &GetSolenoid(ESolenoid requestedSolenoid);
 
     void TurnOffAllSolenoids();
 
@@ -21,6 +22,4 @@ private:
     std::vector<Solenoid *> solenoids;
 };
 
-extern SolenoidManager solenoidManager;
-
-#endif //USBSERIAL_SOLENOIDMANAGER_H
+#endif //SOLENOIDMANAGER_H

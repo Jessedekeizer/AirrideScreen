@@ -1,56 +1,41 @@
 #include "ScreenManager.h"
-#include "MainScreen.h"
-#include "Settings1Screen.h"
-#include "Settings2Screen.h"
-#include "Settings3Screen.h"
-#include "Settings4Screen.h"
 #include "TFTStorageHandler.h"
 #include "SerialManager.h"
-#include "CalibrationScreen.h"
 
-ScreenManager &screenManager = ScreenManager::GetInstance();
-
-ScreenManager::ScreenManager()
-{
-    screens = {
-        new MainScreen(),
-        new Settings1Screen(),
-        new Settings2Screen(),
-        new Settings3Screen(),
-        new Settings4Screen(),
-        new CalibrationScreen()};
+ScreenManager::ScreenManager() {
 }
 
-bool ScreenManager::ChangeScreen(const String &screenName)
-{
-    serialManager.Debug("ScreenManager::ChangeScreen - Changing to: " + screenName);
-    if (screenName.isEmpty())
-        return false;
+ScreenManager::~ScreenManager() {
+    activeScreen = nullptr;
+    screens.clear();
+}
 
-    IScreen *newScreen = FindScreen(screenName);
+void ScreenManager::AddScreen(IScreen *screen) {
+    screens.push_back(screen);
+}
+
+bool ScreenManager::RequestScreen(EScreen requestedScreen) {
+    serialManager.Debug("ScreenManager::ChangeScreen - Changing to: " + String(static_cast<int>(requestedScreen)));
+
+    IScreen *newScreen = FindScreen(requestedScreen);
     if (!newScreen || newScreen == activeScreen)
         return false;
-    serialManager.Debug("ScreenManager::ChangeScreen - Transitioning to screen: " + newScreen->GetName());
+    serialManager.Debug("ScreenManager::ChangeScreen - Transitioning to screen: " + String(static_cast<int>(newScreen->GetName())));
     TransitionToScreen(newScreen);
     return true;
 }
 
-IScreen *ScreenManager::FindScreen(const String &screenName)
-{
-    for (IScreen *screen : screens)
-    {
-        if (screen->GetName() == screenName)
-        {
+IScreen *ScreenManager::FindScreen(EScreen newScreen) {
+    for (IScreen *screen: screens) {
+        if (screen->GetName() == newScreen) {
             return screen;
         }
     }
     return nullptr;
 }
 
-void ScreenManager::TransitionToScreen(IScreen *newScreen)
-{
-    if (activeScreen)
-    {
+void ScreenManager::TransitionToScreen(IScreen *newScreen) {
+    if (activeScreen) {
         activeScreen->ReleaseButtons();
     }
     activeScreen = newScreen;

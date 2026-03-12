@@ -1,15 +1,13 @@
 #ifndef LOGHANDLER_H
 #define LOGHANDLER_H
-#pragma once
-#include <Arduino.h>
 #include "PressureSensor.h"
+#include "MainCommunication.h"
+#include "LogHandlerCommunication.h"
 
 class LogHandler {
 public:
-    LogHandler() {}
+    LogHandler(LogHandlerCommunication &communication, PressureSensor &frontPressureSensor, PressureSensor &backPressureSensor, PressureSensor &tankPressureSensor);
     ~LogHandler();
-
-    void Begin();
 
     void StartFrontLog(bool togetherMove = false);
 
@@ -39,10 +37,10 @@ private:
     unsigned long frontLogPreviousTime = 0;
     unsigned long backLogPreviousTime = 0;
 
-    PressureSensor *frontPressureSensor = nullptr;
-    PressureSensor *backPressureSensor = nullptr;
-    PressureSensor *tankPressureSensor = nullptr;
-};
+    LogHandlerCommunication &communication;
 
-extern LogHandler logHandler;
+    PressureSensor &frontPressureSensor;
+    PressureSensor &backPressureSensor;
+    PressureSensor &tankPressureSensor;
+};
 #endif

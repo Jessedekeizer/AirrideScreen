@@ -1,5 +1,5 @@
-#ifndef USBSERIAL_SETTINGS_H
-#define USBSERIAL_SETTINGS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 struct Settings {
     double frontMax = 5.00;
@@ -13,5 +13,4 @@ struct Settings {
     double parkDuration = 4.0;
 };
 
-extern Settings settings;
-#endif //USBSERIAL_SETTINGS_H
+#endif //SETTINGS_H

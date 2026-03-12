@@ -1,29 +1,24 @@
 #include "ParkState.h"
+#include "Arduino.h"
 
-#include <api/Common.h>
-
-#include "LogHandler.h"
-#include "Settings.h"
-#include "SolenoidManager.h"
+ParkState::ParkState(Solenoid &frontSolenoid, Solenoid &backSolenoid, LogHandler &logHandler, Settings &settings)
+    : frontSolenoid(frontSolenoid), backSolenoid(backSolenoid), logHandler(logHandler), settings(settings) {
+}
 
 void ParkState::Enter() {
-    frontSolenoid = solenoidManager.GetSolenoid(ESolenoid::FRONT_DOWN);
-    backSolenoid = solenoidManager.GetSolenoid(ESolenoid::BACK_DOWN);
     logHandler.StartFrontLog();
     logHandler.StartBackLog();
-    frontSolenoid->TurnOn();
-    backSolenoid->TurnOn();
+    frontSolenoid.TurnOn();
+    backSolenoid.TurnOn();
     timeInterval = settings.parkDuration * 1000;
     timePrevious = millis();
 }
 
 void ParkState::Leave() {
-    frontSolenoid->TurnOff();
-    backSolenoid->TurnOff();
+    frontSolenoid.TurnOff();
+    backSolenoid.TurnOff();
     logHandler.EndFrontLog();
     logHandler.EndBackLog();
-    frontSolenoid = nullptr;
-    backSolenoid = nullptr;
 }
 
 EState ParkState::Loop() {

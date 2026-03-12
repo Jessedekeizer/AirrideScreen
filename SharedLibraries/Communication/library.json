@@ -1,0 +1,13 @@
+{
+  "name": "Communication",
+  "version": "0.0.0",
+  "build": {
+    "srcDir": ".",
+    "includeDir": ".",
+    "flags": [
+      "-I ISerial",
+      "-I StringQueue",
+      "-I Communication"
+    ]
+  }
+}
