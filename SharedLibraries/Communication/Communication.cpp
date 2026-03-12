@@ -2,7 +2,8 @@
 
 #include "SerialManager.h"
 
-Communication::Communication(ISerial &serial, StringQueue &stringQueue) : nextId(1), serial(serial), stringQueue(stringQueue) {
+Communication::Communication(ISerial &serial, StringQueue &stringQueue) : nextId(1), serial(serial),
+                                                                          stringQueue(stringQueue) {
 }
 
 Communication::~Communication() {
@@ -41,6 +42,7 @@ void Communication::CheckForMessage() {
 
     if (stringQueue.dequeue(message)) {
         if (message.length() > 0) {
+            serialManager.Debug(message);
             Notify(message);
         }
     }

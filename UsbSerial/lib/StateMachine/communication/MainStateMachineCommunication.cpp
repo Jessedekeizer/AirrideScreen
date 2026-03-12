@@ -23,25 +23,21 @@ void MainStateMachineCommunication::ReceiveCallback(String &message) {
 }
 
 void MainStateMachineCommunication::RequestChangeState(String &requestedStateMessage) {
+    serialManager.Debug("newState" + requestedStateMessage);
     if (requestedStateMessage.equals("Front Up On")) {
         mainStateMachineData.newRequestedState = EState::FRONT_UP;
-    }
-    else if (requestedStateMessage.equals("Front Down On")) {
+    } else if (requestedStateMessage.equals("Front Down On")) {
         mainStateMachineData.newRequestedState = EState::FRONT_DOWN;
-    }
-    else if (requestedStateMessage.equals("Back Up On")) {
+    } else if (requestedStateMessage.equals("Back Up On")) {
         mainStateMachineData.newRequestedState = EState::BACK_UP;
-    }
-    else if (requestedStateMessage.equals("Back Down On")) {
+    } else if (requestedStateMessage.equals("Back Down On")) {
         mainStateMachineData.newRequestedState = EState::BACK_DOWN;
-    }
-    else if (requestedStateMessage.endsWith("Off")) {
+    } else if (requestedStateMessage.endsWith("Off")) {
         mainStateMachineData.newRequestedState = EState::IDLE;
-    }
-    else if (requestedStateMessage.equals("Ride")) {
+    } else if (requestedStateMessage.equals("Ride")) {
         mainStateMachineData.newRequestedState = EState::RIDE;
-    }
-    else if (requestedStateMessage.equals("Park")) {
+    } else if (requestedStateMessage.equals("Park")) {
         mainStateMachineData.newRequestedState = EState::PARK;
     }
+    serialManager.Debug("newState" + static_cast<int>(mainStateMachineData.newRequestedState));
 }

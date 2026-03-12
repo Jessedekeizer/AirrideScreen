@@ -29,6 +29,7 @@ MainStateMachine::~MainStateMachine() {
 }
 
 void MainStateMachine::Begin() {
+    mainStateMachineCommunication.Init();
     mainStateMachineData.newRequestedState = EState::IDLE;
     ChangeState(mainStateMachineData.newRequestedState);
 }

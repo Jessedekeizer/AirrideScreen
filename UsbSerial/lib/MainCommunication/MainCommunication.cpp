@@ -26,6 +26,7 @@ void MainCommunication::ReceiveCallback(String &message) {
 }
 
 void MainCommunication::SaveSettings(String &settingString) {
+    serialManager.Debug("saving settings to " + settingString);
     settings.frontMax = GetValue(settingString, '/', 1).toDouble();
     settings.backMax = GetValue(settingString, '/', 2).toDouble();
     settings.rideFront = GetValue(settingString, '/', 3).toDouble();

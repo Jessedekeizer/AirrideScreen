@@ -48,6 +48,7 @@ unsigned long timePrevious = 0;
 int timeInterval = 200;
 
 void setup() {
+  analogReadResolution(14);
   Serial1.begin(9600, SERIAL_8N1);
   solenoidManager.AddSolenoid(frontDownSolenoid);
   solenoidManager.AddSolenoid(frontUpSolenoid);
@@ -62,6 +63,7 @@ void setup() {
   solenoidManager.Begin();
   pressureSensorManager.Begin();
   mainStateMachine.Begin();
+  mainCommunication.Init();
 }
 
 void loop() {

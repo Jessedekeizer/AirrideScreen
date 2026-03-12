@@ -14,6 +14,7 @@ void SerialOverPins::Receive() {
     while (serial.available()) {
         char c = serial.read();
         if (c == '\n') {
+            serialManager.Debug(message);
             if (!stringQueue.enqueue(message)) {
                 serialManager.Debug("SerialOverPins::Receive: queue full");
             }

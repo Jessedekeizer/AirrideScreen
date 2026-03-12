@@ -10,7 +10,6 @@ PressureSensorManager::~PressureSensorManager() {
 }
 
 void PressureSensorManager::Begin() {
-    analogReadResolution(14);
     for (auto pressureSensor: pressureSensors) {
         pressureSensor->Begin();
     }
@@ -25,8 +24,7 @@ void PressureSensorManager::Update() {
         pressureSensor->UpdateBuffer();
         if (pressureSensor->GetPressureSensor() == EPressureSensor::FRONT) {
             CheckIfPressureIsWithinTolerance(pressureSensor, frontSolenoid);
-        }
-        else if (pressureSensor->GetPressureSensor() == EPressureSensor::BACK) {
+        } else if (pressureSensor->GetPressureSensor() == EPressureSensor::BACK) {
             CheckIfPressureIsWithinTolerance(pressureSensor, backSolenoid);
         }
     }
@@ -44,8 +42,7 @@ void PressureSensorManager::CheckIfPressureIsWithinTolerance(PressureSensor *pre
     //Turn off solenoid when max pressure is reached.
     if (pressureSensor->GetAveragePressure() >= settings.frontMax) {
         solenoid.Activate(false);
-    }
-    else {
+    } else {
         solenoid.Activate(true);
     }
 }
