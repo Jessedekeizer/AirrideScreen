@@ -1,6 +1,6 @@
 #include "Communication.h"
 
-#include "SerialManager.h"
+#include "Logger.h"
 
 Communication::Communication(ISerial &serial, StringQueue &stringQueue) : nextId(1), serial(serial),
                                                                           stringQueue(stringQueue) {
@@ -42,13 +42,13 @@ void Communication::CheckForMessage() {
 
     if (stringQueue.dequeue(message)) {
         if (message.length() > 0) {
-            serialManager.Debug(message);
+            LOG_DEBUG(message);
             Notify(message);
         }
     }
 }
 
 void Communication::SendMessage(String message) {
-    serialManager.Debug(message);
+    LOG_DEBUG(message);
     serial.SendMessage(message);
 }

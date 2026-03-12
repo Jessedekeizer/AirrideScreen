@@ -1,32 +1,40 @@
 #include "MainCommunication.h"
 
-#include "SerialManager.h"
+#include "Logger.h"
 
 MainCommunication::MainCommunication(Communication &communication, Settings &settings)
-    : communication(communication), settings(settings), communicationId(-1) {
+    : communication(communication), settings(settings), communicationId(-1)
+{
 }
 
-void MainCommunication::SendPressure(double front, double back) {
+void MainCommunication::SendPressure(double front, double back)
+{
     communication.SendMessage("BAR/" + String(front) + "/" + String(back) + "/");
 }
 
-void MainCommunication::Init() {
-    communicationId = communication.Subscribe([this](String &message) { ReceiveCallback(message); });
+void MainCommunication::Init()
+{
+    communicationId = communication.Subscribe([this](String &message)
+                                              { ReceiveCallback(message); });
 }
 
-void MainCommunication::Leave() {
+void MainCommunication::Leave()
+{
     communication.Unsubscribe(communicationId);
 }
 
-void MainCommunication::ReceiveCallback(String &message) {
-    if (message.startsWith("settings")) {
-        serialManager.Debug(message);
+void MainCommunication::ReceiveCallback(String &message)
+{
+    if (message.startsWith("settings"))
+    {
+        LOG_DEBUG(message);
         SaveSettings(message);
     }
 }
 
-void MainCommunication::SaveSettings(String &settingString) {
-    serialManager.Debug("saving settings to " + settingString);
+void MainCommunication::SaveSettings(String &settingString)
+{
+    LOG_DEBUG("saving settings to", settingString);
     settings.frontMax = GetValue(settingString, '/', 1).toDouble();
     settings.backMax = GetValue(settingString, '/', 2).toDouble();
     settings.rideFront = GetValue(settingString, '/', 3).toDouble();
@@ -38,13 +46,16 @@ void MainCommunication::SaveSettings(String &settingString) {
     settings.parkDuration = GetValue(settingString, '/', 9).toDouble();
 }
 
-String MainCommunication::GetValue(String data, char separator, int index) {
+String MainCommunication::GetValue(String data, char separator, int index)
+{
     int found = 0;
     int strIndex[] = {0, -1};
     int maxIndex = data.length() - 1;
 
-    for (int i = 0; i <= maxIndex && found <= index; i++) {
-        if (data.charAt(i) == separator || i == maxIndex) {
+    for (int i = 0; i <= maxIndex && found <= index; i++)
+    {
+        if (data.charAt(i) == separator || i == maxIndex)
+        {
             found++;
             strIndex[0] = strIndex[1] + 1;
             strIndex[1] = (i == maxIndex) ? i + 1 : i;

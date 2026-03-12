@@ -1,4 +1,5 @@
 #include "TFTStorageHandler.h"
+#include "Logger.h"
 #define MAX_IMAGE_WIDTH 320
 
 TFTStorageHandler &storageHandler = storageHandler.GetInstance();
@@ -76,7 +77,7 @@ void TFTStorageHandler::WriteSettings(SettingsDevice &settings)
     File file = fs.open("/settings.bin", FILE_WRITE);
     if (!file)
     {
-        serialManager.Debug("Cannot open file to write");
+        LOG_DEBUG("Cannot open file to write");
         return;
     }
 
@@ -85,14 +86,12 @@ void TFTStorageHandler::WriteSettings(SettingsDevice &settings)
 
     if (bytesWritten != sizeof(settings))
     {
-        serialManager.Debug("Failed to write settings");
+        LOG_DEBUG("Failed to write settings");
     }
     else
     {
-        serialManager.Debug("Settings saved successfully");
+        LOG_DEBUG("Settings saved successfully");
     }
-
-    
 
     file.close();
 }
@@ -126,7 +125,7 @@ void TFTStorageHandler::ReadFile(const char *path)
 
 void TFTStorageHandler::PrintSettingBool(bool value, int x, int y)
 {
-    //square offset from 35x35
+    // square offset from 35x35
     tft.fillRect(x + 1, y + 1, 33, 33, TFT_BLACK);
     if (value)
     {
@@ -140,13 +139,13 @@ void TFTStorageHandler::PrintSettingBool(bool value, int x, int y)
     }
 }
 
-void TFTStorageHandler::ReadSettings(SettingsDevice & settings)
+void TFTStorageHandler::ReadSettings(SettingsDevice &settings)
 {
     fs::FS &fs = SD;
     File file = fs.open("/settings.bin", FILE_READ);
     if (!file)
     {
-        serialManager.Debug("Cannot open file to read");
+        LOG_DEBUG("Cannot open file to read");
         return;
     }
 
@@ -155,11 +154,11 @@ void TFTStorageHandler::ReadSettings(SettingsDevice & settings)
 
     if (bytesRead != sizeof(settings))
     {
-        serialManager.Debug("Failed to read settings");
+        LOG_DEBUG("Failed to read settings");
     }
     else
     {
-        serialManager.Debug("Settings loaded successfully");
+        LOG_DEBUG("Settings loaded successfully");
     }
 
     file.close();

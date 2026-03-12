@@ -1,7 +1,8 @@
 #include "CalibrationScreen.h"
 #include "CalibrationGeometry.h"
 #include "ECalibrationScreenButtons.h"
-#include "SerialManager.h"
+
+#include "Logger.h"
 
 // Constants for calibration process
 #define CALIBRATION_TIME 3000
@@ -40,22 +41,23 @@ void CalibrationScreen::OnSetup()
 
 void CalibrationScreen::OnLoop()
 {
-    switch (calibrationState) {
-        case ECalibrationState::START_CALIBRATION:
-            HandlePreCalibrationCountdown();
-            break;
-        case ECalibrationState::TOUCH_TOP_LEFT:
-        case ECalibrationState::TOUCH_BOTTOM_RIGHT:
-            break;
-        case ECalibrationState::TOP_LEFT_COUNTDOWN:
-            HandleTopLeftCalibration();
-            break;
-        case ECalibrationState::BOTTOM_RIGHT_COUNTDOWN:
-            HandleBottomRightCalibration();
-            break;
-        case ECalibrationState::EXIT_CALIBRATION:
-            HandlePostCalibrationCountdown();
-            break;
+    switch (calibrationState)
+    {
+    case ECalibrationState::START_CALIBRATION:
+        HandlePreCalibrationCountdown();
+        break;
+    case ECalibrationState::TOUCH_TOP_LEFT:
+    case ECalibrationState::TOUCH_BOTTOM_RIGHT:
+        break;
+    case ECalibrationState::TOP_LEFT_COUNTDOWN:
+        HandleTopLeftCalibration();
+        break;
+    case ECalibrationState::BOTTOM_RIGHT_COUNTDOWN:
+        HandleBottomRightCalibration();
+        break;
+    case ECalibrationState::EXIT_CALIBRATION:
+        HandlePostCalibrationCountdown();
+        break;
     }
 }
 
@@ -148,7 +150,7 @@ void CalibrationScreen::SaveCalibrationAndExit()
     xmax += (SCREEN_DEFAULT / CAL_SCR_WIDTH) * CAL_SQUARE_SIZE;
     ymin -= (SCREEN_DEFAULT / CAL_SCR_HEIGHT) * CAL_SQUARE_SIZE;
     ymax += (SCREEN_DEFAULT / CAL_SCR_HEIGHT) * CAL_SQUARE_SIZE;
-    serialManager.Debug("Saving calibration values: " + String(xmin) + " " + String(xmax) + " " + String(ymin) + " " + String(ymax));
+    LOG_DEBUG("Saving calibration values:", xmin, xmax, ymin, ymax);
     touchScreen.setCalibration(xmin, xmax, ymin, ymax);
 
     settings.xmin = xmin;
@@ -160,7 +162,8 @@ void CalibrationScreen::SaveCalibrationAndExit()
     ChangeCalibrationState(ECalibrationState::EXIT_CALIBRATION);
 }
 
-void CalibrationScreen::ChangeCalibrationState(ECalibrationState newState) {
+void CalibrationScreen::ChangeCalibrationState(ECalibrationState newState)
+{
     calibrationState = newState;
 }
 
@@ -176,7 +179,7 @@ void CalibrationScreen::TopLeftCalibration()
     {
         xmin = touch.xRaw;
         ymin = touch.yRaw;
-        serialManager.Debug("Xmin: " + String(xmin) + " Ymin: " + String(ymin));
+        LOG_DEBUG("Xmin:", xmin, "Ymin:", ymin);
     }
 }
 
@@ -184,7 +187,7 @@ void CalibrationScreen::HandleTopLeftStart()
 {
     if (calibrationState == ECalibrationState::TOUCH_TOP_LEFT)
     {
-        serialManager.Debug("TopLeft starting");
+        LOG_DEBUG("TopLeft starting");
         TopLeftStartTime = millis();
         ChangeCalibrationState(ECalibrationState::TOP_LEFT_COUNTDOWN);
     }
@@ -197,7 +200,7 @@ void CalibrationScreen::BottomRightCalibration()
     {
         xmax = touch.xRaw;
         ymax = touch.yRaw;
-        serialManager.Debug("Xmax: " + String(xmax) + " Ymax: " + String(ymax));
+        LOG_DEBUG("Xmax:", xmax, "Ymax:", ymax);
     }
 }
 
@@ -205,7 +208,7 @@ void CalibrationScreen::HandleBottomRightStart()
 {
     if (calibrationState == ECalibrationState::TOUCH_BOTTOM_RIGHT)
     {
-        serialManager.Debug("BottomRight starting");
+        LOG_DEBUG("BottomRight starting");
         BottomRightStartTime = millis();
         ChangeCalibrationState(ECalibrationState::BOTTOM_RIGHT_COUNTDOWN);
     }
