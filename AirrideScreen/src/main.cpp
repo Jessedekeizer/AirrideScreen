@@ -3,7 +3,6 @@
 
 #include "SerialOverPins.h"
 #include "Communication.h"
-#include "SerialManager.h"
 #include "ScreenManager.h"
 
 #include "MainScreenData.h"
@@ -18,6 +17,7 @@
 #include "CalibrationScreen.h"
 
 #include "TFTStorageHandler.h"
+#include "Logger.h"
 #include "TimerManager.h"
 
 #define MOSI_PIN 32
@@ -59,6 +59,7 @@ CalibrationScreen calibrationScreen(screenManager, settings, touchScreen);
 
 void setup()
 {
+  Serial.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
   Serial2.begin(SERIAL_BAUD_RATE, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
   // retrieve settings
   storageHandler.GetInstance();
@@ -72,9 +73,7 @@ void setup()
   screenManager.AddScreen(&settings4Screen);
   screenManager.AddScreen(&calibrationScreen);
 
-  serialManager.GetInstance();
   delay(1000);
-  serialManager.setDebugMode(true);
   touchScreen.begin();
   timerManager.GetInstance();
 
@@ -118,6 +117,5 @@ void UpdateTouchScreen()
 
 void printTouchToSerial(TouchPoint p)
 {
-  serialManager.Debug("Touch: X=" + String(p.x) + ", Y=" + String(p.y) +
-                      ", ZRaw=" + String(p.zRaw));
+  LOG_DEBUG("Touch: X=", p.x, ", Y=", p.y, ", ZRaw=", p.zRaw);
 }

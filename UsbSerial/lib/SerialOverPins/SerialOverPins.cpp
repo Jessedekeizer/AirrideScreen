@@ -1,27 +1,34 @@
 #include "SerialOverPins.h"
-#include "SerialManager.h"
 
+#include "Logger.h"
 
-void SerialOverPins::SendMessage(String &message) {
+void SerialOverPins::SendMessage(String &message)
+{
     serial.println(message);
 }
 
-bool SerialOverPins::ReceiveAvailable() {
+bool SerialOverPins::ReceiveAvailable()
+{
     return serial.available();
 }
 
-void SerialOverPins::Receive() {
-    while (serial.available()) {
+void SerialOverPins::Receive()
+{
+    while (serial.available())
+    {
         char c = serial.read();
-        if (c == '\n') {
-            serialManager.Debug(message);
-            if (!stringQueue.enqueue(message)) {
-                serialManager.Debug("SerialOverPins::Receive: queue full");
+        if (c == '\n')
+        {
+            LOG_DEBUG(message);
+            if (!stringQueue.enqueue(message))
+            {
+                LOG_DEBUG("SerialOverPins::Receive: queue full");
             }
             message = "";
-        } else if (c != '\r') {
+        }
+        else if (c != '\r')
+        {
             message += c;
         }
     }
 }
-

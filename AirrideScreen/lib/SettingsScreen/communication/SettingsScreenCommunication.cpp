@@ -1,9 +1,10 @@
 #include "SettingsScreenCommunication.h"
 
-#include "SerialManager.h"
+#include "Logger.h"
 
-void SettingsScreenCommunication::SendSettings(SettingsDevice &settings) {
-    serialManager.Debug("try settings send");
+void SettingsScreenCommunication::SendSettings(SettingsDevice &settings)
+{
+    LOG_DEBUG("try settings send");
     communication.SendMessage("settings/" + String(settings.frontMax) +
                               "/" + settings.backMax +
                               "/" + settings.rideFront +
@@ -13,5 +14,5 @@ void SettingsScreenCommunication::SendSettings(SettingsDevice &settings) {
                               "/" + settings.backUpX +
                               "/" + settings.backDownX +
                               "/" + settings.parkDuration + "/");
-    serialManager.Debug("settings send");
+    LOG_DEBUG("settings send");
 }

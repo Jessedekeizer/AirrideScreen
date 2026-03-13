@@ -1,6 +1,6 @@
 #include "Communication.h"
 
-#include "SerialManager.h"
+#include "Logger.h"
 
 Communication::Communication(ISerial &serial, StringQueue &stringQueue) : nextId(1), serial(serial),
                                                                           stringQueue(stringQueue) {
@@ -13,7 +13,7 @@ Communication::~Communication() {
 int Communication::Subscribe(Callback callback) {
     Subscription subscriber;
     subscriber.id = nextId++;
-    subscriber.callback = callback;
+    subscriber.callback = std::move(callback);
     subscribers.push_back(subscriber);
     return subscriber.id;
 }
@@ -31,7 +31,7 @@ void Communication::Unsubscribe(int id) {
 }
 
 void Communication::Notify(String message) {
-    for (auto subscriber: subscribers) {
+    for (const auto& subscriber: subscribers) {
         subscriber.callback(message);
     }
 }
@@ -42,13 +42,13 @@ void Communication::CheckForMessage() {
 
     if (stringQueue.dequeue(message)) {
         if (message.length() > 0) {
-            serialManager.Debug(message);
+            LOG_DEBUG(message);
             Notify(message);
         }
     }
 }
 
 void Communication::SendMessage(String message) {
-    serialManager.Debug(message);
+    LOG_DEBUG(message);
     serial.SendMessage(message);
 }

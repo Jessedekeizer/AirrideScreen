@@ -1,19 +1,20 @@
+
 #include <MainScreen.h>
 #include "MainScreenGeometry.h"
-
 #include "MainScreenCommunication.h"
 #include "ScreenManager.h"
 #include "TimerManager.h"
+#include "Logger.h"
 
 MainScreen::MainScreen(MainScreenData &mainScreenData,
-    MainScreenCommunication &mainScreenCommunication,
-    ScreenManager &screenManager,
-    SettingsDevice &settings)
+                       MainScreenCommunication &mainScreenCommunication,
+                       ScreenManager &screenManager,
+                       SettingsDevice &settings)
     : mainScreenData(mainScreenData),
-    mainScreenCommunication(mainScreenCommunication),
-    screenManager(screenManager),
-    settings(settings),
-    BaseScreen(EScreen::MAIN, "/MainScreen.png")
+      mainScreenCommunication(mainScreenCommunication),
+      screenManager(screenManager),
+      settings(settings),
+      BaseScreen(EScreen::MAIN, "/MainScreen.png")
 {
     buttons.push_back(new ToggleButton(FRONT_UP_X, FRONT_UP_Y, FRONT_UP_W, FRONT_UP_H, FRONT_UP,
                                        [this](Button &button)
@@ -46,7 +47,8 @@ void MainScreen::OnSetup()
     AddRideTimer();
 }
 
-MainScreen::~MainScreen() {
+MainScreen::~MainScreen()
+{
     timerManager.removeTimer(autoRideTimer);
     delete autoRideTimer;
 }
@@ -55,18 +57,18 @@ void MainScreen::AddRideTimer()
 {
     if (!settings.autoRide)
     {
-        serialManager.Debug("MainScreen::addRideTimer - Auto start ride is disabled");
+        LOG_DEBUG("MainScreen::addRideTimer - Auto start ride is disabled");
         return;
     }
     if (autoRideTimer != nullptr)
     {
-        serialManager.Debug("MainScreen::addRideTimer - Timer already exists, not adding again");
+        LOG_DEBUG("MainScreen::addRideTimer - Timer already exists, not adding again");
         return;
     }
     autoRideTimer = new Timer(settings.autoRideSec, [this]()
                               { AutoStartRide(); });
     timerManager.addTimer(autoRideTimer);
-    serialManager.Debug("MainScreen::addRideTimer - Timer added");
+    LOG_DEBUG("MainScreen::addRideTimer - Timer added");
 }
 
 void MainScreen::OnLoop()
@@ -82,12 +84,12 @@ void MainScreen::AutoStartRide()
     }
     if (mainScreenData.front < 1.5 || mainScreenData.back < 1.5)
     {
-        serialManager.Debug("MainScreen::Timer - Sending ride command");
+        LOG_DEBUG("MainScreen::Timer - Sending ride command");
         mainScreenCommunication.SendMessagePushButton(RIDE);
     }
     else
     {
-        serialManager.Debug("MainScreen::Timer - Not sending ride command");
+        LOG_DEBUG("MainScreen::Timer - Not sending ride command");
     }
     abortAutoRide = true;
 }

@@ -4,7 +4,6 @@
 #include "Settings.h"
 #include "SolenoidManager.h"
 #include "MainStateMachine.h"
-#include "SerialManager.h"
 #include "PressureSensor.h"
 #include "Solenoid.h"
 #include "MainCommunication.h"
@@ -57,8 +56,6 @@ void setup() {
   pressureSensorManager.AddPressureSensor(frontPressureSensor);
   pressureSensorManager.AddPressureSensor(backPressureSensor);
   pressureSensorManager.AddPressureSensor(tankPressureSensor);
-
-  serialManager.Begin(true);
 
   solenoidManager.Begin();
   pressureSensorManager.Begin();

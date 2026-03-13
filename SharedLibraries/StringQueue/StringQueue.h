@@ -3,6 +3,8 @@
 
 #define QUEUE_SIZE 10
 
+#include <Arduino.h>
+
 struct StringQueue {
     String messages[QUEUE_SIZE];
     uint8_t head = 0;
