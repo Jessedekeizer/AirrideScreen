@@ -2,15 +2,16 @@
 #define CALIBRATIONSCREEN_H
 
 #include "BaseScreen.h"
-#include "TFTStorageHandler.h"
+#include "SettingsDevice.h"
 #include "XPT2046_Bitbang.h"
 #include "ECalibrationState.h"
 #include "ScreenManager.h"
+#include "DisplayService.h"
+#include "SettingsStorage.h"
 
-class CalibrationScreen : public BaseScreen
-{
+class CalibrationScreen : public BaseScreen {
 public:
-    CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings, XPT2046_Bitbang &touchScreen);
+    CalibrationScreen(ScreenManager &screenManager, SettingsDevice &settings, SettingsStorage &settingsStorage, DisplayService &displayService, XPT2046_Bitbang &touchScreen);
     void OnLoop() override;
     void OnSetup() override;
 
@@ -49,6 +50,8 @@ private:
     XPT2046_Bitbang &touchScreen;
     SettingsDevice &settings;
     ScreenManager &screenManager;
+    SettingsStorage &settingsStorage;
+    DisplayService &displayService;
 };
 
 #endif

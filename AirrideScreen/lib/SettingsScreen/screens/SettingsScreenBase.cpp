@@ -1,14 +1,13 @@
 #include "SettingsScreenBase.h"
-#include "TFTStorageHandler.h"
 
-SettingsScreenBase::SettingsScreenBase(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice, EScreen screen, const char* path)
-    : screenManager(screenManager), settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice) , BaseScreen(screen, path) {
+SettingsScreenBase::SettingsScreenBase(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice, SettingsStorage &settingsStorage, DisplayService &displayService, EScreen screen, const char *path)
+    : screenManager(screenManager), settingsScreenCommunication(settingsScreenCommunication), settings(settingsDevice), settingsStorage(settingsStorage), displayService(displayService), BaseScreen(screen, path) {
 }
 
 void SettingsScreenBase::SaveSettings() {
-    storageHandler.WriteSettings(settings);
+    settingsStorage.WriteSettings(settings);
     settingsScreenCommunication.SendSettings(settings);
-    storageHandler.ReadSettings(settings);
+    settingsStorage.ReadSettings(settings);
     screenManager.RequestScreen(EScreen::MAIN);
 }
 

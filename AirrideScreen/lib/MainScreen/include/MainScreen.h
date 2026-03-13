@@ -5,15 +5,13 @@
 #include "MainScreenCommunication.h"
 #include "MainScreenData.h"
 #include "ScreenManager.h"
-#include "TFTStorageHandler.h"
+#include "SettingsDevice.h"
+#include "LogStorage.h"
 #include "Timer.h"
 
-#include "MainScreenGeometry.h"
-
-class MainScreen : public BaseScreen
-{
+class MainScreen : public BaseScreen {
 public:
-    MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings);
+    MainScreen(MainScreenData &mainScreenData, MainScreenCommunication &mainScreenCommunication, ScreenManager &screenManager, SettingsDevice &settings, DisplayService &displayService, LogStorage &logStorage);
     void OnLoop() override;
     void OnSetup() override;
     ~MainScreen() override;
@@ -28,6 +26,10 @@ private:
     MainScreenCommunication &mainScreenCommunication;
     ScreenManager &screenManager;
     SettingsDevice &settings;
+    DisplayService &displayService;
+    LogStorage &logStorage;
+    double frontPressure;
+    double backPressure;
     bool abortAutoRide = false;
     Timer *autoRideTimer = nullptr;
 };
