@@ -2,23 +2,15 @@
 #define LOGGER_H
 
 #include <Arduino.h>
-#include <string.h>
 
-enum LogLevel {
-    LOG_LEVEL_ERROR = 0,
-    LOG_LEVEL_WARN,
-    LOG_LEVEL_INFO,
-    LOG_LEVEL_DEBUG
-};
+#define LOG_LEVEL_ERROR 0
+#define LOG_LEVEL_WARN  1
+#define LOG_LEVEL_INFO  2
+#define LOG_LEVEL_DEBUG 3
 
 #ifndef LOG_LEVEL
-#define LOG_LEVEL LOG_LEVEL_DEBUG
+#define LOG_LEVEL LOG_LEVEL_WARN
 #endif
-
-
-// shorten full file path -> filename
-#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-
 
 // ---------- value printing ----------
 
@@ -51,9 +43,6 @@ void logMessage(
         int line,
         const Args&... args)
 {
-    Serial.print("[");
-    Serial.print(millis());
-    Serial.print("] ");
 
     Serial.print("[");
     Serial.print(level);

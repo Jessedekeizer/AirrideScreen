@@ -1,7 +1,6 @@
 #include "LogHandler.h"
 #include "Arduino.h"
 #include "PressureSensorManager.h"
-#include "SerialManager.h"
 
 LogHandler::LogHandler(LogHandlerCommunication &communication, PressureSensor &frontPressureSensor,
                        PressureSensor &backPressureSensor, PressureSensor &tankPressureSensor)
