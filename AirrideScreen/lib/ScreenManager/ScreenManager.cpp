@@ -1,25 +1,21 @@
 #include "ScreenManager.h"
-#include "TFTStorageHandler.h"
 
 #include "Logger.h"
 
-ScreenManager::ScreenManager()
-{
+ScreenManager::ScreenManager(DisplayService &displayService)
+    : displayService(displayService) {
 }
 
-ScreenManager::~ScreenManager()
-{
+ScreenManager::~ScreenManager() {
     activeScreen = nullptr;
     screens.clear();
 }
 
-void ScreenManager::AddScreen(IScreen *screen)
-{
+void ScreenManager::AddScreen(IScreen *screen) {
     screens.push_back(screen);
 }
 
-bool ScreenManager::RequestScreen(EScreen requestedScreen)
-{
+bool ScreenManager::RequestScreen(EScreen requestedScreen) {
     LOG_DEBUG("ScreenManager::ChangeScreen - Changing to:", static_cast<int>(requestedScreen));
 
     IScreen *newScreen = FindScreen(requestedScreen);
@@ -30,25 +26,20 @@ bool ScreenManager::RequestScreen(EScreen requestedScreen)
     return true;
 }
 
-IScreen *ScreenManager::FindScreen(EScreen newScreen)
-{
-    for (IScreen *screen : screens)
-    {
-        if (screen->GetName() == newScreen)
-        {
+IScreen *ScreenManager::FindScreen(EScreen newScreen) {
+    for (IScreen *screen: screens) {
+        if (screen->GetName() == newScreen) {
             return screen;
         }
     }
     return nullptr;
 }
 
-void ScreenManager::TransitionToScreen(IScreen *newScreen)
-{
-    if (activeScreen)
-    {
+void ScreenManager::TransitionToScreen(IScreen *newScreen) {
+    if (activeScreen) {
         activeScreen->ReleaseButtons();
     }
     activeScreen = newScreen;
-    storageHandler.PrintImage(activeScreen->GetPath());
+    displayService.DrawImage(activeScreen->GetPath());
     activeScreen->OnSetup();
 }

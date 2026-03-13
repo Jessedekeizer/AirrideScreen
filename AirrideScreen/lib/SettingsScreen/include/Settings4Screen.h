@@ -5,11 +5,10 @@
 #include "ScreenManager.h"
 #include "SettingsScreenBase.h"
 #include "SettingsScreenCommunication.h"
-#include "TFTStorageHandler.h"
 
 class Settings4Screen : public SettingsScreenBase {
 public:
-    Settings4Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice);
+    Settings4Screen(ScreenManager &screenManager, SettingsScreenCommunication &settingsScreenCommunication, SettingsDevice &settingsDevice, SettingsStorage &settingsStorage, DisplayService &displayService);
 
     void OnLoop() override {
     }

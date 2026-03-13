@@ -1,0 +1,12 @@
+{
+  "name": "SdStorage",
+  "version": "0.0.0",
+  "build": {
+    "srcDir": ".",
+    "includeDir": ".",
+    "flags": [
+      "-I LogStorage",
+      "-I SettingsStorage"
+    ]
+  }
+}
