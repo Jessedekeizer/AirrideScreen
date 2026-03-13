@@ -13,7 +13,7 @@ Communication::~Communication() {
 int Communication::Subscribe(Callback callback) {
     Subscription subscriber;
     subscriber.id = nextId++;
-    subscriber.callback = callback;
+    subscriber.callback = std::move(callback);
     subscribers.push_back(subscriber);
     return subscriber.id;
 }
@@ -31,7 +31,7 @@ void Communication::Unsubscribe(int id) {
 }
 
 void Communication::Notify(String message) {
-    for (auto subscriber: subscribers) {
+    for (const auto& subscriber: subscribers) {
         subscriber.callback(message);
     }
 }
